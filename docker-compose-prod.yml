@@ -21,5 +21,5 @@ services:
       - DB_PASSWORD=dbpassword
       - DB_NAME=fullstack-demo
     volumes:
-      - "./mongo-init.sh:/docker-entrypoint-initdb.d/mongo-init.sh:ro"
+      - "./mongo-init:/docker-entrypoint-initdb.d:ro"
 
