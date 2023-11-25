@@ -1,4 +1,6 @@
-const { connectDB, closeDB } = require('./mongo');
+const { initDB, connectDB, closeDB } = require('./mongo');
+
+initDB();
 
 connectDB()
   // eslint-disable-next-line no-console

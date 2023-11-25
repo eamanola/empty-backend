@@ -6,10 +6,10 @@ services:
       service: app
 
     build:
-      target: lint
+      target: test
 
     environment:
-      - MONGO_URL=mongodb://devuser:devpassword@mongo/devdb
+      MONGO_URL: mongodb://devuser:devpassword@mongo/devdb
 
   mongo:
     extends:
@@ -20,6 +20,3 @@ services:
       - DB_USERNAME=devuser
       - DB_PASSWORD=devpassword
       - DB_NAME=devdb
-      - DB_TEST_USERNAME=test
-      - DB_TEST_PASSWORD=test
-      - DB_TEST_NAME=test
