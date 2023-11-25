@@ -2,14 +2,14 @@ const { MongoClient } = require('mongodb');
 
 let client;
 
-const init = (url) => {
+const initDB = (url = process.env.MONGO_URL) => {
   client = new MongoClient(url);
 
   return client;
 };
 
 module.exports = {
-  initDB: (url = process.env.MONGO_URL) => init(url),
+  initDB,
   connectDB: () => client.connect(),
   closeDB: () => client.close(),
 };

@@ -6,10 +6,15 @@ services:
       service: app
 
     build:
-      target: test
+      target: dev
 
     environment:
       MONGO_URL: mongodb://devuser:devpassword@mongo/devdb
+
+    volumes:
+      - ./src:/app/src
+
+    command: npm run dev
 
   mongo:
     extends:
