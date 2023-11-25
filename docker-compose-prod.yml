@@ -9,17 +9,17 @@ services:
     depends_on:
       - mongo
     environment:
-      - MONGO_URL=mongodb://dbuser:dbpassword@mongo/fullstack-demo
+      MONGO_URL: mongodb://dbuser:dbpassword@mongo/fullstack-demo
     command: npm start
 
   mongo:
     image: mongodb/mongodb-community-server:6.0-ubi8
     environment:
-      - MONGODB_INITDB_ROOT_USERNAME=root
-      - MONGODB_INITDB_ROOT_PASSWORD=supersecure
-      - DB_USERNAME=dbuser
-      - DB_PASSWORD=dbpassword
-      - DB_NAME=fullstack-demo
+      MONGODB_INITDB_ROOT_USERNAME: root
+      MONGODB_INITDB_ROOT_PASSWORD: supersecure
+      DB_USERNAME: dbuser
+      DB_PASSWORD: dbpassword
+      DB_NAME: fullstack-demo
     volumes:
       - "./mongo-init:/docker-entrypoint-initdb.d:ro"
 

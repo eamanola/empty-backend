@@ -22,6 +22,6 @@ services:
       service: mongo
 
     environment:
-      - DB_USERNAME=devuser
-      - DB_PASSWORD=devpassword
-      - DB_NAME=devdb
+      DB_USERNAME: devuser
+      DB_PASSWORD: devpassword
+      DB_NAME: devdb
