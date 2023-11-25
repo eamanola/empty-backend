@@ -10,10 +10,13 @@ const {
 } = require('../mongo');
 
 const { signup, table } = require('./signup');
+const { login } = require('./login');
+
+jest.mock('../config', () => ({ SECRET: 'shhhhh' }));
 
 let mongod;
 
-describe('connection', () => {
+describe('signup', () => {
   beforeAll(async () => {
     mongod = await MongoMemoryServer.create();
     const uri = mongod.getUri();
@@ -31,16 +34,26 @@ describe('connection', () => {
     await collection.deleteMany({});
   });
 
-  it('should create a new document', async () => {
+  it('should create a user', async () => {
     const collection = DB().collection(table);
+    const email = 'foo@example.com';
+    const password = '123';
+
     const before = await collection.countDocuments();
+    try {
+      await login({ email, password });
+      expect(true).toBe(false);
+    } catch (e) {
+      expect(true).toBe(true);
+    }
 
     await signup({
-      email: 'foo@example.com',
-      password: '123',
+      email,
+      password,
     });
 
     const after = await collection.countDocuments();
+    expect(await login({ email, password })).toBeTruthy();
 
     expect(before + 1).toBe(after);
   });

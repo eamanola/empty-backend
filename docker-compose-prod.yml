@@ -13,6 +13,7 @@ services:
 
     environment:
       MONGO_URL: mongodb://dbuser:dbpassword@mongo/fullstack-demo
+      SECRET: supersecure
 
   mongo:
     image: mongodb/mongodb-community-server:6.0-ubi8
