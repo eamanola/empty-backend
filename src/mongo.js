@@ -14,4 +14,5 @@ module.exports = {
   initDB,
   connectDB: () => client.connect(),
   closeDB: () => client.close(),
+  DB: () => client.db(),
 };
