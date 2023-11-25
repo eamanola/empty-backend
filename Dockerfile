@@ -5,6 +5,7 @@ COPY package.json package-lock.json .
 RUN npm install --production
 COPY src src
 USER node
+CMD npm start
 
 #DEV ###################################################################################################################
 FROM node:21 AS base
@@ -26,3 +27,4 @@ RUN npm test
 
 FROM test as dev
 USER node
+CMD npm run dev

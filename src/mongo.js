@@ -1,8 +1,10 @@
 const { MongoClient } = require('mongodb');
 
+const { MONGO_URL } = require('./config');
+
 let client;
 
-const initDB = (url = process.env.MONGO_URL) => {
+const initDB = (url = MONGO_URL) => {
   client = new MongoClient(url);
 
   return client;

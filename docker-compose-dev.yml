@@ -14,8 +14,6 @@ services:
     volumes:
       - ./src:/app/src
 
-    command: npm run dev
-
   mongo:
     extends:
       file: docker-compose-prod.yml
