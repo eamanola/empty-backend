@@ -6,11 +6,16 @@ const {
   initDB,
   connectDB,
   closeDB,
-  DB,
-} = require('../mongo');
+} = require('../db');
 
-const { signup, table } = require('./signup');
-const { login } = require('./login');
+const {
+  deleteMany,
+  count,
+  findOne,
+} = require('../models/users');
+
+const signup = require('./signup');
+const login = require('./login');
 
 jest.mock('../config', () => ({ SECRET: 'shhhhh' }));
 
@@ -30,16 +35,14 @@ describe('signup', () => {
   });
 
   beforeEach(async () => {
-    const collection = DB().collection(table);
-    await collection.deleteMany({});
+    await deleteMany({});
   });
 
   it('should create a user', async () => {
-    const collection = DB().collection(table);
     const email = 'foo@example.com';
     const password = '123';
 
-    const before = await collection.countDocuments();
+    const before = await count();
     try {
       await login({ email, password });
       expect(true).toBe(false);
@@ -52,19 +55,18 @@ describe('signup', () => {
       password,
     });
 
-    const after = await collection.countDocuments();
+    const after = await count();
     expect(await login({ email, password })).toBeTruthy();
 
     expect(before + 1).toBe(after);
   });
 
   it('should not allow dublicate emails', async () => {
-    const collection = DB().collection(table);
     const email = 'foo@example.com';
 
     await signup({ email, password: '123' });
 
-    const before = await collection.countDocuments();
+    const before = await count();
     try {
       await signup({ email, password: '123' });
       expect(true).toBe(false);
@@ -72,20 +74,18 @@ describe('signup', () => {
       expect(true).toBe(true);
     }
 
-    const after = await collection.countDocuments();
+    const after = await count();
 
     expect(before).toBe(after);
   });
 
   it('should hash password', async () => {
-    const collection = DB().collection(table);
-
     const email = 'foo@example.com';
     const password = '123';
 
     await signup({ email, password });
 
-    const user = await collection.findOne({ email });
+    const user = await findOne({ email });
 
     expect(user.password).toBe(undefined);
     expect(password).not.toBe(user.passwordHash);

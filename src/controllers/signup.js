@@ -1,12 +1,12 @@
 const bcrypt = require('bcrypt');
 
-const { DB } = require('../mongo');
+const { findOne, insertOne } = require('../models/users');
+
 const signupSchema = require('../validators/signup');
 
-const table = 'Users';
 const saltRounds = 11;
 
-const emailTaken = ({ email }) => DB().collection(table).findOne({ email });
+const emailTaken = ({ email }) => findOne({ email });
 
 const signup = async (credentials) => {
   await signupSchema.validate(credentials);
@@ -19,10 +19,7 @@ const signup = async (credentials) => {
 
   const passwordHash = await bcrypt.hash(password, saltRounds);
 
-  return DB().collection(table).insertOne({ email, passwordHash });
+  return insertOne({ email, passwordHash });
 };
 
-module.exports = {
-  table,
-  signup,
-};
+module.exports = signup;

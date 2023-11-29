@@ -1,4 +1,4 @@
-const { initDB, connectDB, closeDB } = require('./mongo');
+const { initDB, connectDB, closeDB } = require('./db');
 
 initDB();
 

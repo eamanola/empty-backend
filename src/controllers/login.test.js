@@ -6,11 +6,16 @@ const {
   initDB,
   connectDB,
   closeDB,
-  DB,
-} = require('../mongo');
+} = require('../db');
 
-const { signup } = require('./signup');
-const { login, table } = require('./login');
+const {
+  deleteMany,
+  count,
+} = require('../models/users');
+
+const signup = require('./signup');
+
+const login = require('./login');
 
 jest.mock('../config', () => ({ SECRET: 'shhhhh' }));
 
@@ -30,8 +35,7 @@ describe('login', () => {
   });
 
   beforeEach(async () => {
-    const collection = DB().collection(table);
-    await collection.deleteMany({});
+    await deleteMany({});
   });
 
   it('should return a token', async () => {
@@ -48,12 +52,10 @@ describe('login', () => {
   });
 
   it('should require existing user', async () => {
-    const collection = DB().collection(table);
-
     const email = 'foo@example.com';
     const password = '123';
 
-    expect(await collection.countDocuments({ email })).toBe(0);
+    expect(await count({ email })).toBe(0);
 
     try {
       await login({ email, password });
