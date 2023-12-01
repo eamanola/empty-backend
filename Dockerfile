@@ -1,4 +1,4 @@
-#Base ##################################################################################################################
+# Base #################################################################################################################
 FROM node:21-alpine AS prod
 WORKDIR /app
 COPY package.json package-lock.json .
@@ -7,7 +7,8 @@ COPY src src
 USER node
 CMD npm start
 
-#DEV ###################################################################################################################
+# DEV ##################################################################################################################
+# mongodb-memory-server warn on alpine
 FROM node:21 AS base
 WORKDIR /app
 COPY package.json package-lock.json .
@@ -21,6 +22,7 @@ COPY .eslintrc.js .
 RUN npm run lint
 
 FROM lint as test
+# mongodb-memory-server dependencies
 RUN wget http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2_amd64.deb
 RUN dpkg -i libssl1.1_1.1.1f-1ubuntu2_amd64.deb
 RUN npm test

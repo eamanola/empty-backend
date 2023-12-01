@@ -65,7 +65,7 @@ describe('login', () => {
     }
   });
 
-  it('should require correct email', async () => {
+  it('should require correct password', async () => {
     const email = 'foo@example.com';
     const password = '123';
 
