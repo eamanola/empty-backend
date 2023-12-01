@@ -12,17 +12,19 @@ services:
       - mongo
 
     environment:
-      MONGO_URL: mongodb://dbuser:dbpassword@mongo/fullstack-demo
-      SECRET: supersecure
+      MONGO_URL: mongodb://${DB_USERNAME:-dbuser}:${DB_PASSWORD:-dbpassword}@mongo/${DB_NAME:-dbname}
+      SECRET: ${SECRET:-supersecure}
 
   mongo:
     image: mongodb/mongodb-community-server:6.0-ubi8
+
     environment:
-      MONGODB_INITDB_ROOT_USERNAME: root
-      MONGODB_INITDB_ROOT_PASSWORD: supersecure
-      DB_USERNAME: dbuser
-      DB_PASSWORD: dbpassword
-      DB_NAME: fullstack-demo
+      MONGODB_INITDB_ROOT_USERNAME: ${MONGODB_INITDB_ROOT_USERNAME:-root}
+      MONGODB_INITDB_ROOT_PASSWORD: ${MONGODB_INITDB_ROOT_PASSWORD:-rootme}
+      DB_USERNAME: ${DB_USERNAME:-dbuser}
+      DB_PASSWORD: ${DB_PASSWORD:-dbpassword}
+      DB_NAME: ${DB_NAME:-dbname}
+
     volumes:
       - "./mongo-init:/docker-entrypoint-initdb.d:ro"
 

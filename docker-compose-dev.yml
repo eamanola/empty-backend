@@ -1,25 +1,8 @@
 version: "3"
 services:
   app:
-    extends:
-      file: docker-compose-prod.yml
-      service: app
-
     build:
       target: dev
 
-    environment:
-      MONGO_URL: mongodb://devuser:devpassword@mongo/devdb
-
     volumes:
       - ./src:/app/src
-
-  mongo:
-    extends:
-      file: docker-compose-prod.yml
-      service: mongo
-
-    environment:
-      DB_USERNAME: devuser
-      DB_PASSWORD: devpassword
-      DB_NAME: devdb
