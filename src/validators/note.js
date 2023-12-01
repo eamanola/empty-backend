@@ -11,7 +11,6 @@ const noteSchema = newNoteSchema.concat(
     id: string().required(),
     created: date().required(),
     modified: date().required(),
-    owner: string().required(),
   }),
 );
 

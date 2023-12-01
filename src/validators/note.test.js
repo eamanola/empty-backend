@@ -6,6 +6,7 @@ const validNewNote = {
   text: 'foo',
   imageUrl: 'http://example.com',
   public: false,
+  owner: 'owner',
 };
 
 describe('note validation', () => {
@@ -13,7 +14,6 @@ describe('note validation', () => {
     it('should contain a valid new note', async () => {
       const note = {
         id: 'foo',
-        owner: 'bar',
         created: new Date(),
         modified: new Date(),
       };
@@ -27,21 +27,6 @@ describe('note validation', () => {
     it('should be required', async () => {
       const note = {
         ...validNewNote,
-        owner: 'foo',
-        created: new Date(),
-        modified: new Date(),
-      };
-
-      validate(note)
-        .catch(({ name }) => expect(name).toMatch('ValidationError'));
-    });
-  });
-
-  describe('owner', () => {
-    it('should be required', async () => {
-      const note = {
-        ...validNewNote,
-        id: 'foo',
         created: new Date(),
         modified: new Date(),
       };
@@ -56,7 +41,6 @@ describe('note validation', () => {
       const note = {
         ...validNewNote,
         id: 'foo',
-        owner: 'bar',
         modified: new Date(),
       };
 
@@ -68,7 +52,6 @@ describe('note validation', () => {
       const note = {
         ...validNewNote,
         id: 'foo',
-        owner: 'bar',
         created: '123',
         modified: new Date(),
       };
@@ -90,7 +73,6 @@ describe('note validation', () => {
       const note = {
         ...validNewNote,
         id: 'foo',
-        owner: 'bar',
         created: new Date(),
       };
 
@@ -102,7 +84,6 @@ describe('note validation', () => {
       const note = {
         ...validNewNote,
         id: 'foo',
-        owner: 'bar',
         created: new Date(),
         modified: '123',
       };
