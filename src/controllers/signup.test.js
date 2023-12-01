@@ -6,13 +6,11 @@ const {
   initDB,
   connectDB,
   closeDB,
-} = require('../db');
-
-const {
   deleteMany,
   count,
-  findOne,
-} = require('../models/users');
+} = require('../db');
+
+const { findOne, table } = require('../models/users');
 
 const signup = require('./signup');
 const login = require('./login');
@@ -35,14 +33,14 @@ describe('signup', () => {
   });
 
   beforeEach(async () => {
-    await deleteMany({});
+    await deleteMany(table);
   });
 
   it('should create a user', async () => {
     const email = 'foo@example.com';
     const password = '123';
 
-    const before = await count();
+    const before = await count(table);
     try {
       await login({ email, password });
       expect(true).toBe(false);
@@ -55,7 +53,7 @@ describe('signup', () => {
       password,
     });
 
-    const after = await count();
+    const after = await count(table);
     expect(await login({ email, password })).toBeTruthy();
 
     expect(before + 1).toBe(after);
@@ -66,7 +64,7 @@ describe('signup', () => {
 
     await signup({ email, password: '123' });
 
-    const before = await count();
+    const before = await count(table);
     try {
       await signup({ email, password: '123' });
       expect(true).toBe(false);
@@ -74,7 +72,7 @@ describe('signup', () => {
       expect(true).toBe(true);
     }
 
-    const after = await count();
+    const after = await count(table);
 
     expect(before).toBe(after);
   });

@@ -2,18 +2,26 @@ const {
   initDB,
   connectDB,
   closeDB,
-  deleteMany,
-  count,
   findOne,
   insertOne,
+  replaceOne,
+  deleteOne,
+  find,
+
+  deleteMany,
+  count,
 } = require('./mongo');
 
 module.exports = {
   initDB,
   connectDB,
   closeDB,
-  deleteMany: (table, criteria) => deleteMany(table, criteria),
-  count: (table, criteria) => count(table, criteria),
   findOne: (table, criteria) => findOne(table, criteria),
   insertOne: (table, criteria) => insertOne(table, criteria),
+  replaceOne: (table, criteria) => replaceOne(table, criteria),
+  deleteOne: (table, criteria) => deleteOne(table, criteria),
+  find: (table, criteria) => find(table, criteria),
+
+  deleteMany: (table, criteria) => deleteMany(table, criteria),
+  count: (table, criteria) => count(table, criteria),
 };

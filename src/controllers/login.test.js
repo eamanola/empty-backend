@@ -6,12 +6,11 @@ const {
   initDB,
   connectDB,
   closeDB,
-} = require('../db');
-
-const {
   deleteMany,
   count,
-} = require('../models/users');
+} = require('../db');
+
+const { table } = require('../models/users');
 
 const signup = require('./signup');
 
@@ -35,7 +34,7 @@ describe('login', () => {
   });
 
   beforeEach(async () => {
-    await deleteMany({});
+    await deleteMany(table, {});
   });
 
   it('should return a token', async () => {
@@ -55,7 +54,7 @@ describe('login', () => {
     const email = 'foo@example.com';
     const password = '123';
 
-    expect(await count({ email })).toBe(0);
+    expect(await count(table, { email })).toBe(0);
 
     try {
       await login({ email, password });

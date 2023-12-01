@@ -1,19 +1,18 @@
 const {
-  deleteMany,
-  count,
   findOne,
   insertOne,
 } = require('../db');
 
 const userSchema = require('../validators/user');
 
+const table = 'Users';
+
 module.exports = {
-  deleteMany: (criteria) => deleteMany('Users', criteria),
-  count: (criteria) => count('Users', criteria),
-  findOne: (criteria) => findOne('Users', criteria),
+  table,
+  findOne: (criteria) => findOne(table, criteria),
   insertOne: async (user) => {
     await userSchema.validate(user);
 
-    return insertOne('Users', user);
+    return insertOne(table, user);
   },
 };
