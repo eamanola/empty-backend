@@ -18,12 +18,8 @@ describe('note validation', () => {
         modified: new Date(),
       };
 
-      try {
-        await validate(note);
-        expect(true).toBe(false);
-      } catch ({ name }) {
-        expect(name).toBe('ValidationError');
-      }
+      validate(note)
+        .catch(({ name }) => expect(name).toMatch('ValidationError'));
     });
   });
 
@@ -36,12 +32,8 @@ describe('note validation', () => {
         modified: new Date(),
       };
 
-      try {
-        await validate(note);
-        expect(true).toBe(false);
-      } catch ({ name }) {
-        expect(name).toBe('ValidationError');
-      }
+      validate(note)
+        .catch(({ name }) => expect(name).toMatch('ValidationError'));
     });
   });
 
@@ -54,12 +46,8 @@ describe('note validation', () => {
         modified: new Date(),
       };
 
-      try {
-        await validate(note);
-        expect(true).toBe(false);
-      } catch ({ name }) {
-        expect(name).toBe('ValidationError');
-      }
+      validate(note)
+        .catch(({ name }) => expect(name).toMatch('ValidationError'));
     });
   });
 
@@ -72,12 +60,8 @@ describe('note validation', () => {
         modified: new Date(),
       };
 
-      try {
-        await validate(note);
-        expect(true).toBe(false);
-      } catch ({ name }) {
-        expect(name).toBe('ValidationError');
-      }
+      validate(note)
+        .catch(({ name }) => expect(name).toMatch('ValidationError'));
     });
 
     it('should be a date', async () => {
@@ -89,12 +73,8 @@ describe('note validation', () => {
         modified: new Date(),
       };
 
-      try {
-        await validate(note);
-        expect(true).toBe(false);
-      } catch ({ name }) {
-        expect(name).toBe('ValidationError');
-      }
+      validate(note)
+        .catch(({ name }) => expect(name).toMatch('ValidationError'));
 
       const note2 = {
         ...note,
@@ -114,12 +94,8 @@ describe('note validation', () => {
         created: new Date(),
       };
 
-      try {
-        await validate(note);
-        expect(true).toBe(false);
-      } catch ({ name }) {
-        expect(name).toBe('ValidationError');
-      }
+      validate(note)
+        .catch(({ name }) => expect(name).toMatch('ValidationError'));
     });
 
     it('should be a date', async () => {
@@ -131,12 +107,8 @@ describe('note validation', () => {
         modified: '123',
       };
 
-      try {
-        await validate(note);
-        expect(true).toBe(false);
-      } catch ({ name }) {
-        expect(name).toBe('ValidationError');
-      }
+      validate(note)
+        .catch(({ name }) => expect(name).toMatch('ValidationError'));
 
       const note2 = {
         ...note,

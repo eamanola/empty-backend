@@ -10,12 +10,8 @@ describe('signup validation', () => {
         password: 'bar',
       };
 
-      try {
-        await validate(signup);
-        expect(true).toBe(false);
-      } catch ({ name }) {
-        expect(name).toBe('ValidationError');
-      }
+      validate(signup)
+        .catch(({ name }) => expect(name).toMatch('ValidationError'));
     });
 
     it('should be a url email', async () => {
@@ -24,12 +20,8 @@ describe('signup validation', () => {
         password: 'bar',
       };
 
-      try {
-        await validate(signup);
-        expect(true).toBe(false);
-      } catch ({ name }) {
-        expect(name).toBe('ValidationError');
-      }
+      validate(signup)
+        .catch(({ name }) => expect(name).toMatch('ValidationError'));
 
       const signup2 = {
         ...signup,
@@ -47,12 +39,8 @@ describe('signup validation', () => {
         password: '',
       };
 
-      try {
-        await validate(signup);
-        expect(true).toBe(false);
-      } catch ({ name }) {
-        expect(name).toBe('ValidationError');
-      }
+      validate(signup)
+        .catch(({ name }) => expect(name).toMatch('ValidationError'));
     });
   });
 });

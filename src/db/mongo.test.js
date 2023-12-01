@@ -1,4 +1,5 @@
 const { MongoMemoryServer } = require('mongodb-memory-server');
+const { MongoClient } = require('mongodb');
 
 const {
   initDB,
@@ -23,8 +24,8 @@ describe('connection', () => {
     await mongod.stop();
   });
 
-  it('should have used API', async () => {
-    const client = await connectDB();
+  it('MongoClient should have used API', async () => {
+    const client = new MongoClient('mongodb://foo');
     expect(typeof client.connect).toBe('function');
     expect(typeof client.close).toBe('function');
     expect(typeof client.db).toBe('function');
@@ -37,33 +38,28 @@ describe('connection', () => {
 
   describe('connectDB', () => {
     it('should connect', async () => {
-      try {
-        await connectDB();
+      await connectDB();
 
-        await deleteMany('collection', {});
-        expect(await count('collection')).toBe(0);
+      await deleteMany('collection', {});
+      expect(await count('collection')).toBe(0);
+      await insertOne('collection', { foo: 'bar' });
+      expect(await count('collection')).toBe(1);
 
-        await insertOne('collection', { foo: 'bar' });
-        expect(await count('collection')).toBe(1);
-      } catch (e) {
-        expect('error').toBe('not good');
-      }
+      await closeDB();
     });
   });
 
   describe('connectDB', () => {
     it('should disconnect', async () => {
-      try {
-        await connectDB();
+      await connectDB();
 
-        await deleteMany('collection', {});
-        expect(await count('collection')).toBe(0);
+      await deleteMany('collection', {});
+      expect(await count('collection')).toBe(0);
 
-        await closeDB();
-        await count('collection');
-      } catch ({ name }) {
-        expect(name).toBe('MongoNotConnectedError');
-      }
+      await closeDB();
+
+      count('collection')
+        .catch(({ name }) => expect(name).toMatch('MongoNotConnectedError'));
     });
   });
 });

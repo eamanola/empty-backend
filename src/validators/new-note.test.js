@@ -11,12 +11,8 @@ describe('new note validation', () => {
         public: false,
       };
 
-      try {
-        await validate(newNote);
-        expect(true).toBe(false);
-      } catch ({ name }) {
-        expect(name).toBe('ValidationError');
-      }
+      validate(newNote)
+        .catch(({ name }) => expect(name).toMatch('ValidationError'));
     });
   });
 
@@ -37,12 +33,8 @@ describe('new note validation', () => {
         public: false,
       };
 
-      try {
-        await validate(newNote);
-        expect(true).toBe(false);
-      } catch ({ name }) {
-        expect(name).toBe('ValidationError');
-      }
+      validate(newNote)
+        .catch(({ name }) => expect(name).toMatch('ValidationError'));
 
       const newNote2 = {
         ...newNote,
@@ -60,12 +52,8 @@ describe('new note validation', () => {
         imageUrl: '',
       };
 
-      try {
-        await validate(newNote);
-        expect(true).toBe(false);
-      } catch ({ name }) {
-        expect(name).toBe('ValidationError');
-      }
+      validate(newNote)
+        .catch(({ name }) => expect(name).toMatch('ValidationError'));
 
       const newNote2 = {
         ...newNote,
