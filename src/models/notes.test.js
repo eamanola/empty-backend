@@ -6,10 +6,16 @@ const {
   closeDB,
   deleteMany,
   count,
-  findOne,
 } = require('../db');
 
-const notes = require('./notes');
+const {
+  table,
+  insertOne,
+  replaceOne,
+  deleteOne,
+  find,
+  findOne,
+} = require('./notes');
 
 let mongod;
 
@@ -26,7 +32,7 @@ describe('notes model', () => {
     await mongod.stop();
   });
 
-  beforeEach(() => deleteMany(notes.table));
+  beforeEach(() => deleteMany(table));
 
   it('should create one', async () => {
     const newNote = {
@@ -35,10 +41,10 @@ describe('notes model', () => {
       public: false,
     };
 
-    expect(await count(notes.table)).toBe(0);
-    await notes.insertOne(newNote);
-    expect(await count(notes.table)).toBe(1);
-    expect(await findOne(notes.table, newNote)).toBeTruthy();
+    expect(await count(table)).toBe(0);
+    await insertOne(newNote);
+    expect(await count(table)).toBe(1);
+    expect(await findOne(newNote)).toBeTruthy();
   });
 
   it('should replace one', async () => {
@@ -48,20 +54,20 @@ describe('notes model', () => {
       public: false,
     };
 
-    await notes.insertOne(newNote);
-    const insertedNote = await findOne(notes.table, newNote);
+    await insertOne(newNote);
+    const insertedNote = await findOne(newNote);
 
     const modifiedNote = {
       ...insertedNote,
       text: 'bar',
     };
 
-    await notes.replaceOne(modifiedNote);
-    const replacedNote = await findOne(notes.table, { text: modifiedNote.text });
+    await replaceOne(modifiedNote);
+    const replacedNote = await findOne({ text: modifiedNote.text });
 
-    expect(await count(notes.table)).toBe(1);
-    expect(await findOne(notes.table, { text: insertedNote.text })).toBeFalsy();
-    expect(await findOne(notes.table, { text: replacedNote.text })).toBeTruthy();
+    expect(await count(table)).toBe(1);
+    expect(await findOne({ text: insertedNote.text })).toBeFalsy();
+    expect(await findOne({ text: replacedNote.text })).toBeTruthy();
     expect(replacedNote.id).toBeTruthy();
     expect(insertedNote.id).toBe(replacedNote.id);
   });
@@ -73,28 +79,30 @@ describe('notes model', () => {
       public: false,
     };
 
-    await notes.insertOne(newNote);
-    expect(await count(notes.table)).toBe(1);
+    await insertOne(newNote);
+    expect(await count(table)).toBe(1);
 
     try {
-      await notes.deleteOne(null);
+      await deleteOne(null);
+      expect(false).toBe(true);
     } catch (e) {
       expect(true).toBe(true);
     } finally {
-      expect(await count(notes.table)).toBe(1);
+      expect(await count(table)).toBe(1);
     }
 
     try {
-      await notes.deleteOne();
+      await deleteOne();
+      expect(false).toBe(true);
     } catch (e) {
       expect(true).toBe(true);
     } finally {
-      expect(await count(notes.table)).toBe(1);
+      expect(await count(table)).toBe(1);
     }
 
-    const existingNote = await findOne(notes.table, newNote);
-    await notes.deleteOne(existingNote);
-    expect(await count(notes.table)).toBe(0);
+    const existingNote = await findOne(newNote);
+    await deleteOne(existingNote);
+    expect(await count(table)).toBe(0);
   });
 
   it('should find by owner', async () => {
@@ -106,13 +114,13 @@ describe('notes model', () => {
       public: false,
     };
 
-    expect(await count(notes.table)).toBe(0);
-    await notes.insertOne(newNote);
-    await notes.insertOne({ ...newNote, text: 'bar' });
-    await notes.insertOne({ ...newNote, text: 'baz' });
+    expect(await count(table)).toBe(0);
+    await insertOne(newNote);
+    await insertOne({ ...newNote, text: 'bar' });
+    await insertOne({ ...newNote, text: 'baz' });
 
-    const insertedNotes = await notes.find({ owner });
+    const insertedNotes = await find({ owner });
 
-    expect(await count(notes.table)).toBe(insertedNotes.length);
+    expect(await count(table)).toBe(insertedNotes.length);
   });
 });
