@@ -1,6 +1,6 @@
 const signupSchema = require('./signup');
 
-const validate = (newNote) => signupSchema.validate(newNote, { strict: true });
+const validate = (newNote) => signupSchema.validate(newNote);
 
 describe('signup validation', () => {
   describe('email', () => {

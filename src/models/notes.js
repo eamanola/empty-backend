@@ -1,9 +1,9 @@
 const {
-  findOne,
-  insertOne,
-  replaceOne,
-  deleteOne,
-  find,
+  findOne: dbFindOne,
+  insertOne: dbInsertOne,
+  replaceOne: dbReplaceOne,
+  deleteOne: dbDeleteOne,
+  find: dbFind,
 } = require('../db');
 
 const noteSchema = require('../validators/note');
@@ -11,32 +11,43 @@ const newNoteSchema = require('../validators/new-note');
 
 const table = 'Notes';
 
+const insertOne = async (newNote) => {
+  await newNoteSchema.validate(newNote);
+
+  return dbInsertOne(
+    table,
+    {
+      ...newNote,
+      created: new Date(),
+      modified: new Date(),
+    },
+  );
+};
+
+const findOne = (criteria) => dbFindOne(table, criteria);
+
+const find = (criteria) => dbFind(table, criteria);
+
+const replaceOne = async (criteria, replacement) => {
+  await noteSchema.validate(replacement);
+
+  return dbReplaceOne(
+    table,
+    criteria,
+    {
+      ...replacement,
+      modified: new Date(),
+    },
+  );
+};
+
+const deleteOne = (note) => !!note.id && dbDeleteOne(table, note);
+
 module.exports = {
   table,
-  insertOne: async (newNote) => {
-    await newNoteSchema.validate(newNote);
-
-    return insertOne(
-      table,
-      {
-        ...newNote,
-        created: new Date(),
-        modified: new Date(),
-      },
-    );
-  },
-  findOne: (criteria) => findOne(table, criteria),
-  find: (criteria) => find(table, criteria),
-  replaceOne: async (note) => {
-    await noteSchema.validate(note);
-
-    return replaceOne(
-      table,
-      {
-        ...note,
-        modified: new Date(),
-      },
-    );
-  },
-  deleteOne: ({ id }) => deleteOne(table, { id }),
+  insertOne,
+  findOne,
+  find,
+  replaceOne,
+  deleteOne,
 };

@@ -12,6 +12,6 @@ const noteSchema = newNoteSchema.concat(
     created: date().required(),
     modified: date().required(),
   }),
-);
+).noUnknown().strict();
 
 module.exports = noteSchema;

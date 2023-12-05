@@ -9,6 +9,6 @@ const newNoteSchema = object({
   imageUrl: string().url().nullable(),
   public: boolean().required(),
   owner: string().required(),
-});
+}).noUnknown().strict();
 
 module.exports = newNoteSchema;

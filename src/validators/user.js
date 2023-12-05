@@ -6,6 +6,6 @@ const {
 const userSchema = object({
   email: string().email().required(),
   passwordHash: string().required(),
-});
+}).noUnknown().strict();
 
 module.exports = userSchema;

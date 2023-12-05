@@ -1,6 +1,6 @@
 const newNoteSchema = require('./new-note');
 
-const validate = (newNote) => newNoteSchema.validate(newNote, { strict: true });
+const validate = (newNote) => newNoteSchema.validate(newNote);
 
 describe('new note validation', () => {
   describe('text', () => {

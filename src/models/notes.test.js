@@ -62,7 +62,7 @@ describe('notes model', () => {
       text: 'bar',
     };
 
-    await replaceOne(modifiedNote);
+    await replaceOne(insertedNote, modifiedNote);
     const replacedNote = await findOne({ text: modifiedNote.text });
 
     expect(await count(table)).toBe(1);
@@ -73,6 +73,24 @@ describe('notes model', () => {
   });
 
   it('should delete one', async () => {
+    const newNote = {
+      text: 'foo',
+      owner: 'owner',
+      public: false,
+    };
+
+    await insertOne(newNote);
+
+    const existingNote = await findOne(newNote);
+
+    expect(await count(table)).toBe(1);
+
+    await deleteOne(existingNote);
+
+    expect(await count(table)).toBe(0);
+  });
+
+  it('should not delete randomly', async () => {
     const newNote = {
       text: 'foo',
       owner: 'owner',
@@ -100,9 +118,23 @@ describe('notes model', () => {
       expect(await count(table)).toBe(1);
     }
 
-    const existingNote = await findOne(newNote);
-    await deleteOne(existingNote);
-    expect(await count(table)).toBe(0);
+    try {
+      await deleteOne({});
+      expect(false).toBe(true);
+    } catch (e) {
+      expect(true).toBe(true);
+    } finally {
+      expect(await count(table)).toBe(1);
+    }
+
+    try {
+      await deleteOne({ foo: 'bar' });
+      expect(false).toBe(true);
+    } catch (e) {
+      expect(true).toBe(true);
+    } finally {
+      expect(await count(table)).toBe(1);
+    }
   });
 
   it('should find by owner', async () => {

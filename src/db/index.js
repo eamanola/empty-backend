@@ -18,7 +18,7 @@ module.exports = {
   closeDB,
   findOne: (table, criteria) => findOne(table, criteria),
   insertOne: (table, criteria) => insertOne(table, criteria),
-  replaceOne: (table, criteria) => replaceOne(table, criteria),
+  replaceOne: (table, criteria, replacement) => replaceOne(table, criteria, replacement),
   deleteOne: (table, criteria) => deleteOne(table, criteria),
   find: (table, criteria) => find(table, criteria),
 

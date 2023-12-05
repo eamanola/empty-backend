@@ -38,15 +38,15 @@ const insertOne = (collection, criteria) => client
   .collection(collection)
   .insertOne(criteria);
 
-const replaceOne = (collection, { id, ...rest }) => client
+const replaceOne = (collection, criteria, replacement) => client
   .db()
   .collection(collection)
-  .replaceOne({ _id: new ObjectId(id) }, { ...rest });
+  .replaceOne(toMongoId(criteria), toMongoId(replacement));
 
-const deleteOne = (collection, { id }) => client
+const deleteOne = (collection, criteria) => client
   .db()
   .collection(collection)
-  .deleteOne({ _id: new ObjectId(id) });
+  .deleteOne(toMongoId(criteria));
 
 const find = (collection, criteria) => client
   .db()
