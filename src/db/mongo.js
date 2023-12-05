@@ -74,8 +74,6 @@ module.exports = {
   replaceOne,
   deleteOne,
   find,
-
-  /* only for test */
   deleteMany,
   count,
 };

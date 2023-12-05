@@ -1,7 +1,6 @@
 const { encode, decode } = require('./token');
 
-const SECRET = 'shhhhh';
-jest.mock('./config', () => ({ SECRET }));
+jest.mock('./config', () => ({ SECRET: 'shhhhh' }));
 
 describe('token', () => {
   it('should hash object', () => {

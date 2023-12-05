@@ -28,8 +28,6 @@ const {
   remove,
 } = require('./notes');
 
-jest.mock('../config', () => ({ SECRET: 'shhhhh' }));
-
 let mongod;
 
 const getUser = async ({ email } = { email: 'foo@example.com' }) => {

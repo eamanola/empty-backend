@@ -15,7 +15,13 @@ const { findOne, table } = require('../models/users');
 const signup = require('./signup');
 const login = require('./login');
 
-jest.mock('../config', () => ({ SECRET: 'shhhhh' }));
+jest.mock('../config', () => {
+  const actual = jest.requireActual('../config');
+  return {
+    ...actual,
+    SECRET: 'shhhhh',
+  };
+});
 
 let mongod;
 

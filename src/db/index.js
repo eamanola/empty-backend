@@ -1,3 +1,5 @@
+const { NODE_ENV } = require('../config');
+
 const {
   initDB,
   connectDB,
@@ -12,6 +14,8 @@ const {
   count,
 } = require('./mongo');
 
+const isTest = NODE_ENV === 'test';
+
 module.exports = {
   initDB,
   connectDB,
@@ -22,6 +26,6 @@ module.exports = {
   deleteOne: (table, criteria) => deleteOne(table, criteria),
   find: (table, criteria) => find(table, criteria),
 
-  deleteMany: (table, criteria) => deleteMany(table, criteria),
-  count: (table, criteria) => count(table, criteria),
+  deleteMany: (table, criteria) => isTest && deleteMany(table, criteria),
+  count: (table, criteria) => isTest && count(table, criteria),
 };
