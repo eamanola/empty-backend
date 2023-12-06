@@ -4,17 +4,19 @@ const { findOne, insertOne } = require('../models/users');
 
 const signupSchema = require('../validators/signup');
 
+const { emailTakenError } = require('../errors');
+
 const saltRounds = 11;
 
-const emailTaken = ({ email }) => findOne({ email });
+const isEmailTaken = ({ email }) => findOne({ email });
 
 const signup = async (credentials) => {
   await signupSchema.validate(credentials);
 
   const { email, password } = credentials;
 
-  if (await emailTaken({ email })) {
-    throw new Error('email taken');
+  if (await isEmailTaken({ email })) {
+    throw emailTakenError;
   }
 
   const passwordHash = await bcrypt.hash(password, saltRounds);

@@ -6,6 +6,11 @@ const { findOne } = require('../models/users');
 
 const loginSchema = require('../validators/login');
 
+const {
+  userNotFoundError,
+  invalidPasswordError,
+} = require('../errors');
+
 const login = async (credentials) => {
   await loginSchema.validate(credentials);
 
@@ -13,11 +18,11 @@ const login = async (credentials) => {
 
   const user = await findOne({ email });
   if (!user) {
-    throw new Error('User not found');
+    throw userNotFoundError;
   }
 
   if (!await bcrypt.compare(password, user.passwordHash)) {
-    throw new Error('Invalid password');
+    throw invalidPasswordError;
   }
 
   return encodeToken({ email });
