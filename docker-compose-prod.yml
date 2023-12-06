@@ -6,7 +6,7 @@ services:
       target: prod
 
     ports:
-      - "3000:3000"
+      - "${PORT:-3000}:3000"
 
     depends_on:
       - mongo
@@ -14,6 +14,7 @@ services:
     environment:
       MONGO_URL: mongodb://${DB_USERNAME:-dbuser}:${DB_PASSWORD:-dbpassword}@mongo/${DB_NAME:-dbname}
       SECRET: ${SECRET:-supersecure}
+      PORT: 3000
 
   mongo:
     image: mongodb/mongodb-community-server:6.0-ubi8
