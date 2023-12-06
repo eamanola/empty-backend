@@ -1,6 +1,7 @@
 const {
   emailTakenError,
   validationError,
+  unknownError,
 } = require('../errors');
 
 // eslint-disable-next-line no-unused-vars
@@ -9,6 +10,7 @@ const errorHandler = (err, req, res, next) => {
 
   switch (name) {
     case emailTakenError.name:
+    case unknownError.name:
       res.status(status).json({ message });
 
       break;
@@ -18,6 +20,7 @@ const errorHandler = (err, req, res, next) => {
       // eslint-disable-next-line no-console
       console.log(message);
       break;
+
     default:
       // eslint-disable-next-line no-console
       console.log('unhandled error', err);

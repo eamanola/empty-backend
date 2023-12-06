@@ -22,9 +22,16 @@ const validationError = {
   // use yup for message
 };
 
+const unknownError = {
+  status: 500,
+  message: 'Something went wrong.',
+  name: 'unknownError',
+};
+
 module.exports = {
   userNotFoundError,
   invalidPasswordError,
   emailTakenError,
   validationError,
+  unknownError,
 };

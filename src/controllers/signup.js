@@ -4,7 +4,7 @@ const { findOne, insertOne } = require('../models/users');
 
 const signupSchema = require('../validators/signup');
 
-const { emailTakenError } = require('../errors');
+const { emailTakenError, unknownError } = require('../errors');
 
 const saltRounds = 11;
 
@@ -19,9 +19,14 @@ const signup = async (credentials) => {
     throw emailTakenError;
   }
 
-  const passwordHash = await bcrypt.hash(password, saltRounds);
-
-  return insertOne({ email, passwordHash });
+  try {
+    const passwordHash = await bcrypt.hash(password, saltRounds);
+    return insertOne({ email, passwordHash });
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.log(e);
+    throw unknownError;
+  }
 };
 
 module.exports = signup;
