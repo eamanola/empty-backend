@@ -10,7 +10,7 @@ const {
   count,
 } = require('../db');
 
-const { table } = require('../models/users');
+const { table, findOne } = require('../models/users');
 
 const signup = require('./signup');
 
@@ -53,7 +53,9 @@ describe('login', () => {
 
     expect(token).toBeTruthy();
     expect(token).not.toEqual(expect.objectContaining({ email }));
-    expect(decodeToken(token)).toEqual(expect.objectContaining({ email }));
+    expect(await findOne(token)).toBe(null);
+
+    expect(await findOne(decodeToken(token))).toEqual(expect.objectContaining({ email }));
   });
 
   it('should require existing user', async () => {
@@ -82,8 +84,5 @@ describe('login', () => {
     } catch (e) {
       expect(true).toBe(true);
     }
-
-    const token = await login({ email, password });
-    expect(token).toBeTruthy();
   });
 });

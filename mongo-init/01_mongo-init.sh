@@ -8,6 +8,5 @@ db.createUser({
   pwd: '$DB_PASSWORD',
   roles: [{ role: 'readWrite', db: '$DB_NAME' }],
 });
-
 EOF
 

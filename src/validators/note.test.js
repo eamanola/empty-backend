@@ -12,14 +12,21 @@ const validNewNote = {
 describe('note validation', () => {
   describe('new note', () => {
     it('should contain a valid new note', async () => {
-      const note = {
+      const noteMeta = {
         id: 'foo',
         created: new Date(),
         modified: new Date(),
       };
 
-      validate(note)
+      validate(noteMeta)
         .catch(({ name }) => expect(name).toMatch('ValidationError'));
+
+      const fullNote = {
+        ...noteMeta,
+        ...validNewNote,
+      };
+
+      expect(await validate(fullNote)).toEqual(fullNote);
     });
   });
 

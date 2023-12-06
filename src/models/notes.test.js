@@ -35,14 +35,16 @@ describe('notes model', () => {
   beforeEach(() => deleteMany(table));
 
   it('should create one', async () => {
+    expect(await count(table)).toBe(0);
+
     const newNote = {
       text: 'foo',
       owner: 'owner',
       public: false,
     };
 
-    expect(await count(table)).toBe(0);
     await insertOne(newNote);
+
     expect(await count(table)).toBe(1);
     expect(await findOne(newNote)).toBeTruthy();
   });
@@ -53,7 +55,6 @@ describe('notes model', () => {
       owner: 'owner',
       public: false,
     };
-
     await insertOne(newNote);
     const insertedNote = await findOne(newNote);
 
@@ -61,7 +62,6 @@ describe('notes model', () => {
       ...insertedNote,
       text: 'bar',
     };
-
     await replaceOne(insertedNote, modifiedNote);
     const replacedNote = await findOne({ text: modifiedNote.text });
 
@@ -78,9 +78,7 @@ describe('notes model', () => {
       owner: 'owner',
       public: false,
     };
-
     await insertOne(newNote);
-
     const existingNote = await findOne(newNote);
 
     expect(await count(table)).toBe(1);
@@ -96,7 +94,6 @@ describe('notes model', () => {
       owner: 'owner',
       public: false,
     };
-
     await insertOne(newNote);
     expect(await count(table)).toBe(1);
 
@@ -135,6 +132,8 @@ describe('notes model', () => {
     } finally {
       expect(await count(table)).toBe(1);
     }
+
+    expect(await findOne(newNote)).toBeTruthy();
   });
 
   it('should find by owner', async () => {

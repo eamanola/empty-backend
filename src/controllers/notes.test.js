@@ -101,8 +101,7 @@ describe('notes controller', () => {
       await create(user, note);
       const createdNote = await findOne(note);
 
-      const email2 = 'bar@example.com';
-      const user2 = await getUser({ email: email2 });
+      const user2 = await getUser({ email: 'bar@example.com' });
 
       expect(await byId(user, { id: createdNote.id })).toBeTruthy();
       expect(await byId(user2, { id: createdNote.id })).toBeFalsy();
@@ -130,8 +129,7 @@ describe('notes controller', () => {
       const note = { text: 'text', public: false };
       await create(user, note);
 
-      const email2 = 'bar@example.com';
-      const user2 = await getUser({ email: email2 });
+      const user2 = await getUser({ email: 'bar@example.com' });
       await create(user2, note);
 
       expect(await count(notesTable)).toBe(2);
@@ -188,11 +186,10 @@ describe('notes controller', () => {
       await create(user, note);
       const createdNote = await findOne(note);
 
-      const email2 = 'bar@example.com';
-      const user2 = await getUser({ email: email2 });
-
       const newText = 'text2';
       expect(newText).not.toBe(createdNote.text);
+
+      const user2 = await getUser({ email: 'bar@example.com' });
 
       await update(
         user2,
@@ -209,7 +206,7 @@ describe('notes controller', () => {
       const user = await getUser();
       const note = { text: 'text', public: false };
       await create(user, note);
-      const createdNote = await findOne({ ...note });
+      const createdNote = await findOne(note);
 
       expect((await byOwner(user)).length).toBe(1);
 
@@ -224,8 +221,7 @@ describe('notes controller', () => {
       await create(user, note);
       const createdNote = await findOne({ ...note });
 
-      const email2 = 'bar@example.com';
-      const user2 = await getUser({ email: email2 });
+      const user2 = await getUser({ email: 'bar@example.com' });
 
       expect((await byOwner(user)).length).toBe(1);
 

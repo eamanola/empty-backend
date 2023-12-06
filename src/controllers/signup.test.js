@@ -46,7 +46,7 @@ describe('signup', () => {
     const email = 'foo@example.com';
     const password = '123';
 
-    const before = await count(table);
+    expect(await count(table)).toBe(0);
     try {
       await login({ email, password });
       expect(true).toBe(false);
@@ -59,28 +59,24 @@ describe('signup', () => {
       password,
     });
 
-    const after = await count(table);
+    expect(await count(table)).toBe(1);
     expect(await login({ email, password })).toBeTruthy();
-
-    expect(before + 1).toBe(after);
   });
 
   it('should not allow dublicate emails', async () => {
     const email = 'foo@example.com';
 
     await signup({ email, password: '123' });
+    expect(await count(table)).toBe(1);
 
-    const before = await count(table);
     try {
       await signup({ email, password: '123' });
       expect(true).toBe(false);
     } catch (e) {
       expect(true).toBe(true);
+    } finally {
+      expect(await count(table)).toBe(1);
     }
-
-    const after = await count(table);
-
-    expect(before).toBe(after);
   });
 
   it('should hash password', async () => {

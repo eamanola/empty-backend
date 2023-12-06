@@ -13,10 +13,10 @@ const toMongoId = (doc) => {
   return { _id: new ObjectId(id), ...rest };
 };
 
-const fromMongoId = (obj) => {
-  if (!obj) return obj;
+const fromMongoId = (doc) => {
+  if (!doc) return doc;
 
-  const { _id: id, ...rest } = obj;
+  const { _id: id, ...rest } = doc;
   if (!id) return { ...rest };
 
   return { id: String(id), ...rest };
