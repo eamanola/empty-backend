@@ -16,8 +16,15 @@ const emailTakenError = {
   name: 'emailTakenError',
 };
 
+const validationError = {
+  status: 400,
+  name: 'ValidationError',
+  // use yup for message
+};
+
 module.exports = {
   userNotFoundError,
   invalidPasswordError,
   emailTakenError,
+  validationError,
 };
