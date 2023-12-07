@@ -43,8 +43,7 @@ describe('authorization', () => {
     const email = 'foo@example.com';
     const credentials = { email, password: '123' };
     await api.post('/signup').send(credentials);
-    const { body } = await api.post('/login').send(credentials);
-    const { token } = body;
+    const { token } = (await api.post('/login').send(credentials)).body;
 
     const req = { get: (/* authorization */) => `bearer ${token}` };
     const res = {};

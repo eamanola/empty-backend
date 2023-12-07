@@ -23,12 +23,7 @@ const signup = async ({ email, password }) => {
 
   const passwordHash = await bcrypt.hash(password, saltRounds);
 
-  await insertOne({ email, passwordHash });
-
-  return {
-    status: 201,
-    json: { message: 'OK' },
-  };
+  return insertOne({ email, passwordHash });
 };
 
 module.exports = signup;

@@ -29,10 +29,7 @@ const login = async ({ email, password }) => {
 
   const token = encodeToken({ email });
 
-  return {
-    status: 200,
-    json: { token, message: 'OK' },
-  };
+  return token;
 };
 
 module.exports = login;
