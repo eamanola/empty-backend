@@ -1,29 +1,21 @@
 const bcrypt = require('bcrypt');
 
-const { findOne, insertOne } = require('../models/users');
-
-const signupSchema = require('../validators/signup');
-
-const {
-  createParamError,
-  emailTakenError,
-} = require('../errors');
-
 const { info } = require('../logger');
+const { createParamError, emailTakenError } = require('../errors');
+const signupSchema = require('../validators/signup');
+const { findOne, insertOne } = require('../models/users');
 
 const saltRounds = 11;
 
 const isEmailTaken = ({ email }) => findOne({ email });
 
-const signup = async (credentials) => {
+const signup = async ({ email, password }) => {
   try {
-    await signupSchema.validate(credentials);
+    await signupSchema.validate({ email, password });
   } catch (e) {
     info(e);
     throw createParamError(e);
   }
-
-  const { email, password } = credentials;
 
   if (await isEmailTaken({ email })) {
     throw emailTakenError;

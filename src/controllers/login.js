@@ -1,28 +1,22 @@
 const bcrypt = require('bcrypt');
 
 const { encode: encodeToken } = require('../token');
-
-const { findOne } = require('../models/users');
-
-const loginSchema = require('../validators/login');
-
 const { info } = require('../logger');
-
 const {
   createParamError,
   userNotFoundError,
   invalidPasswordError,
 } = require('../errors');
+const { findOne } = require('../models/users');
+const loginSchema = require('../validators/login');
 
-const login = async (credentials) => {
+const login = async ({ email, password }) => {
   try {
-    await loginSchema.validate(credentials);
+    await loginSchema.validate({ email, password });
   } catch (e) {
     info(e);
     throw createParamError(e);
   }
-
-  const { email, password } = credentials;
 
   const user = await findOne({ email });
   if (!user) {
