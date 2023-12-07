@@ -4,8 +4,8 @@ const login = async (req, res, next) => {
   const { body } = req;
 
   try {
-    const token = await controller(body);
-    res.status(200).json({ token, message: 'OK' });
+    const { status, json } = await controller(body);
+    res.status(status).json(json);
   } catch (e) {
     next(e);
   }

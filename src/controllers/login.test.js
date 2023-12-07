@@ -49,7 +49,8 @@ describe('login', () => {
 
     await signup({ email, password });
 
-    const token = await login({ email, password });
+    const { json } = await login({ email, password });
+    const { token } = json;
 
     expect(token).toBeTruthy();
     expect(token).not.toEqual(expect.objectContaining({ email }));

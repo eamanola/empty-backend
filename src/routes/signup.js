@@ -4,8 +4,8 @@ const signup = async (req, res, next) => {
   const { body } = req;
 
   try {
-    await controller(body);
-    res.status(201).json({ message: 'OK' });
+    const { status, json } = await controller(body);
+    res.status(status).json(json);
   } catch (e) {
     next(e);
   }

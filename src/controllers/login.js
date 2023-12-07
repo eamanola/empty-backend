@@ -27,7 +27,12 @@ const login = async ({ email, password }) => {
     throw invalidPasswordError;
   }
 
-  return encodeToken({ email });
+  const token = encodeToken({ email });
+
+  return {
+    status: 200,
+    json: { token, message: 'OK' },
+  };
 };
 
 module.exports = login;
