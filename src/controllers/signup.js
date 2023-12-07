@@ -4,16 +4,24 @@ const { findOne, insertOne } = require('../models/users');
 
 const signupSchema = require('../validators/signup');
 
-const { emailTakenError, unknownError } = require('../errors');
+const {
+  createParamError,
+  emailTakenError,
+} = require('../errors');
 
-const { err } = require('../logger');
+const { info } = require('../logger');
 
 const saltRounds = 11;
 
 const isEmailTaken = ({ email }) => findOne({ email });
 
 const signup = async (credentials) => {
-  await signupSchema.validate(credentials);
+  try {
+    await signupSchema.validate(credentials);
+  } catch (e) {
+    info(e);
+    throw createParamError(e);
+  }
 
   const { email, password } = credentials;
 
@@ -21,13 +29,8 @@ const signup = async (credentials) => {
     throw emailTakenError;
   }
 
-  try {
-    const passwordHash = await bcrypt.hash(password, saltRounds);
-    return insertOne({ email, passwordHash });
-  } catch (e) {
-    err(e);
-    throw unknownError;
-  }
+  const passwordHash = await bcrypt.hash(password, saltRounds);
+  return insertOne({ email, passwordHash });
 };
 
 module.exports = signup;

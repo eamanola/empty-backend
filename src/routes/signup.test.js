@@ -13,7 +13,7 @@ const app = require('../app');
 const { table, findOne } = require('../models/users');
 const {
   emailTakenError,
-  validationError,
+  paramError,
 } = require('../errors');
 
 const api = supertest(app);
@@ -63,13 +63,13 @@ describe('/signup', () => {
     expect(await count(table)).toBe(1);
   });
 
-  it('should throw ValidationError, on invalid params', async () => {
+  it('should throw paramError, on invalid params', async () => {
     expect((await api.post('/signup').send({ email: 'foo', password: '123' })).status)
-      .toBe(validationError.status);
+      .toBe(paramError.status);
     expect((await api.post('/signup').send({ password: '123' })).status)
-      .toBe(validationError.status);
+      .toBe(paramError.status);
     expect((await api.post('/signup').send({ email: 'foo@example.com' })).status)
-      .toBe(validationError.status);
+      .toBe(paramError.status);
     expect(await count(table)).toBe(0);
   });
 });

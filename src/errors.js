@@ -16,22 +16,21 @@ const emailTakenError = {
   name: 'emailTakenError',
 };
 
-const validationError = {
+const paramError = {
   status: 400,
-  name: 'ValidationError',
-  // use yup for message
+  message: 'Invalid parameters',
+  name: 'paramError',
 };
 
-const unknownError = {
-  status: 500,
-  message: 'Something went wrong.',
-  name: 'unknownError',
-};
+const createParamError = ({ message }) => ({
+  ...paramError,
+  message,
+});
 
 module.exports = {
   userNotFoundError,
   invalidPasswordError,
   emailTakenError,
-  validationError,
-  unknownError,
+  paramError,
+  createParamError,
 };

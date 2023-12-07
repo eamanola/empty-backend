@@ -1,15 +1,11 @@
 const {
   emailTakenError,
-  validationError,
-  unknownError,
   userNotFoundError,
   invalidPasswordError,
+  paramError,
 } = require('../errors');
 
-const {
-  info,
-  err: logError,
-} = require('../logger');
+const { err: logError } = require('../logger');
 
 // eslint-disable-next-line no-unused-vars
 const errorHandler = (err, req, res, next) => {
@@ -17,16 +13,11 @@ const errorHandler = (err, req, res, next) => {
 
   switch (name) {
     case emailTakenError.name:
-    case unknownError.name:
     case userNotFoundError.name:
     case invalidPasswordError.name:
+    case paramError.name:
       res.status(status).json({ message });
 
-      break;
-
-    case validationError.name:
-      res.status(validationError.status).json({ message });
-      info(message);
       break;
 
     default:

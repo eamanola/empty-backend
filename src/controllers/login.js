@@ -6,16 +6,21 @@ const { findOne } = require('../models/users');
 
 const loginSchema = require('../validators/login');
 
-const { err } = require('../logger');
+const { info } = require('../logger');
 
 const {
+  createParamError,
   userNotFoundError,
   invalidPasswordError,
-  unknownError,
 } = require('../errors');
 
 const login = async (credentials) => {
-  await loginSchema.validate(credentials);
+  try {
+    await loginSchema.validate(credentials);
+  } catch (e) {
+    info(e);
+    throw createParamError(e);
+  }
 
   const { email, password } = credentials;
 
@@ -28,12 +33,7 @@ const login = async (credentials) => {
     throw invalidPasswordError;
   }
 
-  try {
-    return encodeToken({ email });
-  } catch (e) {
-    err(e);
-    throw unknownError;
-  }
+  return encodeToken({ email });
 };
 
 module.exports = login;

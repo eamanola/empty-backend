@@ -13,7 +13,7 @@ const { decode: decodeToken } = require('../token');
 const {
   userNotFoundError,
   invalidPasswordError,
-  validationError,
+  paramError,
 } = require('../errors');
 
 jest.mock('../config', () => {
@@ -87,7 +87,7 @@ describe('/login', () => {
     expect(response.body.message).toBe(invalidPasswordError.message);
   });
 
-  it('should throw ValidationError, on invalid params', async () => {
+  it('should throw paramError, on invalid params', async () => {
     const credentials = {
       email: 'foo@example.com',
       password: '123',
@@ -95,10 +95,10 @@ describe('/login', () => {
     await api.post('/signup').send(credentials);
 
     expect((await api.post('/login').send({ email: 'foo', password: '123' })).status)
-      .toBe(validationError.status);
+      .toBe(paramError.status);
     expect((await api.post('/login').send({ password: '123' })).status)
-      .toBe(validationError.status);
+      .toBe(paramError.status);
     expect((await api.post('/login').send({ email: 'foo@example.com' })).status)
-      .toBe(validationError.status);
+      .toBe(paramError.status);
   });
 });
