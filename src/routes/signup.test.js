@@ -44,9 +44,7 @@ describe('/signup', () => {
     const response = await api.post('/signup').send(credentials);
 
     expect(response.status).toBe(201);
-
     expect(response.body.message).toBe('OK');
-
     expect(await findOne({ email: credentials.email })).toBeTruthy();
   });
 
