@@ -33,10 +33,14 @@ const findOne = async (collection, criteria) => fromMongoId(
     .findOne(toMongoId(criteria)),
 );
 
-const insertOne = (collection, criteria) => client
-  .db()
-  .collection(collection)
-  .insertOne(criteria);
+const insertOne = async (collection, criteria) => {
+  const { insertedId } = await client
+    .db()
+    .collection(collection)
+    .insertOne(criteria);
+
+  return { id: String(insertedId) };
+};
 
 const replaceOne = (collection, criteria, replacement) => client
   .db()

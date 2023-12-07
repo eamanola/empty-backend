@@ -1,3 +1,5 @@
+const { createParamError } = require('../errors');
+
 const {
   insertOne,
   findOne,
@@ -6,15 +8,23 @@ const {
   deleteOne,
 } = require('../models/notes');
 
-const create = async (user, newNote) => insertOne({
-  ...newNote,
-  owner: user.id,
-});
-
 const byId = async (user, note) => findOne({
   id: note.id,
   owner: user.id,
 });
+
+const create = async (user, newNote) => {
+  try {
+    const { id } = await insertOne({ ...newNote, owner: user.id });
+    return byId(user, { id });
+  } catch (e) {
+    if (e.name === 'ValidationError') {
+      throw createParamError(e);
+    }
+
+    throw e;
+  }
+};
 
 const byOwner = (user) => find({ owner: user.id });
 

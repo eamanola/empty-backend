@@ -6,6 +6,7 @@ const authorization = require('./middlewares/authorization');
 
 const signup = require('./routes/signup');
 const login = require('./routes/login');
+const notes = require('./routes/notes');
 
 const app = express();
 
@@ -16,6 +17,8 @@ app.post('/signup', signup);
 app.post('/login', login);
 
 app.use(authorization);
+
+app.use('/notes', notes);
 
 app.use(errorHandler);
 
