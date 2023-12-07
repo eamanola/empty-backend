@@ -1,15 +1,14 @@
 const { initDB, connectDB, closeDB } = require('./db');
 const app = require('./app');
 const { PORT } = require('./config');
+const { info, err } = require('./logger');
 
 const shutdown = (server) => async () => {
   await closeDB();
-  // eslint-disable-next-line no-console
-  console.log('db connection closed');
+  info('db connection closed');
 
   server.close(() => {
-    // eslint-disable-next-line no-console
-    console.log('server closed');
+    info('server closed');
     process.exit(0);
   });
 };
@@ -18,12 +17,10 @@ const start = async () => {
   initDB();
 
   await connectDB();
-  // eslint-disable-next-line no-console
-  console.log('DB Connected');
+  info('DB Connected');
 
   const server = app.listen(PORT, () => {
-    // eslint-disable-next-line no-console
-    console.log(`Running on port ${PORT}`);
+    info(`Running on port ${PORT}`);
   });
 
   const onExit = shutdown(server);
@@ -35,6 +32,5 @@ const start = async () => {
 try {
   start();
 } catch (e) {
-  // eslint-disable-next-line no-console
-  console.error(e);
+  err(e);
 }

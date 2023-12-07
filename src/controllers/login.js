@@ -6,9 +6,12 @@ const { findOne } = require('../models/users');
 
 const loginSchema = require('../validators/login');
 
+const { err } = require('../logger');
+
 const {
   userNotFoundError,
   invalidPasswordError,
+  unknownError,
 } = require('../errors');
 
 const login = async (credentials) => {
@@ -25,7 +28,12 @@ const login = async (credentials) => {
     throw invalidPasswordError;
   }
 
-  return encodeToken({ email });
+  try {
+    return encodeToken({ email });
+  } catch (e) {
+    err(e);
+    throw unknownError;
+  }
 };
 
 module.exports = login;
