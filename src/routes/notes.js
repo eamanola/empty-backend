@@ -5,6 +5,7 @@ const {
   byId,
   byOwner,
   update,
+  remove,
 } = require('../controllers/notes');
 
 const router = express.Router();
@@ -46,6 +47,17 @@ router.put('/:id', async (req, res, next) => {
   try {
     const { user, body } = req;
     await update(user, body);
+
+    res.status(200).json({ message: 'OK' });
+  } catch (e) {
+    next(e);
+  }
+});
+
+router.delete('/:id', async (req, res, next) => {
+  try {
+    const { user, params } = req;
+    await remove(user, { id: params.id });
 
     res.status(200).json({ message: 'OK' });
   } catch (e) {

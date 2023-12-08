@@ -201,4 +201,20 @@ describe('/notes', () => {
       expect(original).toEqual(insertedNote);
     });
   });
+
+  describe('DELETE /notes/:id', () => {
+    it('should remove a note by id', async () => {
+      const note = await createNote();
+
+      const response = await api
+        .delete(`/notes/${note.id}`)
+        .set({ Authorization: `bearer ${token}` });
+
+      expect(response.status).toBe(200);
+      expect(response.body.message).toBe('OK');
+
+      const deletedNote = await getNote(note.id);
+      expect(deletedNote).toBeFalsy();
+    });
+  });
 });
