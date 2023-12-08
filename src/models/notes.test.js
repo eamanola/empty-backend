@@ -19,6 +19,12 @@ const {
 
 let mongod;
 
+const createNote = async () => {
+  const newNote = { text: 'foo', owner: 'owner', public: false };
+  const { id } = await insertOne(newNote);
+  return findOne({ id });
+};
+
 describe('notes model', () => {
   beforeAll(async () => {
     mongod = await MongoMemoryServer.create();
@@ -37,11 +43,7 @@ describe('notes model', () => {
   it('should create one', async () => {
     expect(await count(table)).toBe(0);
 
-    const newNote = {
-      text: 'foo',
-      owner: 'owner',
-      public: false,
-    };
+    const newNote = { text: 'foo', owner: 'owner', public: false };
 
     await insertOne(newNote);
 
@@ -50,13 +52,7 @@ describe('notes model', () => {
   });
 
   it('should replace one', async () => {
-    const newNote = {
-      text: 'foo',
-      owner: 'owner',
-      public: false,
-    };
-    await insertOne(newNote);
-    const insertedNote = await findOne(newNote);
+    const insertedNote = await createNote();
 
     const modifiedNote = {
       ...insertedNote,
@@ -73,13 +69,7 @@ describe('notes model', () => {
   });
 
   it('should delete one', async () => {
-    const newNote = {
-      text: 'foo',
-      owner: 'owner',
-      public: false,
-    };
-    await insertOne(newNote);
-    const existingNote = await findOne(newNote);
+    const existingNote = await createNote();
 
     expect(await count(table)).toBe(1);
 
@@ -89,12 +79,7 @@ describe('notes model', () => {
   });
 
   it('should not delete randomly', async () => {
-    const newNote = {
-      text: 'foo',
-      owner: 'owner',
-      public: false,
-    };
-    await insertOne(newNote);
+    const { id } = await createNote();
     expect(await count(table)).toBe(1);
 
     try {
@@ -133,17 +118,13 @@ describe('notes model', () => {
       expect(await count(table)).toBe(1);
     }
 
-    expect(await findOne(newNote)).toBeTruthy();
+    expect(await findOne({ id })).toBeTruthy();
   });
 
   it('should find by owner', async () => {
     const owner = 'owner';
 
-    const newNote = {
-      text: 'foo',
-      owner,
-      public: false,
-    };
+    const newNote = { text: 'foo', owner, public: false };
 
     expect(await count(table)).toBe(0);
     await insertOne(newNote);

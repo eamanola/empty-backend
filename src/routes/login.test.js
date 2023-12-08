@@ -1,20 +1,20 @@
 const { MongoMemoryServer } = require('mongodb-memory-server');
 const supertest = require('supertest');
 
+const app = require('../app');
 const {
   initDB,
   connectDB,
   closeDB,
   deleteMany,
 } = require('../db');
-const app = require('../app');
-const { table, findOne } = require('../models/users');
-const { decode: decodeToken } = require('../token');
 const {
   userNotFoundError,
   invalidPasswordError,
   paramError,
 } = require('../errors');
+const { decode: decodeToken } = require('../token');
+const { table, findOne } = require('../models/users');
 
 jest.mock('../config', () => {
   const actual = jest.requireActual('../config');
