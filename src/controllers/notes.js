@@ -16,7 +16,7 @@ const byId = (user, note) => findOne({
 const create = async (user, newNote) => {
   try {
     const { id } = await insertOne({ ...newNote, owner: user.id });
-    return byId(user, { id });
+    return id;
   } catch (e) {
     if (e.name === 'ValidationError') {
       throw createParamError(e);

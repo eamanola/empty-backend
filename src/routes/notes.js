@@ -13,7 +13,8 @@ const router = express.Router();
 router.post('/', async (req, res, next) => {
   try {
     const { body, user } = req;
-    const note = await create(user, body);
+    const id = await create(user, body);
+    const note = await byId(user, { id });
 
     res.status(201).json({ message: 'CREATED', note });
   } catch (e) {
