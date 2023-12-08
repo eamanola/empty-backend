@@ -8,7 +8,7 @@ const {
   deleteOne,
 } = require('../models/notes');
 
-const byId = async (user, note) => findOne({
+const byId = (user, note) => findOne({
   id: note.id,
   owner: user.id,
 });

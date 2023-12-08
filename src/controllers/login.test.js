@@ -46,7 +46,6 @@ describe('login', () => {
   it('should return a token', async () => {
     const email = 'foo@example.com';
     const password = '123';
-
     await signup({ email, password });
 
     const token = await login({ email, password });
@@ -74,7 +73,6 @@ describe('login', () => {
   it('should require correct password', async () => {
     const email = 'foo@example.com';
     const password = '123';
-
     await signup({ email, password });
 
     try {

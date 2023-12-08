@@ -30,10 +30,16 @@ const {
 
 let mongod;
 
-const getUser = async ({ email } = { email: 'foo@example.com' }) => {
+const createUser = async ({ email } = { email: 'foo@example.com' }) => {
   await signup({ email, password: '123' });
 
   return findOneUser({ email });
+};
+
+const createNote = async (user) => {
+  const newNote = { text: 'text', public: false };
+  const { id } = await create(user, newNote);
+  return findOne({ id });
 };
 
 describe('notes controller', () => {
@@ -56,7 +62,7 @@ describe('notes controller', () => {
 
   describe('create', () => {
     it('should create a note', async () => {
-      const user = await getUser();
+      const user = await createUser();
       const note = { text: 'text', public: false };
 
       expect(await count(notesTable)).toBe(0);
@@ -68,7 +74,7 @@ describe('notes controller', () => {
     });
 
     it('should override owner', async () => {
-      const user = await getUser();
+      const user = await createUser();
       const note = { text: 'text', public: false };
 
       const fakeOwner = '1234';
@@ -85,10 +91,8 @@ describe('notes controller', () => {
 
   describe('byId', () => {
     it('should find by id', async () => {
-      const user = await getUser();
-      const note = { text: 'text', public: false };
-      await create(user, note);
-      const createdNote = await findOne(note);
+      const user = await createUser();
+      const createdNote = await createNote(user);
 
       const noteById = await byId(user, { id: createdNote.id });
 
@@ -96,12 +100,10 @@ describe('notes controller', () => {
     });
 
     it('should not return notes of other users', async () => {
-      const user = await getUser();
-      const note = { text: 'text', public: false };
-      await create(user, note);
-      const createdNote = await findOne(note);
+      const user = await createUser();
+      const createdNote = await createNote(user);
 
-      const user2 = await getUser({ email: 'bar@example.com' });
+      const user2 = await createUser({ email: 'bar@example.com' });
 
       expect(await byId(user, { id: createdNote.id })).toBeTruthy();
       expect(await byId(user2, { id: createdNote.id })).toBeFalsy();
@@ -110,13 +112,12 @@ describe('notes controller', () => {
 
   describe('byOwner', () => {
     it('should find all user notes', async () => {
-      const user = await getUser();
-      const note = { text: 'text', public: false };
+      const user = await createUser();
 
       const TIMES = 3;
       const promises = [];
       for (let i = 0; i < TIMES; i += 1) {
-        promises.push(create(user, { ...note, text: `note${i}` }));
+        promises.push(createNote(user));
       }
       await Promise.all(promises);
 
@@ -125,12 +126,11 @@ describe('notes controller', () => {
     });
 
     it('should not return notes of other users', async () => {
-      const user = await getUser();
-      const note = { text: 'text', public: false };
-      await create(user, note);
+      const user = await createUser();
+      await createNote(user);
 
-      const user2 = await getUser({ email: 'bar@example.com' });
-      await create(user2, note);
+      const user2 = await createUser({ email: 'bar@example.com' });
+      await createNote(user2);
 
       expect(await count(notesTable)).toBe(2);
 
@@ -142,10 +142,8 @@ describe('notes controller', () => {
 
   describe('update', () => {
     it('should update a note', async () => {
-      const user = await getUser();
-      const note = { text: 'text', public: false };
-      await create(user, note);
-      const createdNote = await findOne(note);
+      const user = await createUser();
+      const createdNote = await createNote(user);
 
       const newText = 'text2';
       expect(newText).not.toBe(createdNote.text);
@@ -162,10 +160,8 @@ describe('notes controller', () => {
     });
 
     it('should not update owner', async () => {
-      const user = await getUser();
-      const note = { text: 'text', public: false };
-      await create(user, note);
-      const createdNote = await findOne(note);
+      const user = await createUser();
+      const createdNote = await createNote(user);
 
       const fakeOwner = 'foo';
       expect(fakeOwner).not.toBe(createdNote.owner);
@@ -181,10 +177,8 @@ describe('notes controller', () => {
     });
 
     it('should not update modified', async () => {
-      const user = await getUser();
-      const note = { text: 'text', public: false };
-      await create(user, note);
-      const createdNote = await findOne(note);
+      const user = await createUser();
+      const createdNote = await createNote(user);
 
       const modified = 'foo';
       expect(modified).not.toBe(createdNote.modified);
@@ -200,10 +194,8 @@ describe('notes controller', () => {
     });
 
     it('should not update id', async () => {
-      const user = await getUser();
-      const note = { text: 'text', public: false };
-      await create(user, note);
-      const createdNote = await findOne(note);
+      const user = await createUser();
+      const createdNote = await createNote(user);
 
       const id = `ABCDE${createdNote.id.substring(5)}`;
       expect(id).not.toBe(createdNote.id);
@@ -219,15 +211,13 @@ describe('notes controller', () => {
     });
 
     it('should not update notes of other users', async () => {
-      const user = await getUser();
-      const note = { text: 'text', public: false };
-      await create(user, note);
-      const createdNote = await findOne(note);
+      const user = await createUser();
+      const createdNote = await createNote(user);
 
       const newText = 'text2';
       expect(newText).not.toBe(createdNote.text);
 
-      const user2 = await getUser({ email: 'bar@example.com' });
+      const user2 = await createUser({ email: 'bar@example.com' });
 
       await update(
         user2,
@@ -241,10 +231,8 @@ describe('notes controller', () => {
 
   describe('remove', () => {
     it('should remove a note', async () => {
-      const user = await getUser();
-      const note = { text: 'text', public: false };
-      await create(user, note);
-      const createdNote = await findOne(note);
+      const user = await createUser();
+      const createdNote = await createNote(user);
 
       expect((await byOwner(user)).length).toBe(1);
 
@@ -254,12 +242,10 @@ describe('notes controller', () => {
     });
 
     it('should not remove notes of other users', async () => {
-      const user = await getUser();
-      const note = { text: 'text', public: false };
-      await create(user, note);
-      const createdNote = await findOne({ ...note });
+      const user = await createUser();
+      const createdNote = await createNote(user);
 
-      const user2 = await getUser({ email: 'bar@example.com' });
+      const user2 = await createUser({ email: 'bar@example.com' });
 
       expect((await byOwner(user)).length).toBe(1);
 
