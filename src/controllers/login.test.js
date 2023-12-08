@@ -1,16 +1,13 @@
-const { MongoMemoryServer } = require('mongodb-memory-server');
+const {
+  startTestDB,
+  stopTestDB,
+  deleteUsers,
+  countUsers,
+} = require('../test-helper.test');
 
 const { decode: decodeToken } = require('../token');
 
-const {
-  initDB,
-  connectDB,
-  closeDB,
-  deleteMany,
-  count,
-} = require('../db');
-
-const { table, findOne } = require('../models/users');
+const { findOne } = require('../models/users');
 
 const signup = require('./signup');
 
@@ -24,24 +21,12 @@ jest.mock('../config', () => {
   };
 });
 
-let mongod;
-
 describe('login', () => {
-  beforeAll(async () => {
-    mongod = await MongoMemoryServer.create();
-    const uri = mongod.getUri();
-    initDB(uri);
-    await connectDB();
-  });
+  beforeAll(startTestDB);
 
-  afterAll(async () => {
-    await closeDB();
-    await mongod.stop();
-  });
+  afterAll(stopTestDB);
 
-  beforeEach(async () => {
-    await deleteMany(table, {});
-  });
+  beforeEach(deleteUsers);
 
   it('should return a token', async () => {
     const email = 'foo@example.com';
@@ -60,7 +45,7 @@ describe('login', () => {
     const email = 'foo@example.com';
     const password = '123';
 
-    expect(await count(table, { email })).toBe(0);
+    expect(await countUsers({ email })).toBe(0);
 
     try {
       await login({ email, password });

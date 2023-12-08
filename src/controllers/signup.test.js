@@ -1,18 +1,16 @@
 const bcrypt = require('bcrypt');
 
-const { MongoMemoryServer } = require('mongodb-memory-server');
-
 const {
-  initDB,
-  connectDB,
-  closeDB,
-  deleteMany,
-  count,
-} = require('../db');
+  startTestDB,
+  stopTestDB,
+  deleteUsers,
+  countUsers,
+} = require('../test-helper.test');
 
-const { findOne, table } = require('../models/users');
+const { findOne } = require('../models/users');
 
 const signup = require('./signup');
+
 const login = require('./login');
 
 jest.mock('../config', () => {
@@ -23,30 +21,18 @@ jest.mock('../config', () => {
   };
 });
 
-let mongod;
-
 describe('signup', () => {
-  beforeAll(async () => {
-    mongod = await MongoMemoryServer.create();
-    const uri = mongod.getUri();
-    initDB(uri);
-    await connectDB();
-  });
+  beforeAll(startTestDB);
 
-  afterAll(async () => {
-    await closeDB();
-    await mongod.stop();
-  });
+  afterAll(stopTestDB);
 
-  beforeEach(async () => {
-    await deleteMany(table);
-  });
+  beforeEach(deleteUsers);
 
   it('should create a user', async () => {
     const email = 'foo@example.com';
     const password = '123';
 
-    expect(await count(table)).toBe(0);
+    expect(await countUsers()).toBe(0);
     try {
       await login({ email, password });
       expect(true).toBe(false);
@@ -59,7 +45,7 @@ describe('signup', () => {
       password,
     });
 
-    expect(await count(table)).toBe(1);
+    expect(await countUsers()).toBe(1);
     expect(await login({ email, password })).toBeTruthy();
   });
 
@@ -67,7 +53,7 @@ describe('signup', () => {
     const email = 'foo@example.com';
 
     await signup({ email, password: '123' });
-    expect(await count(table)).toBe(1);
+    expect(await countUsers()).toBe(1);
 
     try {
       await signup({ email, password: '123' });
@@ -75,7 +61,7 @@ describe('signup', () => {
     } catch (e) {
       expect(true).toBe(true);
     } finally {
-      expect(await count(table)).toBe(1);
+      expect(await countUsers()).toBe(1);
     }
   });
 

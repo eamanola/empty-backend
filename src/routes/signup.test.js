@@ -1,39 +1,29 @@
-const { MongoMemoryServer } = require('mongodb-memory-server');
 const supertest = require('supertest');
 
-const {
-  initDB,
-  connectDB,
-  closeDB,
-  deleteMany,
-  count,
-} = require('../db');
-
 const app = require('../app');
-const { table, findOne } = require('../models/users');
+
+const {
+  startTestDB,
+  stopTestDB,
+  deleteUsers,
+  countUsers,
+} = require('../test-helper.test');
+
 const {
   emailTakenError,
   paramError,
 } = require('../errors');
 
+const { findOne } = require('../models/users');
+
 const api = supertest(app);
 
-let mongod;
-
 describe('/signup', () => {
-  beforeAll(async () => {
-    mongod = await MongoMemoryServer.create();
-    const uri = mongod.getUri();
-    initDB(uri);
-    await connectDB();
-  });
+  beforeAll(startTestDB);
 
-  afterAll(async () => {
-    await closeDB();
-    await mongod.stop();
-  });
+  afterAll(stopTestDB);
 
-  beforeEach(() => deleteMany(table));
+  beforeEach(deleteUsers);
 
   it('should return 201 OK', async () => {
     const credentials = {
@@ -60,7 +50,7 @@ describe('/signup', () => {
 
     expect(response.status).toBe(emailTakenError.status);
     expect(response.body.message).toBe(emailTakenError.message);
-    expect(await count(table)).toBe(1);
+    expect(await countUsers()).toBe(1);
   });
 
   it('should throw paramError, on invalid params', async () => {
@@ -70,6 +60,6 @@ describe('/signup', () => {
       .toBe(paramError.status);
     expect((await api.post('/signup').send({ email: 'foo@example.com' })).status)
       .toBe(paramError.status);
-    expect(await count(table)).toBe(0);
+    expect(await countUsers()).toBe(0);
   });
 });

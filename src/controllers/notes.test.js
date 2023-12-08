@@ -1,24 +1,13 @@
-const { MongoMemoryServer } = require('mongodb-memory-server');
-
 const {
-  initDB,
-  connectDB,
-  closeDB,
-  deleteMany,
-  count,
-} = require('../db');
+  startTestDB,
+  stopTestDB,
+  deleteUsers,
+  deleteNotes,
+  countNotes,
+  createUser,
+} = require('../test-helper.test');
 
-const {
-  table: usersTable,
-  findOne: findOneUser,
-} = require('../models/users');
-
-const {
-  table: notesTable,
-  findOne,
-} = require('../models/notes');
-
-const signup = require('./signup');
+const { findOne } = require('../models/notes');
 
 const {
   create,
@@ -28,14 +17,6 @@ const {
   remove,
 } = require('./notes');
 
-let mongod;
-
-const createUser = async ({ email } = { email: 'foo@example.com' }) => {
-  await signup({ email, password: '123' });
-
-  return findOneUser({ email });
-};
-
 const createNote = async (user) => {
   const newNote = { text: 'text', public: false };
   const { id } = await create(user, newNote);
@@ -43,21 +24,13 @@ const createNote = async (user) => {
 };
 
 describe('notes controller', () => {
-  beforeAll(async () => {
-    mongod = await MongoMemoryServer.create();
-    const uri = mongod.getUri();
-    initDB(uri);
-    await connectDB();
-  });
+  beforeAll(startTestDB);
 
-  afterAll(async () => {
-    await closeDB();
-    await mongod.stop();
-  });
+  afterAll(stopTestDB);
 
   beforeEach(async () => {
-    await deleteMany(usersTable);
-    await deleteMany(notesTable);
+    await deleteUsers();
+    await deleteNotes();
   });
 
   describe('create', () => {
@@ -65,11 +38,11 @@ describe('notes controller', () => {
       const user = await createUser();
       const note = { text: 'text', public: false };
 
-      expect(await count(notesTable)).toBe(0);
+      expect(await countNotes()).toBe(0);
 
       await create(user, note);
 
-      expect(await count(notesTable)).toBe(1);
+      expect(await countNotes()).toBe(1);
       expect(await findOne(note)).toBeTruthy();
     });
 
@@ -132,7 +105,7 @@ describe('notes controller', () => {
       const user2 = await createUser({ email: 'bar@example.com' });
       await createNote(user2);
 
-      expect(await count(notesTable)).toBe(2);
+      expect(await countNotes()).toBe(2);
 
       const userNotes = await byOwner(user);
 

@@ -1,23 +1,17 @@
-const { MongoMemoryServer } = require('mongodb-memory-server');
+const {
+  startTestDB,
+  stopTestDB,
+  deleteNotes,
+  countNotes,
+} = require('../test-helper.test');
 
 const {
-  initDB,
-  connectDB,
-  closeDB,
-  deleteMany,
-  count,
-} = require('../db');
-
-const {
-  table,
   insertOne,
   replaceOne,
   deleteOne,
   find,
   findOne,
 } = require('./notes');
-
-let mongod;
 
 const createNote = async () => {
   const newNote = { text: 'foo', owner: 'owner', public: false };
@@ -26,28 +20,20 @@ const createNote = async () => {
 };
 
 describe('notes model', () => {
-  beforeAll(async () => {
-    mongod = await MongoMemoryServer.create();
-    const uri = mongod.getUri();
-    initDB(uri);
-    await connectDB();
-  });
+  beforeAll(startTestDB);
 
-  afterAll(async () => {
-    await closeDB();
-    await mongod.stop();
-  });
+  afterAll(stopTestDB);
 
-  beforeEach(() => deleteMany(table));
+  beforeEach(deleteNotes);
 
   it('should create one', async () => {
-    expect(await count(table)).toBe(0);
+    expect(await countNotes()).toBe(0);
 
     const newNote = { text: 'foo', owner: 'owner', public: false };
 
     await insertOne(newNote);
 
-    expect(await count(table)).toBe(1);
+    expect(await countNotes()).toBe(1);
     expect(await findOne(newNote)).toBeTruthy();
   });
 
@@ -61,7 +47,7 @@ describe('notes model', () => {
     await replaceOne(insertedNote, modifiedNote);
     const replacedNote = await findOne({ text: modifiedNote.text });
 
-    expect(await count(table)).toBe(1);
+    expect(await countNotes()).toBe(1);
     expect(await findOne({ text: insertedNote.text })).toBeFalsy();
     expect(await findOne({ text: replacedNote.text })).toBeTruthy();
     expect(replacedNote.id).toBeTruthy();
@@ -71,16 +57,16 @@ describe('notes model', () => {
   it('should delete one', async () => {
     const existingNote = await createNote();
 
-    expect(await count(table)).toBe(1);
+    expect(await countNotes()).toBe(1);
 
     await deleteOne(existingNote);
 
-    expect(await count(table)).toBe(0);
+    expect(await countNotes()).toBe(0);
   });
 
   it('should not delete randomly', async () => {
     const { id } = await createNote();
-    expect(await count(table)).toBe(1);
+    expect(await countNotes()).toBe(1);
 
     try {
       await deleteOne(null);
@@ -88,7 +74,7 @@ describe('notes model', () => {
     } catch (e) {
       expect(true).toBe(true);
     } finally {
-      expect(await count(table)).toBe(1);
+      expect(await countNotes()).toBe(1);
     }
 
     try {
@@ -97,7 +83,7 @@ describe('notes model', () => {
     } catch (e) {
       expect(true).toBe(true);
     } finally {
-      expect(await count(table)).toBe(1);
+      expect(await countNotes()).toBe(1);
     }
 
     try {
@@ -106,7 +92,7 @@ describe('notes model', () => {
     } catch (e) {
       expect(true).toBe(true);
     } finally {
-      expect(await count(table)).toBe(1);
+      expect(await countNotes()).toBe(1);
     }
 
     try {
@@ -115,7 +101,7 @@ describe('notes model', () => {
     } catch (e) {
       expect(true).toBe(true);
     } finally {
-      expect(await count(table)).toBe(1);
+      expect(await countNotes()).toBe(1);
     }
 
     expect(await findOne({ id })).toBeTruthy();
@@ -126,13 +112,13 @@ describe('notes model', () => {
 
     const newNote = { text: 'foo', owner, public: false };
 
-    expect(await count(table)).toBe(0);
+    expect(await countNotes()).toBe(0);
     await insertOne(newNote);
     await insertOne({ ...newNote, text: 'bar' });
     await insertOne({ ...newNote, text: 'baz' });
 
     const insertedNotes = await find({ owner });
 
-    expect(await count(table)).toBe(insertedNotes.length);
+    expect(await countNotes()).toBe(insertedNotes.length);
   });
 });

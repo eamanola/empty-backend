@@ -1,16 +1,17 @@
-const { MongoMemoryServer } = require('mongodb-memory-server');
 const supertest = require('supertest');
 
 const {
-  initDB,
-  connectDB,
-  closeDB,
-  deleteMany,
-} = require('../db');
+  startTestDB,
+  stopTestDB,
+  deleteNotes,
+} = require('../test-helper.test');
+
 const app = require('../app');
-const { table } = require('../models/notes');
+
 const { findOne: findOneUser } = require('../models/users');
+
 const { paramError } = require('../errors');
+
 const { decode } = require('../token');
 
 jest.mock('../config', () => {
@@ -23,7 +24,6 @@ jest.mock('../config', () => {
 
 const api = supertest(app);
 
-let mongod;
 let token;
 
 const getToken = async (email = 'foo@example.com') => {
@@ -60,19 +60,14 @@ const getNote = async (id) => {
 
 describe('/notes', () => {
   beforeAll(async () => {
-    mongod = await MongoMemoryServer.create();
-    const uri = mongod.getUri();
-    initDB(uri);
-    await connectDB();
+    await startTestDB();
+
     token = await getToken();
   });
 
-  afterAll(async () => {
-    await closeDB();
-    await mongod.stop();
-  });
+  afterAll(stopTestDB);
 
-  beforeEach(() => deleteMany(table));
+  beforeEach(deleteNotes);
 
   describe('POST /notes', () => {
     it('should create a note', async () => {

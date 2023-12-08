@@ -1,14 +1,11 @@
-const { MongoMemoryServer } = require('mongodb-memory-server');
 const supertest = require('supertest');
 
 const {
-  initDB,
-  connectDB,
-  closeDB,
-  deleteMany,
-} = require('../db');
+  startTestDB,
+  stopTestDB,
+  deleteUsers,
+} = require('../test-helper.test');
 const app = require('../app');
-const { table } = require('../models/users');
 
 const authorization = require('./authorization');
 
@@ -22,22 +19,12 @@ jest.mock('../config', () => {
 
 const api = supertest(app);
 
-let mongod;
-
 describe('authorization', () => {
-  beforeAll(async () => {
-    mongod = await MongoMemoryServer.create();
-    const uri = mongod.getUri();
-    initDB(uri);
-    await connectDB();
-  });
+  beforeAll(startTestDB);
 
-  afterAll(async () => {
-    await closeDB();
-    await mongod.stop();
-  });
+  afterAll(stopTestDB);
 
-  beforeEach(() => deleteMany(table));
+  beforeEach(deleteUsers);
 
   it('should add user to request', async () => {
     const email = 'foo@example.com';

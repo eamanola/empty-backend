@@ -1,20 +1,22 @@
-const { MongoMemoryServer } = require('mongodb-memory-server');
 const supertest = require('supertest');
 
 const app = require('../app');
+
 const {
-  initDB,
-  connectDB,
-  closeDB,
-  deleteMany,
-} = require('../db');
+  startTestDB,
+  stopTestDB,
+  deleteUsers,
+} = require('../test-helper.test');
+
 const {
   userNotFoundError,
   invalidPasswordError,
   paramError,
 } = require('../errors');
+
 const { decode: decodeToken } = require('../token');
-const { table, findOne } = require('../models/users');
+
+const { findOne } = require('../models/users');
 
 jest.mock('../config', () => {
   const actual = jest.requireActual('../config');
@@ -26,22 +28,12 @@ jest.mock('../config', () => {
 
 const api = supertest(app);
 
-let mongod;
-
 describe('/login', () => {
-  beforeAll(async () => {
-    mongod = await MongoMemoryServer.create();
-    const uri = mongod.getUri();
-    initDB(uri);
-    await connectDB();
-  });
+  beforeAll(startTestDB);
 
-  afterAll(async () => {
-    await closeDB();
-    await mongod.stop();
-  });
+  afterAll(stopTestDB);
 
-  beforeEach(() => deleteMany(table));
+  beforeEach(deleteUsers);
 
   it('should return 200 OK with a token', async () => {
     const email = 'foo@example.com';
