@@ -1,12 +1,12 @@
 const bcrypt = require('bcrypt');
 
-const { encode: encodeToken } = require('../token');
-const { info } = require('../logger');
 const {
   createParamError,
   userNotFoundError,
   invalidPasswordError,
 } = require('../errors');
+const { info } = require('../logger');
+const { encode: encodeToken } = require('../token');
 const { findOne } = require('../models/users');
 const loginSchema = require('../validators/login');
 

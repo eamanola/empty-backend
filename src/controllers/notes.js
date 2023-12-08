@@ -28,10 +28,20 @@ const create = async (user, newNote) => {
 
 const byOwner = (user) => find({ owner: user.id });
 
-const update = (user, note) => replaceOne(
-  { id: note.id, owner: user.id },
-  { ...note, owner: user.id },
-);
+const update = async (user, note) => {
+  try {
+    await replaceOne(
+      { id: note.id, owner: user.id },
+      { ...note, owner: user.id },
+    );
+  } catch (e) {
+    if (e.name === 'ValidationError') {
+      throw createParamError(e);
+    }
+
+    throw e;
+  }
+};
 
 const remove = (user, note) => deleteOne({ id: note.id, owner: user.id });
 

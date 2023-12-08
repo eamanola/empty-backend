@@ -163,6 +163,23 @@ describe('/notes', () => {
       expect(updatedNote.text).toBe(modifiedNote.text);
     });
 
+    it('should throw paramError, on invalid params', async () => {
+      const insertedNote = await createNote();
+
+      const invalidNote = { ...insertedNote, text: '' };
+      expect(invalidNote.text).not.toBe(insertedNote.text);
+
+      const response = await api
+        .put(`/notes/${insertedNote.id}`)
+        .set({ Authorization: `bearer ${token}` })
+        .send(invalidNote);
+
+      expect(response.status).toBe(paramError.status);
+
+      const updatedNote = await getNote(insertedNote.id);
+      expect(updatedNote).toEqual(insertedNote);
+    });
+
     it('should not update owner, or modified', async () => {
       const insertedNote = await createNote();
 
