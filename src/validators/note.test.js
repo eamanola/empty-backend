@@ -14,7 +14,6 @@ describe('note validation', () => {
     it('should contain a valid new note', async () => {
       const noteMeta = {
         id: 'foo',
-        created: new Date(),
         modified: new Date(),
       };
 
@@ -34,44 +33,11 @@ describe('note validation', () => {
     it('should be required', async () => {
       const note = {
         ...validNewNote,
-        created: new Date(),
         modified: new Date(),
       };
 
       validate(note)
         .catch(({ name }) => expect(name).toMatch('ValidationError'));
-    });
-  });
-
-  describe('created', () => {
-    it('should be required', async () => {
-      const note = {
-        ...validNewNote,
-        id: 'foo',
-        modified: new Date(),
-      };
-
-      validate(note)
-        .catch(({ name }) => expect(name).toMatch('ValidationError'));
-    });
-
-    it('should be a date', async () => {
-      const note = {
-        ...validNewNote,
-        id: 'foo',
-        created: '123',
-        modified: new Date(),
-      };
-
-      validate(note)
-        .catch(({ name }) => expect(name).toMatch('ValidationError'));
-
-      const note2 = {
-        ...note,
-        created: new Date(),
-      };
-
-      expect(await validate(note2)).toEqual(note2);
     });
   });
 
@@ -80,7 +46,6 @@ describe('note validation', () => {
       const note = {
         ...validNewNote,
         id: 'foo',
-        created: new Date(),
       };
 
       validate(note)
@@ -91,7 +56,6 @@ describe('note validation', () => {
       const note = {
         ...validNewNote,
         id: 'foo',
-        created: new Date(),
         modified: '123',
       };
 

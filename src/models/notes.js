@@ -18,7 +18,6 @@ const insertOne = async (newNote) => {
     table,
     {
       ...newNote,
-      created: new Date(),
       modified: new Date(),
     },
   );
