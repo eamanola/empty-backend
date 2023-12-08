@@ -28,15 +28,17 @@ const findOne = (criteria) => dbFindOne(table, criteria);
 const find = (criteria) => dbFind(table, criteria);
 
 const replaceOne = async (criteria, replacement) => {
-  await noteSchema.validate(replacement);
+  const timeStamped = {
+    ...replacement,
+    modified: new Date(),
+  };
+
+  await noteSchema.validate(timeStamped);
 
   return dbReplaceOne(
     table,
     criteria,
-    {
-      ...replacement,
-      modified: new Date(),
-    },
+    timeStamped,
   );
 };
 

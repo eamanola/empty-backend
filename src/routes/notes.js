@@ -1,6 +1,11 @@
 const express = require('express');
 
-const { create, byId, byOwner } = require('../controllers/notes');
+const {
+  create,
+  byId,
+  byOwner,
+  update,
+} = require('../controllers/notes');
 
 const router = express.Router();
 
@@ -32,6 +37,17 @@ router.get('/', async (req, res, next) => {
     const notes = await byOwner(user);
 
     res.status(200).json({ message: 'OK', notes });
+  } catch (e) {
+    next(e);
+  }
+});
+
+router.put('/:id', async (req, res, next) => {
+  try {
+    const { user, body } = req;
+    await update(user, body);
+
+    res.status(200).json({ message: 'OK' });
   } catch (e) {
     next(e);
   }
