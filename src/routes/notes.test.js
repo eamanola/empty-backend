@@ -34,6 +34,30 @@ const getToken = async (email = 'foo@example.com') => {
 
   return aToken;
 };
+
+const createNote = async ({ text = 'text' } = {}) => {
+  const newNote = { text, public: false };
+
+  const { note } = (
+    await api
+      .post('/notes')
+      .set({ Authorization: `bearer ${token}` })
+      .send(newNote)
+  ).body;
+
+  return note;
+};
+
+const getNote = async (id) => {
+  const { note } = (
+    await api
+      .get(`/notes/${id}`)
+      .set({ Authorization: `bearer ${token}` })
+  ).body;
+
+  return note;
+};
+
 describe('/notes', () => {
   beforeAll(async () => {
     mongod = await MongoMemoryServer.create();
@@ -82,67 +106,47 @@ describe('/notes', () => {
 
   describe('GET /notes/:id', () => {
     it('should return a note by id', async () => {
-      const newNote = { text: 'text', public: false };
-
-      const { id } = (
-        await api
-          .post('/notes')
-          .set({ Authorization: `bearer ${token}` })
-          .send(newNote)
-      ).body.note;
+      const note = await createNote();
 
       const response = await api
-        .get(`/notes/${id}`)
+        .get(`/notes/${note.id}`)
         .set({ Authorization: `bearer ${token}` });
 
       expect(response.status).toBe(200);
       expect(response.body.message).toBe('OK');
+
+      const { modified, ...noteData } = note;
       expect(response.body.note)
-        .toEqual(expect.objectContaining({ ...newNote, id }));
+        .toEqual(expect.objectContaining({ ...noteData }));
     });
   });
 
   describe('GET /notes', () => {
     it('should return all user notes', async () => {
-      const newNote = { text: 'text', public: false };
+      const TIMES = 3;
+      const promises = [];
+      for (let i = 0; i < TIMES; i += 1) {
+        promises.push(createNote());
+      }
+      await Promise.all(promises);
 
-      await api
-        .post('/notes')
-        .set({ Authorization: `bearer ${token}` })
-        .send(newNote);
+      const { notes } = (
+        await api
+          .get('/notes')
+          .set({ Authorization: `bearer ${token}` })
+      ).body;
 
-      await api
-        .post('/notes')
-        .set({ Authorization: `bearer ${token}` })
-        .send(newNote);
-
-      await api
-        .post('/notes')
-        .set({ Authorization: `bearer ${token}` })
-        .send(newNote);
-
-      const response = await api
-        .get('/notes')
-        .set({ Authorization: `bearer ${token}` });
-
-      expect(response.body.notes.length).toBe(3);
+      expect(notes.length).toBe(TIMES);
 
       const user = await findOneUser(decode(token));
 
-      expect(response.body.notes.every(({ owner }) => owner === user.id)).toBe(true);
+      expect(notes.every(({ owner }) => owner === user.id)).toBe(true);
     });
   });
 
   describe('PUT /notes/:id', () => {
     it('should update a note', async () => {
-      const newNote = { text: 'text', public: false };
-
-      const { note: insertedNote } = (
-        await api
-          .post('/notes')
-          .set({ Authorization: `bearer ${token}` })
-          .send(newNote)
-      ).body;
+      const insertedNote = await createNote();
 
       const modifiedNote = { ...insertedNote, text: 'foo' };
       expect(modifiedNote.text).not.toBe(insertedNote.text);
@@ -155,23 +159,12 @@ describe('/notes', () => {
       expect(response.status).toBe(200);
       expect(response.body.message).toBe('OK');
 
-      const { note: updatedNote } = (
-        await api
-          .get(`/notes/${insertedNote.id}`)
-          .set({ Authorization: `bearer ${token}` })
-      ).body;
+      const updatedNote = await getNote(insertedNote.id);
       expect(updatedNote.text).toBe(modifiedNote.text);
     });
 
     it('should not update owner, or modified', async () => {
-      const newNote = { text: 'text', public: false };
-
-      const { note: insertedNote } = (
-        await api
-          .post('/notes')
-          .set({ Authorization: `bearer ${token}` })
-          .send(newNote)
-      ).body;
+      const insertedNote = await createNote();
 
       const modifiedNote = { ...insertedNote, owner: 'foo', modified: 'bar' };
       expect(modifiedNote.owner).not.toBe(insertedNote.owner);
@@ -182,25 +175,13 @@ describe('/notes', () => {
         .set({ Authorization: `bearer ${token}` })
         .send(modifiedNote);
 
-      const { note: updatedNote } = (
-        await api
-          .get(`/notes/${insertedNote.id}`)
-          .set({ Authorization: `bearer ${token}` })
-      ).body;
-
+      const updatedNote = await getNote(insertedNote.id);
       expect(updatedNote.owner).toBe(insertedNote.owner);
       expect(updatedNote.modified).not.toBe(modifiedNote.modified);
     });
 
     it('should not update id', async () => {
-      const newNote = { text: 'text', public: false };
-
-      const { note: insertedNote } = (
-        await api
-          .post('/notes')
-          .set({ Authorization: `bearer ${token}` })
-          .send(newNote)
-      ).body;
+      const insertedNote = await createNote();
 
       const modifiedNote = {
         ...insertedNote,
@@ -213,18 +194,10 @@ describe('/notes', () => {
         .set({ Authorization: `bearer ${token}` })
         .send(modifiedNote);
 
-      const { note: updatedNote } = (
-        await api
-          .get(`/notes/${modifiedNote.id}`)
-          .set({ Authorization: `bearer ${token}` })
-      ).body;
+      const updatedNote = await getNote(modifiedNote.id);
       expect(updatedNote).toBeFalsy();
 
-      const { note: original } = (
-        await api
-          .get(`/notes/${insertedNote.id}`)
-          .set({ Authorization: `bearer ${token}` })
-      ).body;
+      const original = await getNote(insertedNote.id);
       expect(original).toEqual(insertedNote);
     });
   });
