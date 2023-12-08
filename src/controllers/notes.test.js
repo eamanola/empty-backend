@@ -180,6 +180,44 @@ describe('notes controller', () => {
       expect(updatedNote.owner).toBe(createdNote.owner);
     });
 
+    it('should not update modified', async () => {
+      const user = await getUser();
+      const note = { text: 'text', public: false };
+      await create(user, note);
+      const createdNote = await findOne(note);
+
+      const modified = 'foo';
+      expect(modified).not.toBe(createdNote.modified);
+
+      await update(
+        user,
+        { ...createdNote, modified },
+      );
+
+      const updatedNote = await byId(user, { id: createdNote.id });
+
+      expect(updatedNote.modified).not.toBe(modified);
+    });
+
+    it('should not update id', async () => {
+      const user = await getUser();
+      const note = { text: 'text', public: false };
+      await create(user, note);
+      const createdNote = await findOne(note);
+
+      const id = `ABCDE${createdNote.id.substring(5)}`;
+      expect(id).not.toBe(createdNote.id);
+
+      await update(
+        user,
+        { ...createdNote, id },
+      );
+
+      const updatedNote = await byId(user, { id: createdNote.id });
+
+      expect(updatedNote.id).toBe(createdNote.id);
+    });
+
     it('should not update notes of other users', async () => {
       const user = await getUser();
       const note = { text: 'text', public: false };
