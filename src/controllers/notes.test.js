@@ -121,12 +121,13 @@ describe('notes controller', () => {
       const newText = 'text2';
       expect(newText).not.toBe(createdNote.text);
 
-      await update(
+      const updatedId = await update(
         user,
         { ...createdNote, text: newText },
       );
+      expect(updatedId).toBe(createdNote.id);
 
-      const updatedNote = await byId(user, { id: createdNote.id });
+      const updatedNote = await byId(user, { id: updatedId });
 
       expect(updatedNote.text).toBe(newText);
       expect((await byOwner(user)).length).toBe(1);

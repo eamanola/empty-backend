@@ -47,9 +47,10 @@ router.get('/', async (req, res, next) => {
 router.put('/:id', async (req, res, next) => {
   try {
     const { user, body } = req;
-    await update(user, body);
+    const id = await update(user, body);
+    const note = await byId(user, { id });
 
-    res.status(200).json({ message: 'OK' });
+    res.status(200).json({ message: 'OK', note });
   } catch (e) {
     next(e);
   }

@@ -154,6 +154,9 @@ describe('/notes', () => {
       expect(response.status).toBe(200);
       expect(response.body.message).toBe('OK');
 
+      const { modified, ...noteData } = modifiedNote;
+      expect(response.body.note).toEqual(expect.objectContaining(noteData));
+
       const updatedNote = await getNote(insertedNote.id);
       expect(updatedNote.text).toBe(modifiedNote.text);
     });
