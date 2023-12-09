@@ -1,5 +1,7 @@
 const { createParamError } = require('../errors');
 
+const { info } = require('../logger');
+
 const {
   insertOne,
   findOne,
@@ -19,6 +21,7 @@ const create = async (user, newNote) => {
     return id;
   } catch (e) {
     if (e.name === 'ValidationError') {
+      info(e.message);
       throw createParamError(e);
     }
 
@@ -36,6 +39,7 @@ const update = async (user, note) => {
     );
   } catch (e) {
     if (e.name === 'ValidationError') {
+      info(e.message);
       throw createParamError(e);
     }
 

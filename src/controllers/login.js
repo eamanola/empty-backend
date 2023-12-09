@@ -14,7 +14,7 @@ const login = async ({ email, password }) => {
   try {
     await loginSchema.validate({ email, password });
   } catch (e) {
-    info(e);
+    info(e.message);
     throw createParamError(e);
   }
 

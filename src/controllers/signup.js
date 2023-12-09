@@ -13,7 +13,7 @@ const signup = async ({ email, password }) => {
   try {
     await signupSchema.validate({ email, password });
   } catch (e) {
-    info(e);
+    info(e.message);
     throw createParamError(e);
   }
 
