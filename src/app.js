@@ -3,6 +3,7 @@ const cors = require('cors');
 
 const errorHandler = require('./middlewares/error-handler');
 const authorization = require('./middlewares/authorization');
+const requireUser = require('./middlewares/require-user');
 
 const signup = require('./routes/signup');
 const login = require('./routes/login');
@@ -18,7 +19,7 @@ app.post('/login', login);
 
 app.use(authorization);
 
-app.use('/notes', notes);
+app.use('/notes', requireUser, notes);
 
 app.use(errorHandler);
 

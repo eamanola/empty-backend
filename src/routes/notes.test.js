@@ -10,7 +10,7 @@ const app = require('../app');
 
 const { findOne: findOneUser } = require('../models/users');
 
-const { paramError } = require('../errors');
+const { paramError, accessDenied } = require('../errors');
 
 const { decode } = require('../token');
 
@@ -68,6 +68,14 @@ describe('/notes', () => {
   afterAll(stopTestDB);
 
   beforeEach(deleteNotes);
+
+  it('should throw accessDenied, if user missing', async () => {
+    const response = await api
+      .get('/notes');
+
+    expect(response.status).toBe(accessDenied.status);
+    expect(response.body.message).toBe(accessDenied.message);
+  });
 
   describe('POST /notes', () => {
     it('should create a note', async () => {
