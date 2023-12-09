@@ -12,8 +12,8 @@ const router = express.Router();
 
 router.post('/', async (req, res, next) => {
   try {
-    const { body, user } = req;
-    const id = await create(user, body);
+    const { body: newNote, user } = req;
+    const id = await create(user, newNote);
     const note = await byId(user, { id });
 
     res.status(201).json({ message: 'CREATED', note });
@@ -46,8 +46,8 @@ router.get('/', async (req, res, next) => {
 
 router.put('/:id', async (req, res, next) => {
   try {
-    const { user, body } = req;
-    const id = await update(user, body);
+    const { user, body: updatedNote } = req;
+    const id = await update(user, updatedNote);
     const note = await byId(user, { id });
 
     res.status(200).json({ message: 'OK', note });
