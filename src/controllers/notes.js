@@ -12,12 +12,12 @@ const {
 
 const byId = (user, note) => findOne({
   id: note.id,
-  owner: user.id,
+  owner: user.email,
 });
 
 const create = async (user, newNote) => {
   try {
-    const { id } = await insertOne({ ...newNote, owner: user.id });
+    const { id } = await insertOne({ ...newNote, owner: user.email });
     return id;
   } catch (e) {
     if (e.name === 'ValidationError') {
@@ -29,13 +29,13 @@ const create = async (user, newNote) => {
   }
 };
 
-const byOwner = (user) => find({ owner: user.id });
+const byOwner = (user) => find({ owner: user.email });
 
 const update = async (user, note) => {
   try {
     await replaceOne(
-      { id: note.id, owner: user.id },
-      { ...note, owner: user.id },
+      { id: note.id, owner: user.email },
+      { ...note, owner: user.email },
     );
   } catch (e) {
     if (e.name === 'ValidationError') {
@@ -47,7 +47,7 @@ const update = async (user, note) => {
   }
 };
 
-const remove = (user, note) => deleteOne({ id: note.id, owner: user.id });
+const remove = (user, note) => deleteOne({ id: note.id, owner: user.email });
 
 module.exports = {
   create,

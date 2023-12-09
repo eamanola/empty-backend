@@ -58,7 +58,7 @@ describe('notes controller', () => {
         owner: fakeOwner,
       });
 
-      expect((await findOne(note)).owner).toBe(user.id);
+      expect((await findOne(note)).owner).toBe(user.email);
     });
   });
 

@@ -135,7 +135,7 @@ describe('/notes', () => {
 
       const user = await findOneUser(decode(token));
 
-      expect(notes.every(({ owner }) => owner === user.id)).toBe(true);
+      expect(notes.every(({ owner }) => owner === user.email)).toBe(true);
     });
   });
 
