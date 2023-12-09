@@ -1,3 +1,4 @@
+const { accessDenied } = require('../errors');
 const { decode } = require('../token');
 const { findOne } = require('../models/users');
 
@@ -25,7 +26,11 @@ const authorization = async (req, res, next) => {
 
     req.user = user;
   } catch (e) {
-    error = e;
+    if (e.name === 'JsonWebTokenError') {
+      error = accessDenied;
+    } else {
+      error = e;
+    }
   }
 
   next(error);

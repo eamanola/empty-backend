@@ -7,6 +7,8 @@ const {
 } = require('../test-helper.test');
 const app = require('../app');
 
+const { accessDenied } = require('../errors');
+
 const authorization = require('./authorization');
 
 jest.mock('../config', () => {
@@ -44,26 +46,32 @@ describe('authorization', () => {
       .toEqual(expect.objectContaining({ email }));
   });
 
-  it('should not add user, if token is invalid', async () => {
-    const req = { get: (/* authorization */) => 'foo' };
+  it('should not add user, if token is missing', async () => {
+    let error;
+    const req = { get: (/* authorization */) => '' };
     const res = {};
-    const next = () => {};
+    const next = (e) => { error = e; };
 
     expect(req.user).toBeFalsy();
 
     await authorization(req, res, next);
+
+    expect(error).toBeFalsy();
 
     expect(req.user).toBeFalsy();
   });
 
   it('should not add user, if token is invalid bearer', async () => {
+    let error;
     const req = { get: (/* authorization */) => 'bearer foo' };
     const res = {};
-    const next = () => {};
+    const next = (e) => { error = e; };
 
     expect(req.user).toBeFalsy();
 
     await authorization(req, res, next);
+
+    expect(error).toEqual(accessDenied);
 
     expect(req.user).toBeFalsy();
   });

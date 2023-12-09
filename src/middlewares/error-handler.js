@@ -3,6 +3,7 @@ const {
   userNotFoundError,
   invalidPasswordError,
   paramError,
+  accessDenied,
 } = require('../errors');
 
 const { err: logError } = require('../logger');
@@ -16,6 +17,7 @@ const errorHandler = (err, req, res, next) => {
     case userNotFoundError.name:
     case invalidPasswordError.name:
     case paramError.name:
+    case accessDenied.name:
       res.status(status).json({ message });
 
       break;

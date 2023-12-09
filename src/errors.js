@@ -22,6 +22,12 @@ const paramError = {
   name: 'paramError',
 };
 
+const accessDenied = {
+  status: 403,
+  message: 'Access denied',
+  name: 'accessDenied',
+};
+
 const createParamError = ({ message }) => ({
   ...paramError,
   message,
@@ -33,4 +39,5 @@ module.exports = {
   emailTakenError,
   paramError,
   createParamError,
+  accessDenied,
 };
