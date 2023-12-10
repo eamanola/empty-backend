@@ -37,8 +37,6 @@ const update = async (user, note) => {
       { id: note.id, owner: user.email },
       { ...note, owner: user.email },
     );
-
-    return note.id;
   } catch (e) {
     if (e.name === 'ValidationError') {
       info(e.message);
