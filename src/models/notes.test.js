@@ -3,6 +3,7 @@ const {
   stopTestDB,
   deleteNotes,
   countNotes,
+  validNewNote,
 } = require('../test-helper.test');
 
 const {
@@ -13,8 +14,10 @@ const {
   findOne,
 } = require('./notes');
 
+const validNewNoteWithOwner = (owner = 'owner') => ({ ...validNewNote(), owner });
+
 const createNote = async () => {
-  const newNote = { text: 'foo', owner: 'owner', public: false };
+  const newNote = validNewNoteWithOwner();
   const { id } = await insertOne(newNote);
   return findOne({ id });
 };
@@ -29,7 +32,7 @@ describe('notes model', () => {
   it('should create one', async () => {
     expect(await countNotes()).toBe(0);
 
-    const newNote = { text: 'foo', owner: 'owner', public: false };
+    const newNote = validNewNoteWithOwner();
 
     await insertOne(newNote);
 
@@ -70,36 +73,36 @@ describe('notes model', () => {
 
     try {
       await deleteOne(null);
-      expect(false).toBe(true);
+      expect('Should not reach').toBe(true);
     } catch (e) {
-      expect(true).toBe(true);
+      expect(e).toBeTruthy();
     } finally {
       expect(await countNotes()).toBe(1);
     }
 
     try {
       await deleteOne();
-      expect(false).toBe(true);
+      expect('Should not reach').toBe(true);
     } catch (e) {
-      expect(true).toBe(true);
+      expect(e).toBeTruthy();
     } finally {
       expect(await countNotes()).toBe(1);
     }
 
     try {
       await deleteOne({});
-      expect(false).toBe(true);
+      expect('Should not reach').toBe(true);
     } catch (e) {
-      expect(true).toBe(true);
+      expect(e).toBeTruthy();
     } finally {
       expect(await countNotes()).toBe(1);
     }
 
     try {
       await deleteOne({ foo: 'bar' });
-      expect(false).toBe(true);
+      expect('Should not reach').toBe(true);
     } catch (e) {
-      expect(true).toBe(true);
+      expect(e).toBeTruthy();
     } finally {
       expect(await countNotes()).toBe(1);
     }
@@ -110,7 +113,7 @@ describe('notes model', () => {
   it('should find by owner', async () => {
     const owner = 'owner';
 
-    const newNote = { text: 'foo', owner, public: false };
+    const newNote = validNewNoteWithOwner(owner);
 
     expect(await countNotes()).toBe(0);
     await insertOne(newNote);

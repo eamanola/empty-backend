@@ -11,6 +11,7 @@ describe('signup validation', () => {
       };
 
       validate(signup)
+        .then(() => expect('Should not reach').toBe(true))
         .catch(({ name }) => expect(name).toMatch('ValidationError'));
     });
 
@@ -21,6 +22,7 @@ describe('signup validation', () => {
       };
 
       validate(signup)
+        .then(() => expect('Should not reach').toBe(true))
         .catch(({ name }) => expect(name).toMatch('ValidationError'));
 
       const signup2 = {
@@ -40,6 +42,7 @@ describe('signup validation', () => {
       };
 
       validate(signup)
+        .then(() => expect('Should not reach').toBe(true))
         .catch(({ name }) => expect(name).toMatch('ValidationError'));
     });
   });

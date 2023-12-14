@@ -5,7 +5,7 @@ const validate = (note) => noteSchema.validate(note);
 const validNewNote = {
   text: 'foo',
   imageUrl: 'http://example.com',
-  public: false,
+  isPublic: false,
   owner: 'owner',
 };
 
@@ -18,6 +18,7 @@ describe('note validation', () => {
       };
 
       validate(noteMeta)
+        .then(() => expect('Should not reach').toBe(true))
         .catch(({ name }) => expect(name).toMatch('ValidationError'));
 
       const fullNote = {
@@ -37,6 +38,7 @@ describe('note validation', () => {
       };
 
       validate(note)
+        .then(() => expect('Should not reach').toBe(true))
         .catch(({ name }) => expect(name).toMatch('ValidationError'));
     });
   });
@@ -49,6 +51,7 @@ describe('note validation', () => {
       };
 
       validate(note)
+        .then(() => expect('Should not reach').toBe(true))
         .catch(({ name }) => expect(name).toMatch('ValidationError'));
     });
 
@@ -60,6 +63,7 @@ describe('note validation', () => {
       };
 
       validate(note)
+        .then(() => expect('Should not reach').toBe(true))
         .catch(({ name }) => expect(name).toMatch('ValidationError'));
 
       const note2 = {

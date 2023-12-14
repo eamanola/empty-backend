@@ -4,6 +4,7 @@ const {
   startTestDB,
   stopTestDB,
   deleteNotes,
+  validNewNote,
 } = require('../test-helper.test');
 
 const app = require('../app');
@@ -35,14 +36,12 @@ const getToken = async (email = 'foo@example.com') => {
   return aToken;
 };
 
-const createNote = async ({ text = 'text' } = {}) => {
-  const newNote = { text, public: false };
-
+const createNote = async () => {
   const { note } = (
     await api
       .post('/notes')
       .set({ Authorization: `bearer ${token}` })
-      .send(newNote)
+      .send(validNewNote())
   ).body;
 
   return note;
@@ -79,7 +78,7 @@ describe('/notes', () => {
 
   describe('POST /notes', () => {
     it('should create a note', async () => {
-      const newNote = { text: 'text', public: false };
+      const newNote = validNewNote();
 
       const response = await api
         .post('/notes')

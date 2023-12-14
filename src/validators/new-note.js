@@ -7,7 +7,7 @@ const {
 const newNoteSchema = object({
   text: string().required(),
   imageUrl: string().url().nullable(),
-  public: boolean().required(),
+  isPublic: boolean().required(),
   owner: string().required(),
 }).noUnknown().strict();
 

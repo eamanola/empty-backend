@@ -38,6 +38,8 @@ const createUser = async ({ email = 'foo@example.com', password = '123' } = {}) 
   return findOneUser({ email });
 };
 
+const validNewNote = ({ text = 'text', isPublic = false } = {}) => ({ text, isPublic });
+
 test('hide from linter.test', () => {
   expect(true).toBe(true);
 });
@@ -50,4 +52,5 @@ module.exports = {
   countUsers,
   countNotes,
   createUser,
+  validNewNote,
 };

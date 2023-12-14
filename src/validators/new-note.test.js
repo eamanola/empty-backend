@@ -8,11 +8,12 @@ describe('new note validation', () => {
       const newNote = {
         text: '',
         imageUrl: null,
-        public: false,
+        isPublic: false,
         owner: 'owner',
       };
 
       validate(newNote)
+        .then(() => expect(false).toBe(true))
         .catch(({ name }) => expect(name).toMatch('ValidationError'));
     });
   });
@@ -21,7 +22,7 @@ describe('new note validation', () => {
     it('should not be required', async () => {
       const newNote = {
         text: 'foo',
-        public: false,
+        isPublic: false,
         owner: 'owner',
       };
 
@@ -33,10 +34,11 @@ describe('new note validation', () => {
         text: 'foo',
         imageUrl: 'a',
         owner: 'owner',
-        public: false,
+        isPublic: false,
       };
 
       validate(newNote)
+        .then(() => expect(false).toBe(true))
         .catch(({ name }) => expect(name).toMatch('ValidationError'));
 
       const newNote2 = {
@@ -48,7 +50,7 @@ describe('new note validation', () => {
     });
   });
 
-  describe('public', () => {
+  describe('isPublic', () => {
     it('should be required', async () => {
       const newNote = {
         text: 'foo',
@@ -57,11 +59,12 @@ describe('new note validation', () => {
       };
 
       validate(newNote)
+        .then(() => expect('Should not reach').toBe(true))
         .catch(({ name }) => expect(name).toMatch('ValidationError'));
 
       const newNote2 = {
         ...newNote,
-        public: false,
+        isPublic: false,
       };
 
       expect(await validate(newNote2)).toEqual(newNote2);
@@ -77,6 +80,7 @@ describe('new note validation', () => {
       };
 
       validate(newNote)
+        .then(() => expect('Should not reach').toBe(true))
         .catch(({ name }) => expect(name).toMatch('ValidationError'));
     });
   });

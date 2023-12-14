@@ -5,6 +5,7 @@ const {
   deleteNotes,
   countNotes,
   createUser,
+  validNewNote,
 } = require('../test-helper.test');
 
 const { findOne } = require('../models/notes');
@@ -18,8 +19,7 @@ const {
 } = require('./notes');
 
 const createNote = async (user) => {
-  const newNote = { text: 'text', public: false };
-  const { id } = await create(user, newNote);
+  const { id } = await create(user, validNewNote());
   return findOne({ id });
 };
 
@@ -36,29 +36,29 @@ describe('notes controller', () => {
   describe('create', () => {
     it('should create a note', async () => {
       const user = await createUser();
-      const note = { text: 'text', public: false };
+      const newNote = validNewNote();
 
       expect(await countNotes()).toBe(0);
 
-      await create(user, note);
+      await create(user, newNote);
 
       expect(await countNotes()).toBe(1);
-      expect(await findOne(note)).toBeTruthy();
+      expect(await findOne(newNote)).toBeTruthy();
     });
 
     it('should override owner', async () => {
       const user = await createUser();
-      const note = { text: 'text', public: false };
+      const newNote = validNewNote();
 
       const fakeOwner = '1234';
       expect(user.id).not.toBe(fakeOwner);
 
       await create(user, {
-        ...note,
+        ...newNote,
         owner: fakeOwner,
       });
 
-      expect((await findOne(note)).owner).toBe(user.email);
+      expect((await findOne(newNote)).owner).toBe(user.email);
     });
   });
 

@@ -35,9 +35,9 @@ describe('signup', () => {
     expect(await countUsers()).toBe(0);
     try {
       await login({ email, password });
-      expect(true).toBe(false);
+      expect('Should not reach').toBe(true);
     } catch (e) {
-      expect(true).toBe(true);
+      expect(e).toBeTruthy();
     }
 
     await signup({
@@ -57,9 +57,9 @@ describe('signup', () => {
 
     try {
       await signup({ email, password: '123' });
-      expect(true).toBe(false);
+      expect('Should not reach').toBe(true);
     } catch (e) {
-      expect(true).toBe(true);
+      expect(e).toBeTruthy();
     } finally {
       expect(await countUsers()).toBe(1);
     }

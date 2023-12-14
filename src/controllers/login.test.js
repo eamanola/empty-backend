@@ -49,9 +49,9 @@ describe('login', () => {
 
     try {
       await login({ email, password });
-      expect(false).toBe(true);
+      expect('Should not reach').toBe(true);
     } catch (e) {
-      expect(true).toBe(true);
+      expect(e).toBeTruthy();
     }
   });
 
@@ -62,9 +62,9 @@ describe('login', () => {
 
     try {
       await login({ email, password: 'foobar' });
-      expect(false).toBe(true);
+      expect('Should not reach').toBe(true);
     } catch (e) {
-      expect(true).toBe(true);
+      expect(e).toBeTruthy();
     }
   });
 });
