@@ -23,11 +23,11 @@ const insertOne = async (newNote) => {
   );
 };
 
-const findOne = (criteria) => dbFindOne(table, criteria);
+const findOne = (where) => dbFindOne(table, where);
 
-const find = (criteria, options) => dbFind(table, criteria, options);
+const find = (where, options) => dbFind(table, where, options);
 
-const replaceOne = async (criteria, replacement) => {
+const replaceOne = async (where, replacement) => {
   const timeStamped = {
     ...replacement,
     modified: new Date(),
@@ -37,7 +37,7 @@ const replaceOne = async (criteria, replacement) => {
 
   return dbReplaceOne(
     table,
-    criteria,
+    where,
     timeStamped,
   );
 };

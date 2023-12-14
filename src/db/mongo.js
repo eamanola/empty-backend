@@ -26,48 +26,48 @@ const initDB = (url = MONGO_URL) => {
   client = new MongoClient(url);
 };
 
-const findOne = async (collection, criteria) => fromMongoId(
+const findOne = async (collection, where) => fromMongoId(
   await client
     .db()
     .collection(collection)
-    .findOne(toMongoId(criteria)),
+    .findOne(toMongoId(where)),
 );
 
-const insertOne = async (collection, criteria) => {
+const insertOne = async (collection, doc) => {
   const { insertedId } = await client
     .db()
     .collection(collection)
-    .insertOne(criteria);
+    .insertOne(doc);
 
   return { id: String(insertedId) };
 };
 
-const replaceOne = (collection, criteria, replacement) => client
+const replaceOne = (collection, where, replacement) => client
   .db()
   .collection(collection)
-  .replaceOne(toMongoId(criteria), toMongoId(replacement));
+  .replaceOne(toMongoId(where), toMongoId(replacement));
 
-const deleteOne = (collection, criteria) => client
+const deleteOne = (collection, where) => client
   .db()
   .collection(collection)
-  .deleteOne(toMongoId(criteria));
+  .deleteOne(toMongoId(where));
 
-const find = (collection, criteria, { limit, offset }) => client
+const find = (collection, where, { limit, offset }) => client
   .db()
   .collection(collection)
-  .find(criteria, { limit, skip: offset })
+  .find(where, { limit, skip: offset })
   .map((doc) => fromMongoId(doc))
   .toArray();
 
-const deleteMany = (collection, criteria) => client
+const deleteMany = (collection, where) => client
   .db()
   .collection(collection)
-  .deleteMany(criteria);
+  .deleteMany(where);
 
-const count = (collection, criteria) => client
+const count = (collection, where) => client
   .db()
   .collection(collection)
-  .countDocuments(criteria);
+  .countDocuments(where);
 
 module.exports = {
   initDB,

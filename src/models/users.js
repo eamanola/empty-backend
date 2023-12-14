@@ -9,7 +9,7 @@ const table = 'Users';
 
 module.exports = {
   table,
-  findOne: (criteria) => findOne(table, criteria),
+  findOne: (where) => findOne(table, where),
   insertOne: async (user) => {
     await userSchema.validate(user);
 
