@@ -49,10 +49,16 @@ const update = async (user, note) => {
 
 const remove = (user, note) => deleteOne({ id: note.id, owner: user.email });
 
+const publicNotes = async ({ limit, offset } = {}) => find(
+  { isPublic: true },
+  { limit, offset },
+);
+
 module.exports = {
   create,
   byId,
   byOwner,
   update,
   remove,
+  publicNotes,
 };

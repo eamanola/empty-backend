@@ -52,10 +52,10 @@ const deleteOne = (collection, criteria) => client
   .collection(collection)
   .deleteOne(toMongoId(criteria));
 
-const find = (collection, criteria) => client
+const find = (collection, criteria, { limit, offset }) => client
   .db()
   .collection(collection)
-  .find(criteria)
+  .find(criteria, { limit, skip: offset })
   .map((doc) => fromMongoId(doc))
   .toArray();
 

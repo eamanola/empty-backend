@@ -25,7 +25,7 @@ const insertOne = async (newNote) => {
 
 const findOne = (criteria) => dbFindOne(table, criteria);
 
-const find = (criteria) => dbFind(table, criteria);
+const find = (criteria, options) => dbFind(table, criteria, options);
 
 const replaceOne = async (criteria, replacement) => {
   const timeStamped = {
