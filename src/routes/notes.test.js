@@ -19,14 +19,6 @@ const { paramError, accessDenied } = require('../errors');
 
 const { decode } = require('../token');
 
-jest.mock('../config', () => {
-  const actual = jest.requireActual('../config');
-  return {
-    ...actual,
-    SECRET: 'shhhhh',
-  };
-});
-
 const api = supertest(app);
 
 let token;

@@ -13,14 +13,6 @@ const {
   validNewNote,
 } = require('../jest/test-helpers');
 
-jest.mock('../config', () => {
-  const actual = jest.requireActual('../config');
-  return {
-    ...actual,
-    SECRET: 'shhhhh',
-  };
-});
-
 const api = supertest(app);
 
 let token;

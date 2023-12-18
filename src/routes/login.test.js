@@ -20,14 +20,6 @@ const { decode: decodeToken } = require('../token');
 
 const { findOne } = require('../models/users');
 
-jest.mock('../config', () => {
-  const actual = jest.requireActual('../config');
-  return {
-    ...actual,
-    SECRET: 'shhhhh',
-  };
-});
-
 const api = supertest(app);
 
 describe('/login', () => {

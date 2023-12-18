@@ -17,14 +17,6 @@ const signup = require('./signup');
 
 const login = require('./login');
 
-jest.mock('../config', () => {
-  const actual = jest.requireActual('../config');
-  return {
-    ...actual,
-    SECRET: 'shhhhh',
-  };
-});
-
 describe('signup', () => {
   beforeAll(async () => {
     await initDB();

@@ -14,14 +14,6 @@ const { accessDenied } = require('../errors');
 
 const authorization = require('./authorization');
 
-jest.mock('../config', () => {
-  const actual = jest.requireActual('../config');
-  return {
-    ...actual,
-    SECRET: 'shhhhh',
-  };
-});
-
 const api = supertest(app);
 
 describe('authorization', () => {
