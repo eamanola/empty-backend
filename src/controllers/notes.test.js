@@ -1,8 +1,4 @@
-const {
-  initDB,
-  connectDB,
-  closeDB,
-} = require('../db');
+const { initDB, connectDB, closeDB } = require('../db');
 
 const {
   deleteUsers,

@@ -1,13 +1,6 @@
-const {
-  initDB,
-  connectDB,
-  closeDB,
-} = require('../db');
+const { initDB, connectDB, closeDB } = require('../db');
 
-const {
-  deleteUsers,
-  countUsers,
-} = require('../jest/test-helpers');
+const { deleteUsers, countUsers } = require('../jest/test-helpers');
 
 const { decode: decodeToken } = require('../token');
 

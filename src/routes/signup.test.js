@@ -2,21 +2,11 @@ const supertest = require('supertest');
 
 const app = require('../app');
 
-const {
-  initDB,
-  connectDB,
-  closeDB,
-} = require('../db');
+const { initDB, connectDB, closeDB } = require('../db');
 
-const {
-  deleteUsers,
-  countUsers,
-} = require('../jest/test-helpers');
+const { emailTakenError, paramError } = require('../errors');
 
-const {
-  emailTakenError,
-  paramError,
-} = require('../errors');
+const { deleteUsers, countUsers } = require('../jest/test-helpers');
 
 const { findOne } = require('../models/users');
 

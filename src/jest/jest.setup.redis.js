@@ -1,8 +1,4 @@
-const {
-  initCache,
-  connectCache,
-  closeCache,
-} = require('../cache');
+const { initCache, connectCache, closeCache } = require('../cache');
 
 jest.mock('redis', () => {
   const cache = {};

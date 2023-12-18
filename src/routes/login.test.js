@@ -2,21 +2,13 @@ const supertest = require('supertest');
 
 const app = require('../app');
 
-const {
-  initDB,
-  connectDB,
-  closeDB,
-} = require('../db');
+const { initDB, connectDB, closeDB } = require('../db');
 
-const { deleteUsers } = require('../jest/test-helpers');
-
-const {
-  userNotFoundError,
-  invalidPasswordError,
-  paramError,
-} = require('../errors');
+const { userNotFoundError, invalidPasswordError, paramError } = require('../errors');
 
 const { decode: decodeToken } = require('../token');
+
+const { deleteUsers } = require('../jest/test-helpers');
 
 const { findOne } = require('../models/users');
 

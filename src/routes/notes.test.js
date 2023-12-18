@@ -2,16 +2,9 @@ const supertest = require('supertest');
 
 const app = require('../app');
 
-const {
-  initDB,
-  connectDB,
-  closeDB,
-} = require('../db');
+const { initDB, connectDB, closeDB } = require('../db');
 
-const {
-  deleteNotes,
-  validNewNote,
-} = require('../jest/test-helpers');
+const { deleteNotes, validNewNote } = require('../jest/test-helpers');
 
 const { findOne: findOneUser } = require('../models/users');
 

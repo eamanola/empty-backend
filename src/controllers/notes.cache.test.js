@@ -1,14 +1,6 @@
-const {
-  initDB,
-  connectDB,
-  closeDB,
-} = require('../db');
+const { initDB, connectDB, closeDB } = require('../db');
 
-const {
-  deleteNotes,
-  createUser,
-  validNewNote,
-} = require('../jest/test-helpers');
+const { deleteNotes, createUser, validNewNote } = require('../jest/test-helpers');
 
 const { findOne, replaceOne } = require('../models/notes');
 

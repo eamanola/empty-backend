@@ -2,17 +2,13 @@ const supertest = require('supertest');
 
 const app = require('../app');
 
-const {
-  initDB,
-  connectDB,
-  closeDB,
-} = require('../db');
-
-const { deleteUsers } = require('../jest/test-helpers');
+const { initDB, connectDB, closeDB } = require('../db');
 
 const { accessDenied } = require('../errors');
 
 const authorization = require('./authorization');
+
+const { deleteUsers } = require('../jest/test-helpers');
 
 const api = supertest(app);
 

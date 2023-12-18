@@ -1,21 +1,14 @@
 const bcrypt = require('bcrypt');
 
-const {
-  initDB,
-  connectDB,
-  closeDB,
-} = require('../db');
-
-const {
-  deleteUsers,
-  countUsers,
-} = require('../jest/test-helpers');
+const { initDB, connectDB, closeDB } = require('../db');
 
 const { findOne } = require('../models/users');
 
-const signup = require('./signup');
+const { deleteUsers, countUsers } = require('../jest/test-helpers');
 
 const login = require('./login');
+
+const signup = require('./signup');
 
 describe('signup', () => {
   beforeAll(async () => {
