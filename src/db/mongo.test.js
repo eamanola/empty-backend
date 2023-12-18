@@ -1,5 +1,3 @@
-const { MongoMemoryServer } = require('mongodb-memory-server');
-
 const { MongoClient } = require('mongodb');
 
 const {
@@ -11,20 +9,7 @@ const {
   insertOne,
 } = require('./mongo');
 
-let mongod;
-
 describe('connection', () => {
-  beforeAll(async () => {
-    mongod = await MongoMemoryServer.create();
-    const uri = mongod.getUri();
-    initDB(uri);
-  });
-
-  afterAll(async () => {
-    await closeDB();
-    await mongod.stop();
-  });
-
   it('MongoClient should have used API', async () => {
     const client = new MongoClient('mongodb://foo');
     expect(typeof client.connect).toBe('function');
@@ -42,6 +27,7 @@ describe('connection', () => {
 
   describe('connectDB', () => {
     it('should connect', async () => {
+      await initDB();
       await connectDB();
 
       await deleteMany('collection', {});
@@ -55,6 +41,7 @@ describe('connection', () => {
 
   describe('connectDB', () => {
     it('should disconnect', async () => {
+      await initDB();
       await connectDB();
 
       await deleteMany('collection', {});

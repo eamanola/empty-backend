@@ -1,10 +1,14 @@
 const {
-  startTestDB,
-  stopTestDB,
+  initDB,
+  connectDB,
+  closeDB,
+} = require('../db');
+
+const {
   deleteNotes,
   createUser,
   validNewNote,
-} = require('../test-helper.test');
+} = require('../jest/test-helper.test');
 
 const { findOne, replaceOne } = require('../models/notes');
 
@@ -32,11 +36,13 @@ let user;
 
 describe('cache', () => {
   beforeAll(async () => {
-    await startTestDB();
+    await initDB();
+    await connectDB();
+
     user = await createUser();
   });
 
-  afterAll(stopTestDB);
+  afterAll(closeDB);
 
   beforeEach(deleteNotes);
 

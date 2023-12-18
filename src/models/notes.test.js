@@ -1,10 +1,14 @@
 const {
-  startTestDB,
-  stopTestDB,
+  initDB,
+  connectDB,
+  closeDB,
+} = require('../db');
+
+const {
   deleteNotes,
   countNotes,
   validNewNote,
-} = require('../test-helper.test');
+} = require('../jest/test-helper.test');
 
 const {
   insertOne,
@@ -23,9 +27,12 @@ const createNote = async () => {
 };
 
 describe('notes model', () => {
-  beforeAll(startTestDB);
+  beforeAll(async () => {
+    await initDB();
+    await connectDB();
+  });
 
-  afterAll(stopTestDB);
+  afterAll(closeDB);
 
   beforeEach(deleteNotes);
 

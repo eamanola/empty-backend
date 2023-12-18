@@ -1,13 +1,17 @@
 const supertest = require('supertest');
 
+const app = require('../app');
+
 const {
-  startTestDB,
-  stopTestDB,
+  initDB,
+  connectDB,
+  closeDB,
+} = require('../db');
+
+const {
   deleteNotes,
   validNewNote,
-} = require('../test-helper.test');
-
-const app = require('../app');
+} = require('../jest/test-helper.test');
 
 const { findOne: findOneUser } = require('../models/users');
 
@@ -59,12 +63,13 @@ const getNote = async (id) => {
 
 describe('/notes', () => {
   beforeAll(async () => {
-    await startTestDB();
+    await initDB();
+    await connectDB();
 
     token = await getToken();
   });
 
-  afterAll(stopTestDB);
+  afterAll(closeDB);
 
   beforeEach(deleteNotes);
 

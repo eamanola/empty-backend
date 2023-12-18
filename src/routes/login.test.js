@@ -3,10 +3,12 @@ const supertest = require('supertest');
 const app = require('../app');
 
 const {
-  startTestDB,
-  stopTestDB,
-  deleteUsers,
-} = require('../test-helper.test');
+  initDB,
+  connectDB,
+  closeDB,
+} = require('../db');
+
+const { deleteUsers } = require('../jest/test-helper.test');
 
 const {
   userNotFoundError,
@@ -29,9 +31,12 @@ jest.mock('../config', () => {
 const api = supertest(app);
 
 describe('/login', () => {
-  beforeAll(startTestDB);
+  beforeAll(async () => {
+    await initDB();
+    await connectDB();
+  });
 
-  afterAll(stopTestDB);
+  afterAll(closeDB);
 
   beforeEach(deleteUsers);
 

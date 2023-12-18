@@ -1,30 +1,7 @@
-const { MongoMemoryServer } = require('mongodb-memory-server');
-
-const {
-  initDB,
-  connectDB,
-  closeDB,
-  deleteMany,
-  count,
-} = require('./db');
-const { table: usersTable, findOne: findOneUser } = require('./models/users');
-const { table: notesTable } = require('./models/notes');
-const signup = require('./controllers/signup');
-
-let mongod;
-
-const startTestDB = async () => {
-  mongod = await MongoMemoryServer.create();
-
-  initDB(mongod.getUri());
-
-  await connectDB();
-};
-
-const stopTestDB = async () => {
-  await closeDB();
-  await mongod.stop();
-};
+const { deleteMany, count } = require('../db');
+const { table: usersTable, findOne: findOneUser } = require('../models/users');
+const { table: notesTable } = require('../models/notes');
+const signup = require('../controllers/signup');
 
 const deleteUsers = () => deleteMany(usersTable);
 const deleteNotes = () => deleteMany(notesTable);
@@ -45,8 +22,6 @@ test('hide from linter.test', () => {
 });
 
 module.exports = {
-  startTestDB,
-  stopTestDB,
   deleteUsers,
   deleteNotes,
   countUsers,

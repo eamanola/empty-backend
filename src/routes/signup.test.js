@@ -3,11 +3,15 @@ const supertest = require('supertest');
 const app = require('../app');
 
 const {
-  startTestDB,
-  stopTestDB,
+  initDB,
+  connectDB,
+  closeDB,
+} = require('../db');
+
+const {
   deleteUsers,
   countUsers,
-} = require('../test-helper.test');
+} = require('../jest/test-helper.test');
 
 const {
   emailTakenError,
@@ -19,9 +23,12 @@ const { findOne } = require('../models/users');
 const api = supertest(app);
 
 describe('/signup', () => {
-  beforeAll(startTestDB);
+  beforeAll(async () => {
+    await initDB();
+    await connectDB();
+  });
 
-  afterAll(stopTestDB);
+  afterAll(closeDB);
 
   beforeEach(deleteUsers);
 

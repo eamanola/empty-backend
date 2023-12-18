@@ -1,11 +1,14 @@
 const supertest = require('supertest');
 
-const {
-  startTestDB,
-  stopTestDB,
-  deleteUsers,
-} = require('../test-helper.test');
 const app = require('../app');
+
+const {
+  initDB,
+  connectDB,
+  closeDB,
+} = require('../db');
+
+const { deleteUsers } = require('../jest/test-helper.test');
 
 const { accessDenied } = require('../errors');
 
@@ -22,9 +25,12 @@ jest.mock('../config', () => {
 const api = supertest(app);
 
 describe('authorization', () => {
-  beforeAll(startTestDB);
+  beforeAll(async () => {
+    await initDB();
+    await connectDB();
+  });
 
-  afterAll(stopTestDB);
+  afterAll(closeDB);
 
   beforeEach(deleteUsers);
 

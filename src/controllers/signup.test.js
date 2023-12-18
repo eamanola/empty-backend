@@ -1,11 +1,15 @@
 const bcrypt = require('bcrypt');
 
 const {
-  startTestDB,
-  stopTestDB,
+  initDB,
+  connectDB,
+  closeDB,
+} = require('../db');
+
+const {
   deleteUsers,
   countUsers,
-} = require('../test-helper.test');
+} = require('../jest/test-helper.test');
 
 const { findOne } = require('../models/users');
 
@@ -22,9 +26,12 @@ jest.mock('../config', () => {
 });
 
 describe('signup', () => {
-  beforeAll(startTestDB);
+  beforeAll(async () => {
+    await initDB();
+    await connectDB();
+  });
 
-  afterAll(stopTestDB);
+  afterAll(closeDB);
 
   beforeEach(deleteUsers);
 

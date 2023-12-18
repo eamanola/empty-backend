@@ -1,12 +1,16 @@
 const {
-  startTestDB,
-  stopTestDB,
+  initDB,
+  connectDB,
+  closeDB,
+} = require('../db');
+
+const {
   deleteUsers,
   deleteNotes,
   countNotes,
   createUser,
   validNewNote,
-} = require('../test-helper.test');
+} = require('../jest/test-helper.test');
 
 const { findOne } = require('../models/notes');
 
@@ -25,9 +29,12 @@ const createNote = async (user, { isPublic = false } = {}) => {
 };
 
 describe('notes controller', () => {
-  beforeAll(startTestDB);
+  beforeAll(async () => {
+    await initDB();
+    await connectDB();
+  });
 
-  afterAll(stopTestDB);
+  afterAll(closeDB);
 
   beforeEach(async () => {
     await deleteUsers();
