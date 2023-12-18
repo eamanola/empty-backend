@@ -2,26 +2,13 @@ const supertest = require('supertest');
 
 const app = require('../app');
 
-const { initDB, connectDB, closeDB } = require('../db');
-
 const { accessDenied } = require('../errors');
 
 const authorization = require('./authorization');
 
-const { deleteUsers } = require('../jest/test-helpers');
-
 const api = supertest(app);
 
 describe('authorization', () => {
-  beforeAll(async () => {
-    await initDB();
-    await connectDB();
-  });
-
-  afterAll(closeDB);
-
-  beforeEach(deleteUsers);
-
   it('should add user to request', async () => {
     const email = 'foo@example.com';
     const credentials = { email, password: '123' };

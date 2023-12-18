@@ -2,26 +2,15 @@ const supertest = require('supertest');
 
 const app = require('../app');
 
-const { initDB, connectDB, closeDB } = require('../db');
-
 const { emailTakenError, paramError } = require('../errors');
 
-const { deleteUsers, countUsers } = require('../jest/test-helpers');
+const { countUsers } = require('../jest/test-helpers');
 
 const { findOne } = require('../models/users');
 
 const api = supertest(app);
 
 describe('/signup', () => {
-  beforeAll(async () => {
-    await initDB();
-    await connectDB();
-  });
-
-  afterAll(closeDB);
-
-  beforeEach(deleteUsers);
-
   it('should return 201 OK', async () => {
     const credentials = {
       email: 'foo@example.com',

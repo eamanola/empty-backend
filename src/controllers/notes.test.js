@@ -1,8 +1,4 @@
-const { initDB, connectDB, closeDB } = require('../db');
-
 const {
-  deleteUsers,
-  deleteNotes,
   countNotes,
   createUser,
   validNewNote,
@@ -25,18 +21,6 @@ const createNote = async (user, { isPublic = false } = {}) => {
 };
 
 describe('notes controller', () => {
-  beforeAll(async () => {
-    await initDB();
-    await connectDB();
-  });
-
-  afterAll(closeDB);
-
-  beforeEach(async () => {
-    await deleteUsers();
-    await deleteNotes();
-  });
-
   describe('create', () => {
     it('should create a note', async () => {
       const user = await createUser();

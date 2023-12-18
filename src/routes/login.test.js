@@ -2,28 +2,15 @@ const supertest = require('supertest');
 
 const app = require('../app');
 
-const { initDB, connectDB, closeDB } = require('../db');
-
 const { userNotFoundError, invalidPasswordError, paramError } = require('../errors');
 
 const { decode: decodeToken } = require('../token');
-
-const { deleteUsers } = require('../jest/test-helpers');
 
 const { findOne } = require('../models/users');
 
 const api = supertest(app);
 
 describe('/login', () => {
-  beforeAll(async () => {
-    await initDB();
-    await connectDB();
-  });
-
-  afterAll(closeDB);
-
-  beforeEach(deleteUsers);
-
   it('should return 200 OK with a token', async () => {
     const email = 'foo@example.com';
     const credentials = {

@@ -2,9 +2,7 @@ const supertest = require('supertest');
 
 const app = require('../app');
 
-const { initDB, connectDB, closeDB } = require('../db');
-
-const { deleteNotes, validNewNote } = require('../jest/test-helpers');
+const { validNewNote } = require('../jest/test-helpers');
 
 const { findOne: findOneUser } = require('../models/users');
 
@@ -13,8 +11,6 @@ const { paramError, accessDenied } = require('../errors');
 const { decode } = require('../token');
 
 const api = supertest(app);
-
-let token;
 
 const getToken = async (email = 'foo@example.com') => {
   const credentials = { email, password: '123' };
@@ -25,7 +21,7 @@ const getToken = async (email = 'foo@example.com') => {
   return aToken;
 };
 
-const createNote = async () => {
+const createNote = async (token) => {
   const { note } = (
     await api
       .post('/notes')
@@ -36,7 +32,7 @@ const createNote = async () => {
   return note;
 };
 
-const getNote = async (id) => {
+const getNote = async (id, token) => {
   const { note } = (
     await api
       .get(`/notes/${id}`)
@@ -47,17 +43,6 @@ const getNote = async (id) => {
 };
 
 describe('/notes', () => {
-  beforeAll(async () => {
-    await initDB();
-    await connectDB();
-
-    token = await getToken();
-  });
-
-  afterAll(closeDB);
-
-  beforeEach(deleteNotes);
-
   it('should throw accessDenied, if user missing', async () => {
     const response = await api
       .get('/notes');
@@ -68,6 +53,7 @@ describe('/notes', () => {
 
   describe('POST /notes', () => {
     it('should create a note', async () => {
+      const token = await getToken();
       const newNote = validNewNote();
 
       const response = await api
@@ -84,6 +70,7 @@ describe('/notes', () => {
     });
 
     it('should throw paramError, on invalid params', async () => {
+      const token = await getToken();
       const invalidNewNote = {};
 
       const response = await api
@@ -98,7 +85,8 @@ describe('/notes', () => {
 
   describe('GET /notes/:id', () => {
     it('should return a note by id', async () => {
-      const note = await createNote();
+      const token = await getToken();
+      const note = await createNote(token);
 
       const response = await api
         .get(`/notes/${note.id}`)
@@ -115,10 +103,11 @@ describe('/notes', () => {
 
   describe('GET /notes', () => {
     it('should return all user notes', async () => {
+      const token = await getToken();
       const TIMES = 3;
       const promises = [];
       for (let i = 0; i < TIMES; i += 1) {
-        promises.push(createNote());
+        promises.push(createNote(token));
       }
       await Promise.all(promises);
 
@@ -138,7 +127,8 @@ describe('/notes', () => {
 
   describe('PUT /notes/:id', () => {
     it('should update a note', async () => {
-      const insertedNote = await createNote();
+      const token = await getToken();
+      const insertedNote = await createNote(token);
 
       const modifiedNote = { ...insertedNote, text: 'foo' };
       expect(modifiedNote.text).not.toBe(insertedNote.text);
@@ -154,12 +144,13 @@ describe('/notes', () => {
       const { modified, ...noteData } = modifiedNote;
       expect(response.body.note).toEqual(expect.objectContaining(noteData));
 
-      const updatedNote = await getNote(insertedNote.id);
+      const updatedNote = await getNote(insertedNote.id, token);
       expect(updatedNote.text).toBe(modifiedNote.text);
     });
 
     it('should throw paramError, on invalid params', async () => {
-      const insertedNote = await createNote();
+      const token = await getToken();
+      const insertedNote = await createNote(token);
 
       const invalidNote = { ...insertedNote, text: '' };
       expect(invalidNote.text).not.toBe(insertedNote.text);
@@ -171,12 +162,13 @@ describe('/notes', () => {
 
       expect(response.status).toBe(paramError.status);
 
-      const updatedNote = await getNote(insertedNote.id);
+      const updatedNote = await getNote(insertedNote.id, token);
       expect(updatedNote).toEqual(insertedNote);
     });
 
     it('should not update owner, or modified', async () => {
-      const insertedNote = await createNote();
+      const token = await getToken();
+      const insertedNote = await createNote(token);
 
       const modifiedNote = { ...insertedNote, owner: 'foo', modified: 'bar' };
       expect(modifiedNote.owner).not.toBe(insertedNote.owner);
@@ -187,13 +179,14 @@ describe('/notes', () => {
         .set({ Authorization: `bearer ${token}` })
         .send(modifiedNote);
 
-      const updatedNote = await getNote(insertedNote.id);
+      const updatedNote = await getNote(insertedNote.id, token);
       expect(updatedNote.owner).toBe(insertedNote.owner);
       expect(updatedNote.modified).not.toBe(modifiedNote.modified);
     });
 
     it('should not update id', async () => {
-      const insertedNote = await createNote();
+      const token = await getToken();
+      const insertedNote = await createNote(token);
 
       const modifiedNote = {
         ...insertedNote,
@@ -206,17 +199,18 @@ describe('/notes', () => {
         .set({ Authorization: `bearer ${token}` })
         .send(modifiedNote);
 
-      const updatedNote = await getNote(modifiedNote.id);
+      const updatedNote = await getNote(modifiedNote.id, token);
       expect(updatedNote).toBeFalsy();
 
-      const original = await getNote(insertedNote.id);
+      const original = await getNote(insertedNote.id, token);
       expect(original).toEqual(insertedNote);
     });
   });
 
   describe('DELETE /notes/:id', () => {
     it('should remove a note by id', async () => {
-      const note = await createNote();
+      const token = await getToken();
+      const note = await createNote(token);
 
       const response = await api
         .delete(`/notes/${note.id}`)
@@ -225,7 +219,7 @@ describe('/notes', () => {
       expect(response.status).toBe(200);
       expect(response.body.message).toBe('OK');
 
-      const deletedNote = await getNote(note.id);
+      const deletedNote = await getNote(note.id, token);
       expect(deletedNote).toBeFalsy();
     });
   });

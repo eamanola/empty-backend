@@ -1,6 +1,4 @@
-const { initDB, connectDB, closeDB } = require('../db');
-
-const { deleteUsers, countUsers } = require('../jest/test-helpers');
+const { countUsers } = require('../jest/test-helpers');
 
 const { decode: decodeToken } = require('../token');
 
@@ -11,15 +9,6 @@ const signup = require('./signup');
 const login = require('./login');
 
 describe('login', () => {
-  beforeAll(async () => {
-    await initDB();
-    await connectDB();
-  });
-
-  afterAll(closeDB);
-
-  beforeEach(deleteUsers);
-
   it('should return a token', async () => {
     const email = 'foo@example.com';
     const password = '123';

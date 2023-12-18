@@ -1,6 +1,4 @@
-const { initDB, connectDB, closeDB } = require('../db');
-
-const { deleteNotes, countNotes, validNewNote } = require('../jest/test-helpers');
+const { countNotes, validNewNote } = require('../jest/test-helpers');
 
 const {
   insertOne,
@@ -19,15 +17,6 @@ const createNote = async () => {
 };
 
 describe('notes model', () => {
-  beforeAll(async () => {
-    await initDB();
-    await connectDB();
-  });
-
-  afterAll(closeDB);
-
-  beforeEach(deleteNotes);
-
   it('should create one', async () => {
     expect(await countNotes()).toBe(0);
 

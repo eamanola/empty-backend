@@ -1,25 +1,14 @@
 const bcrypt = require('bcrypt');
 
-const { initDB, connectDB, closeDB } = require('../db');
-
 const { findOne } = require('../models/users');
 
-const { deleteUsers, countUsers } = require('../jest/test-helpers');
+const { countUsers } = require('../jest/test-helpers');
 
 const login = require('./login');
 
 const signup = require('./signup');
 
 describe('signup', () => {
-  beforeAll(async () => {
-    await initDB();
-    await connectDB();
-  });
-
-  afterAll(closeDB);
-
-  beforeEach(deleteUsers);
-
   it('should create a user', async () => {
     const email = 'foo@example.com';
     const password = '123';

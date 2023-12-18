@@ -2,13 +2,9 @@ const supertest = require('supertest');
 
 const app = require('../app');
 
-const { initDB, connectDB, closeDB } = require('../db');
-
-const { deleteNotes, validNewNote } = require('../jest/test-helpers');
+const { validNewNote } = require('../jest/test-helpers');
 
 const api = supertest(app);
-
-let token;
 
 const getToken = async (email = 'foo@example.com') => {
   const credentials = { email, password: '123' };
@@ -19,36 +15,26 @@ const getToken = async (email = 'foo@example.com') => {
   return aToken;
 };
 
-const createNotes = async ({ isPublic }, count = 1) => {
+const createNotes = async ({ isPublic }, count, token) => {
   if (count > 0) {
     await api
       .post('/notes')
       .set({ Authorization: `bearer ${token}` })
       .send(validNewNote({ isPublic }));
 
-    await createNotes({ isPublic }, count - 1);
+    await createNotes({ isPublic }, count - 1, token);
   }
 };
 
 describe('GET /public-notes', () => {
-  beforeAll(async () => {
-    await initDB();
-    await connectDB();
-
-    token = await getToken();
-  });
-
-  afterAll(closeDB);
-
-  beforeEach(deleteNotes);
-
   it('should return public notes', async () => {
+    const token = await getToken();
     const PRIVATE_LIMIT = 20;
-    await createNotes({ isPublic: false }, PRIVATE_LIMIT);
+    await createNotes({ isPublic: false }, PRIVATE_LIMIT, token);
 
     const PUBLIC_LIMIT = 10;
     expect(PUBLIC_LIMIT > 0);
-    await createNotes({ isPublic: true }, PUBLIC_LIMIT);
+    await createNotes({ isPublic: true }, PUBLIC_LIMIT, token);
 
     const response = await api.get('/public-notes');
 
@@ -60,8 +46,9 @@ describe('GET /public-notes', () => {
 
   describe('limit option', () => {
     it('should should limit results, if limit is less than all count', async () => {
+      const token = await getToken();
       const PUBLIC_LIMIT = 10;
-      await createNotes({ isPublic: true }, PUBLIC_LIMIT);
+      await createNotes({ isPublic: true }, PUBLIC_LIMIT, token);
 
       const LIMIT_BELOW = 3;
       expect(LIMIT_BELOW < PUBLIC_LIMIT);
@@ -70,8 +57,9 @@ describe('GET /public-notes', () => {
       expect(notes.length).toBe(LIMIT_BELOW);
     });
     it('should return all, if limit is greater than all count', async () => {
+      const token = await getToken();
       const PUBLIC_LIMIT = 10;
-      await createNotes({ isPublic: true }, PUBLIC_LIMIT);
+      await createNotes({ isPublic: true }, PUBLIC_LIMIT, token);
 
       const LIMIT_ABOVE = 13;
       expect(LIMIT_ABOVE > PUBLIC_LIMIT);
@@ -81,8 +69,9 @@ describe('GET /public-notes', () => {
       expect(notes.length).toBe(PUBLIC_LIMIT);
     });
     it('should have no effect, if invalid', async () => {
+      const token = await getToken();
       const PUBLIC_LIMIT = 10;
-      await createNotes({ isPublic: true }, PUBLIC_LIMIT);
+      await createNotes({ isPublic: true }, PUBLIC_LIMIT, token);
 
       const LIMIT_INVALID = 'foo';
       expect(Number.isNaN(Number(LIMIT_INVALID))).toBe(true);
@@ -94,8 +83,9 @@ describe('GET /public-notes', () => {
 
   describe('offset option', () => {
     it('should skip spesified offset', async () => {
+      const token = await getToken();
       const PUBLIC_LIMIT = 10;
-      await createNotes({ isPublic: true }, PUBLIC_LIMIT);
+      await createNotes({ isPublic: true }, PUBLIC_LIMIT, token);
 
       const OFFSET = 3;
       expect(OFFSET < PUBLIC_LIMIT);
@@ -111,8 +101,9 @@ describe('GET /public-notes', () => {
     });
 
     it('should return no results, if offset is greater than all count', async () => {
+      const token = await getToken();
       const PUBLIC_LIMIT = 10;
-      await createNotes({ isPublic: true }, PUBLIC_LIMIT);
+      await createNotes({ isPublic: true }, PUBLIC_LIMIT, token);
 
       const OFFSET = 30;
       expect(OFFSET > PUBLIC_LIMIT);
@@ -122,8 +113,9 @@ describe('GET /public-notes', () => {
     });
 
     it('should have no effect, if invalid', async () => {
+      const token = await getToken();
       const PUBLIC_LIMIT = 10;
-      await createNotes({ isPublic: true }, PUBLIC_LIMIT);
+      await createNotes({ isPublic: true }, PUBLIC_LIMIT, token);
 
       const INVALID_OFFSET = 'foo';
       expect(Number.isNaN(Number(INVALID_OFFSET))).toBe(true);

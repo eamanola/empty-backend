@@ -1,6 +1,4 @@
-const { initDB, connectDB, closeDB } = require('../db');
-
-const { deleteNotes, createUser, validNewNote } = require('../jest/test-helpers');
+const { createUser, validNewNote } = require('../jest/test-helpers');
 
 const { findOne, replaceOne } = require('../models/notes');
 
@@ -24,22 +22,10 @@ const createNote = async (user, { isPublic = false } = {}) => {
   return findOne({ id });
 };
 
-let user;
-
 describe('cache', () => {
-  beforeAll(async () => {
-    await initDB();
-    await connectDB();
-
-    user = await createUser();
-  });
-
-  afterAll(closeDB);
-
-  beforeEach(deleteNotes);
-
   describe('byId', () => {
     it('should cache the value', async () => {
+      const user = await createUser();
       const createdNote = await createNote(user);
 
       expect(await fromCacheById(user, createdNote)).toBeFalsy();
@@ -50,6 +36,7 @@ describe('cache', () => {
       expect(await fromCacheById(user, createdNote)).toEqual(noteById);
     });
     it('should use cache if available', async () => {
+      const user = await createUser();
       const createdNote = await createNote(user);
 
       await cacheById(user, createdNote);
@@ -68,6 +55,7 @@ describe('cache', () => {
 
   describe('byOwner', () => {
     it('should cache the value', async () => {
+      const user = await createUser();
       await createNote(user);
 
       expect(await fromCacheByOwner(user)).toBeFalsy();
@@ -78,6 +66,7 @@ describe('cache', () => {
       expect(await fromCacheByOwner(user)).toEqual(notes);
     });
     it('should use cache if available', async () => {
+      const user = await createUser();
       const cachedNotes = [await createNote(user)];
 
       await cacheByOwner(user, cachedNotes);
@@ -98,6 +87,7 @@ describe('cache', () => {
 
   describe('create', () => {
     it('should invalidate byOwner cache', async () => {
+      const user = await createUser();
       const createdNote = await createNote(user);
 
       await cacheByOwner(user, [createdNote]);
@@ -111,6 +101,7 @@ describe('cache', () => {
 
   describe('update', () => {
     it('should invalidate byId and byOwner cache', async () => {
+      const user = await createUser();
       const createdNote = await createNote(user);
 
       await cacheById(user, createdNote);
@@ -128,6 +119,7 @@ describe('cache', () => {
 
   describe('remove', () => {
     it('should invalidate byId and byOwner cache', async () => {
+      const user = await createUser();
       const createdNote = await createNote(user);
 
       await cacheById(user, createdNote);
