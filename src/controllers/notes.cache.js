@@ -2,11 +2,18 @@ const { setItem, getItem, removeItem } = require('../cache');
 
 const noteKey = ({ id: userId }, { id: noteId }) => `${userId}_${noteId}`;
 const listKey = ({ id: userId }) => `${userId}_byOwner`;
+const modifiedToDate = (note) => ({ ...note, modified: new Date(note.modified) });
 
-const byId = async (user, note) => getItem(noteKey(user, note));
+const byId = async (user, note) => {
+  const cached = await getItem(noteKey(user, note));
+  return cached && modifiedToDate(cached);
+};
 const cacheById = (user, note) => setItem(noteKey(user, note), note);
 
-const byOwner = async (user) => getItem(listKey(user));
+const byOwner = async (user) => {
+  const cached = await getItem(listKey(user));
+  return cached && cached.map(modifiedToDate);
+};
 const cacheByOwner = async (user, notes) => setItem(listKey(user), notes);
 
 const invalidateList = async (user) => {

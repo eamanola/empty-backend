@@ -13,6 +13,7 @@ services:
 
     environment:
       MONGO_URL: mongodb://${DB_USERNAME:-dbuser}:${DB_PASSWORD:-dbpassword}@mongo/${DB_NAME:-dbname}
+      REDIS_URL: redis://redis
       SECRET: ${SECRET:-supersecure}
       PORT: 3000
 
@@ -28,4 +29,7 @@ services:
 
     volumes:
       - "./mongo-init:/docker-entrypoint-initdb.d:ro"
+
+  redis:
+    image: redis/redis-stack-server:latest
 

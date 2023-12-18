@@ -1,16 +1,18 @@
-const cache = {};
+const {
+  initCache,
+  connectCache,
+  closeCache,
 
-const setItem = async (key, value) => {
-  cache[key] = value;
-};
-
-const getItem = async (key) => cache[key];
-
-const removeItem = async (key) => {
-  delete cache[key];
-};
+  getItem,
+  setItem,
+  removeItem,
+} = require('./redis');
 
 module.exports = {
+  initCache,
+  connectCache,
+  closeCache,
+
   setItem,
   getItem,
   removeItem,

@@ -24,6 +24,7 @@ const byId = async (user, note) => {
   const fromCache = await fromCacheById(user, note);
   if (fromCache) return fromCache;
 
+  info('from db');
   const fromDb = await findOne({ id: note.id, owner: user.email });
   if (fromDb) {
     await cacheById(user, fromDb);
@@ -52,6 +53,7 @@ const byOwner = async (user) => {
   const fromCache = await fromCacheByOwner(user);
   if (fromCache) return fromCache;
 
+  info('from db');
   const fromDb = await find({ owner: user.email });
   if (fromDb) {
     await cacheByOwner(user, fromDb);
