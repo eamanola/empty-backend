@@ -8,7 +8,7 @@ const {
   deleteNotes,
   createUser,
   validNewNote,
-} = require('../jest/test-helper.test');
+} = require('../jest/test-helpers');
 
 const { findOne, replaceOne } = require('../models/notes');
 

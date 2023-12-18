@@ -11,7 +11,7 @@ const {
 const {
   deleteNotes,
   validNewNote,
-} = require('../jest/test-helper.test');
+} = require('../jest/test-helpers');
 
 jest.mock('../config', () => {
   const actual = jest.requireActual('../config');

@@ -11,7 +11,7 @@ const {
 const {
   deleteUsers,
   countUsers,
-} = require('../jest/test-helper.test');
+} = require('../jest/test-helpers');
 
 const {
   emailTakenError,

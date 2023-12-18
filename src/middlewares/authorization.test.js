@@ -8,7 +8,7 @@ const {
   closeDB,
 } = require('../db');
 
-const { deleteUsers } = require('../jest/test-helper.test');
+const { deleteUsers } = require('../jest/test-helpers');
 
 const { accessDenied } = require('../errors');
 

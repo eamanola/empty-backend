@@ -10,7 +10,7 @@ const {
   countNotes,
   createUser,
   validNewNote,
-} = require('../jest/test-helper.test');
+} = require('../jest/test-helpers');
 
 const { findOne } = require('../models/notes');
 

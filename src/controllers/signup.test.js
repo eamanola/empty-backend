@@ -9,7 +9,7 @@ const {
 const {
   deleteUsers,
   countUsers,
-} = require('../jest/test-helper.test');
+} = require('../jest/test-helpers');
 
 const { findOne } = require('../models/users');
 

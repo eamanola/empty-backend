@@ -17,10 +17,6 @@ const createUser = async ({ email = 'foo@example.com', password = '123' } = {}) 
 
 const validNewNote = ({ text = 'text', isPublic = false } = {}) => ({ text, isPublic });
 
-test('hide from linter.test', () => {
-  expect(true).toBe(true);
-});
-
 module.exports = {
   deleteUsers,
   deleteNotes,

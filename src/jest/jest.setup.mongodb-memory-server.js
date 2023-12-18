@@ -19,7 +19,3 @@ jest.mock('../db/mongo', () => {
     closeDB,
   };
 });
-
-test('hide from linter.test', () => {
-  expect(true).toBe(true);
-});
