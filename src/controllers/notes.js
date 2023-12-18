@@ -10,14 +10,33 @@ const {
   deleteOne,
 } = require('../models/notes');
 
-const byId = (user, note) => findOne({
-  id: note.id,
-  owner: user.email,
-});
+const {
+  byId: fromCacheById,
+  cacheById,
+  byOwner: fromCacheByOwner,
+  cacheByOwner,
+  onNoteCreated,
+  onNoteUpdated,
+  onNoteRemoved,
+} = require('./notes.cache');
+
+const byId = async (user, note) => {
+  const fromCache = await fromCacheById(user, note);
+  if (fromCache) return fromCache;
+
+  const fromDb = await findOne({ id: note.id, owner: user.email });
+  if (fromDb) {
+    await cacheById(user, fromDb);
+  }
+
+  return fromDb;
+};
 
 const create = async (user, newNote) => {
   try {
     const { id } = await insertOne({ ...newNote, owner: user.email });
+    await onNoteCreated(user);
+
     return id;
   } catch (e) {
     if (e.name === 'ValidationError') {
@@ -29,7 +48,17 @@ const create = async (user, newNote) => {
   }
 };
 
-const byOwner = (user) => find({ owner: user.email });
+const byOwner = async (user) => {
+  const fromCache = await fromCacheByOwner(user);
+  if (fromCache) return fromCache;
+
+  const fromDb = await find({ owner: user.email });
+  if (fromDb) {
+    await cacheByOwner(user, fromDb);
+  }
+
+  return fromDb;
+};
 
 const update = async (user, note) => {
   try {
@@ -37,6 +66,7 @@ const update = async (user, note) => {
       { id: note.id, owner: user.email },
       { ...note, owner: user.email },
     );
+    await onNoteUpdated(user, note);
   } catch (e) {
     if (e.name === 'ValidationError') {
       info(e.message);
@@ -47,7 +77,10 @@ const update = async (user, note) => {
   }
 };
 
-const remove = (user, note) => deleteOne({ id: note.id, owner: user.email });
+const remove = async (user, note) => {
+  await deleteOne({ id: note.id, owner: user.email });
+  await onNoteRemoved(user, note);
+};
 
 const publicNotes = async ({ limit, offset } = {}) => find(
   { isPublic: true },
