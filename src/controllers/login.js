@@ -38,8 +38,9 @@ const userFromToken = async (token) => {
   try {
     if (token) {
       const decodedToken = decodeToken(token);
-
-      return findOne(decodedToken);
+      const user = await findOne(decodedToken);
+      delete user.passwordHash;
+      return user;
     }
 
     return null;
