@@ -10,10 +10,11 @@ services:
 
     depends_on:
       - mongo
+      - redis
 
     environment:
       MONGO_URL: mongodb://${DB_USERNAME:-dbuser}:${DB_PASSWORD:-dbpassword}@mongo/${DB_NAME:-dbname}
-      REDIS_URL: redis://redis
+      REDIS_URL: redis://:${REDIS_PASSWORD:-supersecure}@redis
       SECRET: ${SECRET:-supersecure}
       PORT: 3000
 
@@ -32,4 +33,7 @@ services:
 
   redis:
     image: redis/redis-stack-server:latest
+
+    environment:
+      REDIS_ARGS: "--requirepass ${REDIS_PASSWORD:-supersecure}"
 
