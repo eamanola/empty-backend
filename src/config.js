@@ -14,4 +14,6 @@ module.exports = {
   SECRET,
   NODE_ENV,
   PORT,
+
+  CACHE_ENABLED: !!REDIS_URL,
 };

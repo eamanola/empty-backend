@@ -3,5 +3,6 @@ jest.mock('../config', () => {
   return {
     ...actual,
     SECRET: 'shhhhh',
+    CACHE_ENABLED: true,
   };
 });

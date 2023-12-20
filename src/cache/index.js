@@ -1,3 +1,5 @@
+const { CACHE_ENABLED } = require('../config');
+
 const {
   initCache,
   connectCache,
@@ -9,11 +11,11 @@ const {
 } = require('./redis');
 
 module.exports = {
-  initCache,
-  connectCache,
-  closeCache,
+  initCache: CACHE_ENABLED ? initCache : () => null,
+  connectCache: CACHE_ENABLED ? connectCache : () => null,
+  closeCache: CACHE_ENABLED ? closeCache : () => null,
 
-  setItem,
-  getItem,
-  removeItem,
+  setItem: CACHE_ENABLED ? setItem : () => null,
+  getItem: CACHE_ENABLED ? getItem : () => null,
+  removeItem: CACHE_ENABLED ? removeItem : () => null,
 };
