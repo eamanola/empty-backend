@@ -6,7 +6,7 @@ const { findOne } = require('../models/users');
 
 const signup = require('./signup');
 
-const login = require('./login');
+const { login } = require('./login');
 
 describe('login', () => {
   it('should return a token', async () => {

@@ -4,16 +4,16 @@ const app = require('../app');
 
 const { accessDenied } = require('../errors');
 
+const { APIgetToken } = require('../jest/test-helpers');
+
 const authorization = require('./authorization');
 
 const api = supertest(app);
 
 describe('authorization', () => {
   it('should add user to request', async () => {
-    const email = 'foo@example.com';
-    const credentials = { email, password: '123' };
-    await api.post('/signup').send(credentials);
-    const { token } = (await api.post('/login').send(credentials)).body;
+    const email = 'foo@example.bar';
+    const token = await APIgetToken({ api, email });
 
     const req = { get: (/* authorization */) => `bearer ${token}` };
     const res = {};
@@ -34,6 +34,7 @@ describe('authorization', () => {
     const next = (e) => { error = e; };
 
     expect(req.user).toBeFalsy();
+    expect(req.get('authorization')).toBeFalsy();
 
     await authorization(req, res, next);
 
@@ -49,6 +50,7 @@ describe('authorization', () => {
     const next = (e) => { error = e; };
 
     expect(req.user).toBeFalsy();
+    expect(req.get('authorization')).toBeTruthy();
 
     await authorization(req, res, next);
 

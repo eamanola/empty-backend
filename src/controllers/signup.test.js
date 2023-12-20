@@ -4,7 +4,7 @@ const { findOne } = require('../models/users');
 
 const { countUsers } = require('../jest/test-helpers');
 
-const login = require('./login');
+const { login } = require('./login');
 
 const signup = require('./signup');
 

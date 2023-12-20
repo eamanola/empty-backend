@@ -1,36 +1,16 @@
-const { accessDenied } = require('../errors');
-const { decode } = require('../token');
-const { findOne } = require('../models/users');
-
-const getToken = (req) => {
-  const auth = req.get('authorization');
-
-  const token = (
-    auth
-    && auth.toLowerCase().startsWith('bearer ')
-  )
-    ? auth.substring(7)
-    : null;
-
-  return token;
-};
-
-const getUser = (token) => !!token && findOne(decode(token));
+const { extractToken } = require('../utils/authorization');
+const { userFromToken } = require('../controllers/login');
 
 const authorization = async (req, res, next) => {
-  let error;
+  let error = null;
 
   try {
-    const token = getToken(req);
-    const user = await getUser(token);
+    const token = extractToken(req.get('authorization'));
+    const user = await userFromToken(token);
 
     req.user = user;
   } catch (e) {
-    if (e.name === 'JsonWebTokenError') {
-      error = accessDenied;
-    } else {
-      error = e;
-    }
+    error = e;
   }
 
   next(error);

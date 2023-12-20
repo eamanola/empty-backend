@@ -4,10 +4,12 @@ const {
   createParamError,
   userNotFoundError,
   invalidPasswordError,
+  accessDenied,
 } = require('../errors');
 const { info } = require('../logger');
-const { encode: encodeToken } = require('../token');
+const { encode: encodeToken, decode: decodeToken } = require('../token');
 const { findOne } = require('../models/users');
+
 const loginSchema = require('../validators/login');
 
 const login = async ({ email, password }) => {
@@ -32,4 +34,24 @@ const login = async ({ email, password }) => {
   return token;
 };
 
-module.exports = login;
+const userFromToken = async (token) => {
+  try {
+    if (token) {
+      const decodedToken = decodeToken(token);
+
+      return findOne(decodedToken);
+    }
+
+    return null;
+  } catch (e) {
+    if (e.name === 'JsonWebTokenError') {
+      throw accessDenied;
+    }
+    throw e;
+  }
+};
+
+module.exports = {
+  login,
+  userFromToken,
+};
