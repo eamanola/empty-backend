@@ -1,4 +1,4 @@
-const { setItem, getItem, removeItem } = require('../cache');
+const { setItem, getItem, removeItem } = require('.');
 
 const noteKey = ({ id: userId }, { id: noteId }) => `${userId}_${noteId}`;
 const listKey = ({ id: userId }) => `${userId}_byOwner`;

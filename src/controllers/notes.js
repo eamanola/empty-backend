@@ -18,7 +18,7 @@ const {
   onNoteCreated,
   onNoteUpdated,
   onNoteRemoved,
-} = require('./notes.cache');
+} = require('../cache/notes');
 
 const byId = async (user, note) => {
   const fromCache = await fromCacheById(user, note);
