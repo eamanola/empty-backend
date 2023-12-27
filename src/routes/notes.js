@@ -8,9 +8,7 @@ const {
   remove,
 } = require('../controllers/notes');
 
-const router = express.Router();
-
-router.post('/', async (req, res, next) => {
+const post = async (req, res, next) => {
   let error = null;
 
   try {
@@ -24,9 +22,9 @@ router.post('/', async (req, res, next) => {
   } finally {
     next(error);
   }
-});
+};
 
-router.get('/:id', async (req, res, next) => {
+const getById = async (req, res, next) => {
   let error = null;
 
   try {
@@ -39,9 +37,9 @@ router.get('/:id', async (req, res, next) => {
   } finally {
     next(error);
   }
-});
+};
 
-router.get('/', async (req, res, next) => {
+const getByOwner = async (req, res, next) => {
   let error = null;
 
   try {
@@ -54,9 +52,9 @@ router.get('/', async (req, res, next) => {
   } finally {
     next(error);
   }
-});
+};
 
-router.put('/:id', async (req, res, next) => {
+const put = async (req, res, next) => {
   let error = null;
 
   try {
@@ -70,9 +68,9 @@ router.put('/:id', async (req, res, next) => {
   } finally {
     next(error);
   }
-});
+};
 
-router.delete('/:id', async (req, res, next) => {
+const deleteHandler = async (req, res, next) => {
   let error = null;
 
   try {
@@ -85,6 +83,18 @@ router.delete('/:id', async (req, res, next) => {
   } finally {
     next(error);
   }
-});
+};
+
+const router = express.Router();
+
+router.post('/', post);
+
+router.get('/:id', getById);
+
+router.get('/', getByOwner);
+
+router.put('/:id', put);
+
+router.delete('/:id', deleteHandler);
 
 module.exports = router;
