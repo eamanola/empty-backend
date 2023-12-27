@@ -7,7 +7,7 @@ const {
   cacheById,
   byOwner: fromCacheByOwner,
   cacheByOwner,
-} = require('./notes');
+} = require('../cache/notes');
 
 const {
   create,
@@ -15,7 +15,7 @@ const {
   byOwner,
   update,
   remove,
-} = require('../controllers/notes');
+} = require('./notes');
 
 const createNote = async (user, { isPublic = false } = {}) => {
   const { id } = await create(user, validNewNote({ isPublic }));
