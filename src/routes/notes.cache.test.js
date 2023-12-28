@@ -30,7 +30,7 @@ describe('/notes cache', () => {
         .get(`/notes/${note.id}`)
         .set({ Authorization: `bearer ${token}` });
 
-      expect(await getItem(key)).toEqual(note);
+      expect((await getItem(key)).body.note).toEqual(note);
     });
 
     it('should not cache, if fail', async () => {
@@ -55,7 +55,11 @@ describe('/notes cache', () => {
       const user = await userFromToken(token);
       const key = `${user.email}/notes/${note.id}`;
 
-      const cached = { ...note, text: 'foo', bar: 'baz' };
+      const cached = {
+        statusCode: 234,
+        body: { note: { ...note, text: 'foo', bar: 'baz' } },
+      };
+
       expect(cached).not.toEqual(note);
 
       await setItem(key, cached);
@@ -65,7 +69,8 @@ describe('/notes cache', () => {
         .get(`/notes/${note.id}`)
         .set({ Authorization: `bearer ${token}` });
 
-      expect(response.body.note).toEqual(cached);
+      expect(response.statusCode).toEqual(cached.statusCode);
+      expect(response.body.note).toEqual(cached.body.note);
     });
   });
 
@@ -83,7 +88,7 @@ describe('/notes cache', () => {
         .get('/notes')
         .set({ Authorization: `bearer ${token}` });
 
-      expect((await getItem(key))[0]).toEqual(note);
+      expect((await getItem(key)).body.notes[0]).toEqual(note);
     });
 
     it('should not cache, if fail', async () => {
@@ -109,9 +114,10 @@ describe('/notes cache', () => {
       const user = await userFromToken(token);
       const key = `${user.email}/notes`;
 
-      const cached = [{ ...note, text: 'foo', bar: 'baz' }];
-      expect(cached[0]).not.toEqual(note);
-
+      const cached = {
+        statusCode: 234,
+        body: { notes: [{ ...note, text: 'foo', bar: 'baz' }] },
+      };
       await setItem(key, cached);
       expect(await getItem(key)).toEqual(cached);
 
@@ -119,7 +125,8 @@ describe('/notes cache', () => {
         .get('/notes')
         .set({ Authorization: `bearer ${token}` });
 
-      expect(response.body.notes[0]).toEqual(cached[0]);
+      expect(response.statusCode).toEqual(cached.statusCode);
+      expect(response.body.notes[0]).toEqual(cached.body.notes[0]);
     });
   });
 
@@ -153,7 +160,7 @@ describe('/notes cache', () => {
         .send(validNewNote());
 
       expect(response.status).toBe(accessDenied.status);
-      expect(await getItem(key)).toBeTruthy();
+      expect(await getItem(key)).toBe('foo');
     });
   });
 
