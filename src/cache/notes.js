@@ -1,7 +1,7 @@
 const { setItem, getItem, removeItem } = require('.');
 
-const noteKey = ({ id: userId }, { id: noteId }) => `${userId}_${noteId}`;
-const listKey = ({ id: userId }) => `${userId}_byOwner`;
+const noteKey = ({ email }, { id: noteId }) => `${email}/notes/${noteId}`;
+const listKey = ({ email }) => `${email}/notes`;
 const modifiedToDate = (note) => ({ ...note, modified: new Date(note.modified) });
 
 const byId = async (user, note) => {
