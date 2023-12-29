@@ -1,4 +1,4 @@
-const { publicNotes: controller } = require('../controllers/notes');
+const controller = require('../controllers/public-notes');
 
 const publicNotes = async (req, res, next) => {
   let error = null;
