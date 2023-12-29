@@ -12,6 +12,7 @@ const { accessDenied } = require('../errors');
 
 const { userFromToken } = require('../controllers/login');
 const { getItem, removeItem, setItem } = require('../cache');
+const { cacheKey } = require('./rest-cache');
 
 const api = supertest(app);
 
@@ -21,7 +22,7 @@ describe('/notes cache', () => {
       const token = await APIgetToken({ api });
       const note = await APIcreateNote({ api, token });
       const user = await userFromToken(token);
-      const key = `${user.email}/notes/${note.id}`;
+      const key = cacheKey({ user, url: `/notes/${note.id}` });
 
       await removeItem(key);
       expect(await getItem(key)).toBeFalsy();
@@ -37,7 +38,7 @@ describe('/notes cache', () => {
       const token = await APIgetToken({ api });
       const note = await APIcreateNote({ api, token });
       const user = await userFromToken(token);
-      const key = `${user.email}/notes/${note.id}`;
+      const key = cacheKey({ user, url: `/notes/${note.id}` });
 
       await removeItem(key);
       expect(await getItem(key)).toBeFalsy();
@@ -53,7 +54,7 @@ describe('/notes cache', () => {
       const token = await APIgetToken({ api });
       const note = await APIcreateNote({ api, token });
       const user = await userFromToken(token);
-      const key = `${user.email}/notes/${note.id}`;
+      const key = cacheKey({ user, url: `/notes/${note.id}` });
 
       const cached = {
         statusCode: 234,
@@ -79,7 +80,7 @@ describe('/notes cache', () => {
       const token = await APIgetToken({ api });
       const note = await APIcreateNote({ api, token });
       const user = await userFromToken(token);
-      const key = `${user.email}/notes`;
+      const key = cacheKey({ user, url: '/notes' });
 
       await removeItem(key);
       expect(await getItem(key)).toBeFalsy();
@@ -94,7 +95,7 @@ describe('/notes cache', () => {
     it('should not cache, if fail', async () => {
       const token = await APIgetToken({ api });
       const user = await userFromToken(token);
-      const key = `${user.email}/notes`;
+      const key = cacheKey({ user, url: '/notes' });
 
       // TODO:
       await removeItem(key);
@@ -112,7 +113,7 @@ describe('/notes cache', () => {
       const token = await APIgetToken({ api });
       const note = await APIcreateNote({ api, token });
       const user = await userFromToken(token);
-      const key = `${user.email}/notes`;
+      const key = cacheKey({ user, url: '/notes' });
 
       const cached = {
         statusCode: 234,
@@ -134,7 +135,7 @@ describe('/notes cache', () => {
     it('should clear /notes cache', async () => {
       const token = await APIgetToken({ api });
       const user = await userFromToken(token);
-      const key = `${user.email}/notes`;
+      const key = cacheKey({ user, url: '/notes' });
 
       await setItem(key, 'foo');
       expect(await getItem(key)).toBeTruthy();
@@ -150,7 +151,7 @@ describe('/notes cache', () => {
     it('should not clear /notes cache, if fail', async () => {
       const token = await APIgetToken({ api });
       const user = await userFromToken(token);
-      const key = `${user.email}/notes`;
+      const key = cacheKey({ user, url: '/notes' });
 
       await setItem(key, 'foo');
       expect(await getItem(key)).toBeTruthy();
@@ -169,8 +170,8 @@ describe('/notes cache', () => {
       const token = await APIgetToken({ api });
       const user = await userFromToken(token);
       const note = await APIcreateNote({ api, token });
-      const key1 = `${user.email}/notes`;
-      const key2 = `${user.email}/notes/${note.id}`;
+      const key1 = cacheKey({ user, url: '/notes' });
+      const key2 = cacheKey({ user, url: `/notes/${note.id}` });
 
       const modified = { ...note, text: 'foo' };
 
@@ -185,17 +186,15 @@ describe('/notes cache', () => {
         .send(modified);
 
       expect(await getItem(key1)).toBeFalsy();
-
-      // TODO: put makes a get
-      expect(await getItem(key2)).not.toBe('foo');
+      expect(await getItem(key2)).toBeFalsy();
     });
 
     it('should not clear /notes cache & /notes/:id cache, if fail', async () => {
       const token = await APIgetToken({ api });
       const user = await userFromToken(token);
       const note = await APIcreateNote({ api, token });
-      const key1 = `${user.email}/notes`;
-      const key2 = `${user.email}/notes/${note.id}`;
+      const key1 = cacheKey({ user, url: '/notes' });
+      const key2 = cacheKey({ user, url: `/notes/${note.id}` });
 
       const modified = { ...note, text: 'foo' };
 
@@ -219,8 +218,8 @@ describe('/notes cache', () => {
       const token = await APIgetToken({ api });
       const user = await userFromToken(token);
       const note = await APIcreateNote({ api, token });
-      const key1 = `${user.email}/notes`;
-      const key2 = `${user.email}/notes/${note.id}`;
+      const key1 = cacheKey({ user, url: '/notes' });
+      const key2 = cacheKey({ user, url: `/notes/${note.id}` });
 
       await setItem(key1, 'foo');
       await setItem(key2, 'foo');
@@ -239,8 +238,8 @@ describe('/notes cache', () => {
       const token = await APIgetToken({ api });
       const user = await userFromToken(token);
       const note = await APIcreateNote({ api, token });
-      const key1 = `${user.email}/notes`;
-      const key2 = `${user.email}/notes/${note.id}`;
+      const key1 = cacheKey({ user, url: '/notes' });
+      const key2 = cacheKey({ user, url: `/notes/${note.id}` });
 
       const modified = { ...note, text: 'foo' };
 

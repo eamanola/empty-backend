@@ -4,7 +4,7 @@ const cors = require('cors');
 const errorHandler = require('./middlewares/error-handler');
 const authorization = require('./middlewares/authorization');
 const requireUser = require('./middlewares/require-user');
-const cache = require('./middlewares/cache');
+const { cache } = require('./middlewares/rest-cache');
 
 const signup = require('./routes/signup');
 const login = require('./routes/login');
