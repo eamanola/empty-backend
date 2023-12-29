@@ -1,5 +1,5 @@
 const { getItem, setItem, removeItem } = require('../cache');
-const { log } = require('../logger');
+const { log, info } = require('../logger');
 
 const cacheKey = ({ user, url }) => `${user?.email || ''}${url}`;
 
@@ -60,6 +60,7 @@ const cache = async (req, res, next) => {
       const cached = await getItem(key);
       if (cached) {
         res.status(cached.statusCode).json(cached.body);
+        info('from cache');
         // TODO:
         return;
       } // else {
