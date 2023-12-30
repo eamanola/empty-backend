@@ -6,16 +6,13 @@ const {
   find: dbFind,
 } = require('../db');
 
-const restModel = ({ table, validator }) => {
-  const insertOne = async (note) => {
-    await validator.validate(note);
+const restModel = (table, validator) => {
+  const insertOne = async (row) => {
+    await validator.validate(row);
 
     return dbInsertOne(
       table,
-      {
-        ...note,
-        modified: new Date(),
-      },
+      { ...row, modified: new Date() },
     );
   };
 
@@ -33,10 +30,7 @@ const restModel = ({ table, validator }) => {
     return dbReplaceOne(
       table,
       where,
-      {
-        ...replacement,
-        modified: new Date(),
-      },
+      { ...replacement, modified: new Date() },
     );
   };
 

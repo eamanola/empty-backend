@@ -3,20 +3,24 @@ const express = require('express');
 const { cache } = require('../middlewares/rest-cache');
 const requireUser = require('../middlewares/require-user');
 
-const restRouter = ({
-  controller,
+const restController = require('../controllers/rest-controller');
+
+const restRouter = (controller, {
   useCache = true,
   userRequired = true,
   resultKey = 'result',
   resultsKey = 'results',
-}) => {
+
+  table = null,
+  validator = null,
+} = {}) => {
   const {
     create,
     byId,
     byOwner,
     update,
     remove,
-  } = controller;
+  } = (controller || restController(null, { table, validator }));
 
   const post = async (req, res, next) => {
     let error = null;

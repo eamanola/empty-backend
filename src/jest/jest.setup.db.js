@@ -1,5 +1,5 @@
 const { initDB, connectDB, closeDB } = require('../db');
-const { deleteUsers, deleteNotes } = require('./test-helpers');
+const { deleteUsers } = require('./test-helpers');
 
 const SKIP_PATHS = [
   'src/db',
@@ -25,5 +25,4 @@ beforeEach(async () => {
   if (skip()) { return; }
 
   await deleteUsers();
-  await deleteNotes();
 });

@@ -1,4 +1,4 @@
-const model = require('../models/notes');
+const { model } = require('../routes/notes');
 
 const publicNotes = async ({ limit, offset } = {}) => model.find(
   { isPublic: true },

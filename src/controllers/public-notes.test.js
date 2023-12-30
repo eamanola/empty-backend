@@ -1,32 +1,28 @@
-const {
-  createUser,
-  validNote,
-} = require('../jest/test-helpers');
+const { validNote } = require('../jest/test-helpers');
 
-const { findOne } = require('../models/notes');
+const { model } = require('../routes/notes');
 
-const { create } = require('./notes');
+const { deleteMany } = require('../db');
 
 const publicNotes = require('./public-notes');
 
-const createNote = async (user, { isPublic = false } = {}) => {
-  const { id } = await create(user, validNote({ isPublic }));
-  return findOne({ id });
-};
+const createNote = async ({ isPublic = true } = {}) => (
+  model.insertOne({ ...validNote({ isPublic }), owner: 'owner' })
+);
 
 describe('publicNotes', () => {
-  it('should return public notes', async () => {
-    const user = await createUser();
+  beforeEach(() => deleteMany(model.table, {}));
 
-    const PUBLIC_LIMIT = 15;
-    const PRIVATE_LIMIT = 20;
+  it('should return public notes', async () => {
+    const PUBLIC_LIMIT = 2;
+    const PRIVATE_LIMIT = 3;
 
     const promises = [];
     for (let i = 0; i < PUBLIC_LIMIT; i += 1) {
-      promises.push(createNote(user, { isPublic: true }));
+      promises.push(createNote());
     }
     for (let i = 0; i < PRIVATE_LIMIT; i += 1) {
-      promises.push(createNote(user, { isPublic: false }));
+      promises.push(createNote({ isPublic: false }));
     }
     await Promise.all(promises);
 
@@ -37,15 +33,13 @@ describe('publicNotes', () => {
   });
 
   it('should accept an optinal limit option', async () => {
-    const user = await createUser();
-
-    const PUBLIC_LIMIT = 15;
-    const LIMIT = 5;
+    const PUBLIC_LIMIT = 4;
+    const LIMIT = 2;
     expect(LIMIT < PUBLIC_LIMIT).toBe(true);
 
     const promises = [];
     for (let i = 0; i < PUBLIC_LIMIT; i += 1) {
-      promises.push(createNote(user, { isPublic: true }));
+      promises.push(createNote());
     }
 
     await Promise.all(promises);
@@ -55,18 +49,16 @@ describe('publicNotes', () => {
   });
 
   it('should accept an optinal offset option', async () => {
-    const user = await createUser();
-
-    const PUBLIC_LIMIT = 15;
-    const LIMIT = 5;
-    const OFFSET = 3;
+    const PUBLIC_LIMIT = 4;
+    const LIMIT = 2;
+    const OFFSET = 1;
     expect(LIMIT < PUBLIC_LIMIT).toBe(true);
     expect(OFFSET > 0).toBe(true);
     expect(LIMIT + OFFSET < PUBLIC_LIMIT).toBe(true);
 
     const promises = [];
     for (let i = 0; i < PUBLIC_LIMIT; i += 1) {
-      promises.push(createNote(user, { isPublic: true }));
+      promises.push(createNote());
     }
 
     await Promise.all(promises);

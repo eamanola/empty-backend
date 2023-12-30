@@ -2,18 +2,15 @@ const supertest = require('supertest');
 
 const app = require('../app');
 
-const {
-  validNote,
-  APIgetToken,
-  APIcreateNote,
-  APIcreateNotes,
-} = require('../jest/test-helpers');
+const { validNote, APIgetToken } = require('../jest/test-helpers');
 
-const { findOne: findOneUser } = require('../models/users');
+const { userFromToken } = require('../controllers/login');
 
 const { paramError, accessDenied } = require('../errors');
 
-const { decode } = require('../token');
+const { deleteMany } = require('../db');
+
+const { model } = require('./notes');
 
 const api = supertest(app);
 
@@ -27,7 +24,23 @@ const getNote = async (id, token) => {
   return note;
 };
 
+const createNote = async ({
+  token,
+  newNote = validNote(),
+}) => {
+  const { note } = (
+    await api
+      .post('/notes')
+      .set({ Authorization: `bearer ${token}` })
+      .send(newNote)
+  ).body;
+
+  return note;
+};
+
 describe('/notes', () => {
+  beforeEach(() => deleteMany(model.table, {}));
+
   it('should throw accessDenied, if user missing', async () => {
     const response = await api
       .get('/notes');
@@ -71,7 +84,7 @@ describe('/notes', () => {
   describe('GET /notes/:id', () => {
     it('should return a note by id', async () => {
       const token = await APIgetToken({ api });
-      const note = await APIcreateNote({ api, token });
+      const note = await createNote({ api, token });
 
       const response = await api
         .get(`/notes/${note.id}`)
@@ -89,12 +102,12 @@ describe('/notes', () => {
   describe('GET /notes', () => {
     it('should return all user notes', async () => {
       const token = await APIgetToken({ api });
-      const TIMES = 3;
-      await APIcreateNotes({
-        api,
-        token,
-        count: TIMES,
-      });
+      const token2 = await APIgetToken({ api, email: 'foo2@other.com' });
+
+      await createNote({ api, token });
+      await createNote({ api, token });
+
+      await createNote({ api, token: token2 });
 
       const { notes } = (
         await api
@@ -102,9 +115,9 @@ describe('/notes', () => {
           .set({ Authorization: `bearer ${token}` })
       ).body;
 
-      expect(notes.length).toBe(TIMES);
+      expect(notes.length).toBe(2);
 
-      const user = await findOneUser(decode(token));
+      const user = await userFromToken(token);
 
       expect(notes.every(({ owner }) => owner === user.email)).toBe(true);
     });
@@ -113,7 +126,7 @@ describe('/notes', () => {
   describe('PUT /notes/:id', () => {
     it('should update a note', async () => {
       const token = await APIgetToken({ api });
-      const insertedNote = await APIcreateNote({ api, token });
+      const insertedNote = await createNote({ api, token });
 
       const modifiedNote = { ...insertedNote, text: 'foo' };
       expect(modifiedNote.text).not.toBe(insertedNote.text);
@@ -135,7 +148,7 @@ describe('/notes', () => {
 
     it('should throw paramError, on invalid params', async () => {
       const token = await APIgetToken({ api });
-      const insertedNote = await APIcreateNote({ api, token });
+      const insertedNote = await createNote({ api, token });
 
       const invalidNote = { ...insertedNote, text: '' };
       expect(invalidNote.text).not.toBe(insertedNote.text);
@@ -153,7 +166,7 @@ describe('/notes', () => {
 
     it('should not update owner, or modified', async () => {
       const token = await APIgetToken({ api });
-      const insertedNote = await APIcreateNote({ api, token });
+      const insertedNote = await createNote({ api, token });
 
       const modifiedNote = { ...insertedNote, owner: 'foo', modified: 'bar' };
       expect(modifiedNote.owner).not.toBe(insertedNote.owner);
@@ -171,7 +184,7 @@ describe('/notes', () => {
 
     it('should not update id', async () => {
       const token = await APIgetToken({ api });
-      const insertedNote = await APIcreateNote({ api, token });
+      const insertedNote = await createNote({ api, token });
 
       const modifiedNote = {
         ...insertedNote,
@@ -195,7 +208,7 @@ describe('/notes', () => {
   describe('DELETE /notes/:id', () => {
     it('should remove a note by id', async () => {
       const token = await APIgetToken({ api });
-      const note = await APIcreateNote({ api, token });
+      const note = await createNote({ api, token });
 
       const response = await api
         .delete(`/notes/${note.id}`)

@@ -39,7 +39,6 @@ describe('authorization', () => {
     await authorization(req, res, next);
 
     expect(error).toBeFalsy();
-
     expect(req.user).toBeFalsy();
   });
 
@@ -55,7 +54,6 @@ describe('authorization', () => {
     await authorization(req, res, next);
 
     expect(error).toEqual(accessDenied);
-
     expect(req.user).toBeFalsy();
   });
 });

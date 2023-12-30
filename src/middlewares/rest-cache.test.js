@@ -46,8 +46,7 @@ describe('cache middleware', () => {
 
       expect(await getItem(key)).toBeFalsy();
 
-      await api.get('/test/id')
-        .set({ fail: 1 });
+      await api.get('/test/id').set({ fail: 1 });
 
       expect(await getItem(key)).toBeFalsy();
     });
@@ -55,11 +54,7 @@ describe('cache middleware', () => {
     it('should use a cached value, if available', async () => {
       const key = cacheKey({ url: '/test/id' });
 
-      const cached = {
-        statusCode: 234,
-        body: 'foo',
-      };
-
+      const cached = { statusCode: 234, body: 'foo' };
       expect(cached).not.toEqual(success);
 
       await setItem(key, cached);
@@ -88,8 +83,7 @@ describe('cache middleware', () => {
 
       expect(await getItem(key)).toBeFalsy();
 
-      await api.get('/test')
-        .set({ fail: 1 });
+      await api.get('/test').set({ fail: 1 });
 
       expect(await getItem(key)).toBeFalsy();
     });
@@ -97,10 +91,9 @@ describe('cache middleware', () => {
     it('should use a cached value, if available', async () => {
       const key = cacheKey({ url: '/test' });
 
-      const cached = {
-        statusCode: 234,
-        body: 'foo',
-      };
+      const cached = { statusCode: 234, body: 'foo' };
+      expect(cached).not.toEqual(success);
+
       await setItem(key, cached);
       expect(await getItem(key)).toEqual(cached);
 
@@ -129,8 +122,7 @@ describe('cache middleware', () => {
       await setItem(key, 'foo');
       expect(await getItem(key)).toBeTruthy();
 
-      await api.post('/test')
-        .set({ fail: 1 });
+      await api.post('/test').set({ fail: 1 });
 
       expect(await getItem(key)).toBe('foo');
     });
@@ -161,8 +153,7 @@ describe('cache middleware', () => {
       expect(await getItem(key1)).toBe('foo1');
       expect(await getItem(key2)).toBe('foo2');
 
-      await api.put('/test/id')
-        .set({ fail: 1 });
+      await api.put('/test/id').set({ fail: 1 });
 
       expect(await getItem(key1)).toBe('foo1');
       expect(await getItem(key2)).toBe('foo2');
@@ -194,8 +185,7 @@ describe('cache middleware', () => {
       expect(await getItem(key1)).toBe('foo1');
       expect(await getItem(key2)).toBe('foo2');
 
-      await api.delete('/test/id')
-        .set({ fail: 1 });
+      await api.delete('/test/id').set({ fail: 1 });
 
       expect(await getItem(key1)).toBe('foo1');
       expect(await getItem(key2)).toBe('foo2');

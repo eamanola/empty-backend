@@ -9,7 +9,6 @@ describe('CACHE_ENABLED flag', () => {
 
     const data = 'foo';
     const key = 'bar';
-
     expect(data).toBeTruthy();
 
     await setItem(key, data);
@@ -32,7 +31,6 @@ describe('CACHE_ENABLED flag', () => {
 
     const data = 'foo';
     const key = 'bar';
-
     expect(data).toBeTruthy();
 
     await setItem(key, data);

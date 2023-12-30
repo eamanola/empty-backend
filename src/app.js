@@ -6,7 +6,7 @@ const authorization = require('./middlewares/authorization');
 
 const signup = require('./routes/signup');
 const login = require('./routes/login');
-const notes = require('./routes/notes');
+const { router: notes } = require('./routes/notes');
 const publicNotes = require('./routes/public-notes');
 
 const app = express();

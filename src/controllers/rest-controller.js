@@ -2,14 +2,16 @@ const { createParamError } = require('../errors');
 
 const { info } = require('../logger');
 
-const restController = ({ model }) => {
+const restModel = require('../models/rest-model');
+
+const restController = (model, { table, validator } = {}) => {
   const {
     insertOne,
     findOne,
     find,
     replaceOne,
     deleteOne,
-  } = model;
+  } = (model || restModel(table, validator));
 
   const byId = async (user, { id }) => findOne({ id, owner: user.email });
 
