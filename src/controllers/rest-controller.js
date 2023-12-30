@@ -4,20 +4,21 @@ const { info } = require('../logger');
 
 const restModel = require('../models/rest-model');
 
-const restController = (model, { table, validator } = {}) => {
+const restController = (model, { table, validator, userRequired = true } = {}) => {
   const {
     insertOne,
     findOne,
     find,
     replaceOne,
     deleteOne,
-  } = (model || restModel(table, validator));
+  } = (model || restModel(table, validator, { userRequired }));
+  const addOwner = (user, obj) => (userRequired ? { ...obj, owner: user.email } : { ...obj });
 
-  const byId = async (user, { id }) => findOne({ id, owner: user.email });
+  const byId = async (user, { id }) => findOne(addOwner(user, { id }));
 
   const create = async (user, newResource) => {
     try {
-      const { id } = await insertOne({ ...newResource, owner: user.email });
+      const { id } = await insertOne(addOwner(user, newResource));
 
       return id;
     } catch (e) {
@@ -35,8 +36,8 @@ const restController = (model, { table, validator } = {}) => {
   const update = async (user, resource) => {
     try {
       await replaceOne(
-        { id: resource.id, owner: user.email },
-        { ...resource, owner: user.email },
+        addOwner(user, { id: resource.id }),
+        addOwner(user, resource),
       );
     } catch (e) {
       if (e.name === 'ValidationError') {
@@ -48,7 +49,7 @@ const restController = (model, { table, validator } = {}) => {
     }
   };
 
-  const remove = async (user, { id }) => deleteOne({ id, owner: user.email });
+  const remove = async (user, { id }) => deleteOne(addOwner(user, { id }));
 
   return {
     create,

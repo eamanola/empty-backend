@@ -8,8 +8,8 @@ const {
 
 const userResourece = require('../validators/user-resource');
 
-const restModel = (table, validator, { requireUser = true } = {}) => {
-  const shape = requireUser ? userResourece.concat(validator) : validator;
+const restModel = (table, validator, { userRequired = true } = {}) => {
+  const shape = userRequired ? userResourece.concat(validator) : validator;
 
   const insertOne = async (row) => {
     await shape.validate(row);

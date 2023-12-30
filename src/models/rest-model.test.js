@@ -14,7 +14,7 @@ const {
   deleteOne,
   find,
   findOne,
-} = restModel(table, validator, { requireUser: false });
+} = restModel(table, validator, { userRequired: false });
 
 const createResource = async () => {
   const newResource = { foo: 'bar' };
@@ -175,9 +175,9 @@ describe('rest-model', () => {
     expect(result).toEqual(expect.objectContaining(newResource));
   });
 
-  describe('requireUser', () => {
+  describe('userRequired', () => {
     it('insert should require owner property', async () => {
-      const { insertOne: insertRequireUser } = restModel(table, validator, { requireUser: true });
+      const { insertOne: insertRequireUser } = restModel(table, validator, { userRequired: true });
 
       const newResource = { foo: 'bar' };
 
@@ -194,7 +194,9 @@ describe('rest-model', () => {
     });
 
     it('replace should require owner property', async () => {
-      const { replaceOne: replaceRequireUser } = restModel(table, validator, { requireUser: true });
+      const {
+        replaceOne: replaceRequireUser,
+      } = restModel(table, validator, { userRequired: true });
 
       const inserted = await createResource();
       const { id } = inserted;

@@ -222,4 +222,34 @@ describe('rest controller', () => {
       expect((await byOwner(user)).length).toBe(1);
     });
   });
+
+  describe('require user', () => {
+    it('should support un auth access', async () => {
+      const {
+        create: createUnAuth,
+        byId: byIdAuth,
+        update: updateUnAuth,
+        remove: removeUnAuth,
+
+      } = restController(null, { table, validator, userRequired: false });
+
+      const resource = { foo: 'bar' };
+      const user = null;
+
+      const id = await createUnAuth(user, resource);
+      expect(await count(table)).toBe(1);
+
+      const created = await byIdAuth(user, { id });
+      expect(created).toEqual(expect.objectContaining(resource));
+
+      const modified = { ...created, foo: 'baz' };
+      expect(modified.foo).not.toBe(created.foo);
+      await updateUnAuth(created, modified);
+      const updated = await byIdAuth(user, { id });
+      expect(updated.foo).toBe(modified.foo);
+
+      await removeUnAuth(user, { id });
+      expect(await count(table)).toBe(0);
+    });
+  });
 });
