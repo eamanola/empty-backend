@@ -12,11 +12,7 @@ const { paramError, accessDenied } = require('../errors');
 
 const { deleteMany } = require('../db');
 
-const userResource = require('../validators/user-resource');
-
-const validator = userResource.concat(
-  object({ foo: string().required() }),
-).noUnknown().strict();
+const validator = object({ foo: string().required() }).noUnknown().strict();
 
 const table = 'test';
 

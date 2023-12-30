@@ -6,9 +6,13 @@ const {
   find: dbFind,
 } = require('../db');
 
-const restModel = (table, validator) => {
+const userResourece = require('../validators/user-resource');
+
+const restModel = (table, validator, { requireUser = true } = {}) => {
+  const shape = requireUser ? userResourece.concat(validator) : validator;
+
   const insertOne = async (row) => {
-    await validator.validate(row);
+    await shape.validate(row);
 
     return dbInsertOne(
       table,
@@ -25,7 +29,7 @@ const restModel = (table, validator) => {
       throw new Error('id is required');
     }
 
-    await validator.validate(replacement);
+    await shape.validate(replacement);
 
     return dbReplaceOne(
       table,

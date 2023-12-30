@@ -14,7 +14,7 @@ const {
   deleteOne,
   find,
   findOne,
-} = restModel(table, validator);
+} = restModel(table, validator, { requireUser: false });
 
 const createResource = async () => {
   const newResource = { foo: 'bar' };
@@ -173,5 +173,44 @@ describe('rest-model', () => {
     const result = await findOne(newResource);
 
     expect(result).toEqual(expect.objectContaining(newResource));
+  });
+
+  describe('requireUser', () => {
+    it('insert should require owner property', async () => {
+      const { insertOne: insertRequireUser } = restModel(table, validator, { requireUser: true });
+
+      const newResource = { foo: 'bar' };
+
+      try {
+        await insertRequireUser(newResource);
+      } catch (e) {
+        expect(e).toBeTruthy();
+      } finally {
+        expect(await count(table)).toBe(0);
+      }
+
+      await insertRequireUser({ ...newResource, owner: 'owner' });
+      expect(await count(table)).toBe(1);
+    });
+
+    it('replace should require owner property', async () => {
+      const { replaceOne: replaceRequireUser } = restModel(table, validator, { requireUser: true });
+
+      const inserted = await createResource();
+      const { id } = inserted;
+      const modified = { ...inserted, foo: 'baz' };
+      expect(inserted.foo).not.toBe(modified.foo);
+
+      try {
+        await replaceRequireUser(inserted, modified);
+      } catch (e) {
+        expect(e).toBeTruthy();
+      } finally {
+        expect((await findOne({ id })).foo).toBe(inserted.foo);
+      }
+
+      await replaceRequireUser(inserted, { ...modified, owner: 'owner' });
+      expect((await findOne({ id })).foo).toBe(modified.foo);
+    });
   });
 });

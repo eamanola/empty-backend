@@ -9,7 +9,6 @@ describe('new note validation', () => {
         text: '',
         imageUrl: null,
         isPublic: false,
-        owner: 'owner',
       };
 
       validate(newNote)
@@ -23,7 +22,6 @@ describe('new note validation', () => {
       const newNote = {
         text: 'foo',
         isPublic: false,
-        owner: 'owner',
       };
 
       expect(await validate(newNote)).toEqual(newNote);
@@ -33,7 +31,6 @@ describe('new note validation', () => {
       const newNote = {
         text: 'foo',
         imageUrl: 'a',
-        owner: 'owner',
         isPublic: false,
       };
 
@@ -55,7 +52,6 @@ describe('new note validation', () => {
       const newNote = {
         text: 'foo',
         imageUrl: '',
-        owner: 'owner',
       };
 
       validate(newNote)
@@ -68,20 +64,6 @@ describe('new note validation', () => {
       };
 
       expect(await validate(newNote2)).toEqual(newNote2);
-    });
-  });
-
-  describe('owner', () => {
-    it('should be required', async () => {
-      const newNote = {
-        text: 'foo',
-        imageUrl: '',
-        owner: '',
-      };
-
-      validate(newNote)
-        .then(() => expect('Should not reach').toBe(true))
-        .catch(({ name }) => expect(name).toMatch('ValidationError'));
     });
   });
 });
