@@ -15,7 +15,7 @@ const createUser = async ({ email = 'foo@example.com', password = '123' } = {}) 
   return findOneUser({ email });
 };
 
-const validNewNote = ({ text = 'text', isPublic = false } = {}) => ({ text, isPublic });
+const validNote = ({ text = 'text', isPublic = false } = {}) => ({ text, isPublic });
 
 const APIgetToken = async ({
   api,
@@ -32,7 +32,7 @@ const APIgetToken = async ({
 const APIcreateNote = async ({
   api,
   token,
-  newNote = validNewNote(),
+  newNote = validNote(),
 }) => {
   const { note } = (
     await api
@@ -48,7 +48,7 @@ const APIcreateNotes = async ({
   api,
   token,
   count,
-  newNote = validNewNote(),
+  newNote = validNote(),
 }) => {
   if (count > 0) {
     await APIcreateNote({ api, token, newNote });
@@ -68,7 +68,7 @@ module.exports = {
   countUsers,
   countNotes,
   createUser,
-  validNewNote,
+  validNote,
   APIgetToken,
   APIcreateNote,
   APIcreateNotes,

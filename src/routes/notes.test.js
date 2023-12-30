@@ -3,7 +3,7 @@ const supertest = require('supertest');
 const app = require('../app');
 
 const {
-  validNewNote,
+  validNote,
   APIgetToken,
   APIcreateNote,
   APIcreateNotes,
@@ -39,7 +39,7 @@ describe('/notes', () => {
   describe('POST /notes', () => {
     it('should create a note', async () => {
       const token = await APIgetToken({ api });
-      const newNote = validNewNote();
+      const newNote = validNote();
 
       const response = await api
         .post('/notes')
@@ -56,12 +56,12 @@ describe('/notes', () => {
 
     it('should throw paramError, on invalid params', async () => {
       const token = await APIgetToken({ api });
-      const invalidNewNote = {};
+      const invalidNote = {};
 
       const response = await api
         .post('/notes')
         .set({ Authorization: `bearer ${token}` })
-        .send(invalidNewNote);
+        .send(invalidNote);
 
       expect(response.status).toBe(paramError.status);
       expect(response.body.note).toBeFalsy();

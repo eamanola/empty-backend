@@ -1,6 +1,6 @@
 const {
   createUser,
-  validNewNote,
+  validNote,
 } = require('../jest/test-helpers');
 
 const { findOne } = require('../models/notes');
@@ -10,7 +10,7 @@ const { create } = require('./notes');
 const publicNotes = require('./public-notes');
 
 const createNote = async (user, { isPublic = false } = {}) => {
-  const { id } = await create(user, validNewNote({ isPublic }));
+  const { id } = await create(user, validNote({ isPublic }));
   return findOne({ id });
 };
 

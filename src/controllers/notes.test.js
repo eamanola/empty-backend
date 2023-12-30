@@ -1,7 +1,7 @@
 const {
   countNotes,
   createUser,
-  validNewNote,
+  validNote,
 } = require('../jest/test-helpers');
 
 const { findOne } = require('../models/notes');
@@ -15,7 +15,7 @@ const {
 } = require('./notes');
 
 const createNote = async (user, { isPublic = false } = {}) => {
-  const { id } = await create(user, validNewNote({ isPublic }));
+  const { id } = await create(user, validNote({ isPublic }));
   return findOne({ id });
 };
 
@@ -23,7 +23,7 @@ describe('notes controller', () => {
   describe('create', () => {
     it('should create a note', async () => {
       const user = await createUser();
-      const newNote = validNewNote();
+      const newNote = validNote();
 
       expect(await countNotes()).toBe(0);
 
@@ -35,7 +35,7 @@ describe('notes controller', () => {
 
     it('should override owner', async () => {
       const user = await createUser();
-      const newNote = validNewNote();
+      const newNote = validNote();
 
       const fakeOwner = '1234';
       expect(user.id).not.toBe(fakeOwner);

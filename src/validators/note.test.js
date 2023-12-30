@@ -1,77 +1,87 @@
-const noteSchema = require('./note');
+const newNoteSchema = require('./note');
 
-const validate = (note) => noteSchema.validate(note);
+const validate = (newNote) => newNoteSchema.validate(newNote);
 
-const validNewNote = {
-  text: 'foo',
-  imageUrl: 'http://example.com',
-  isPublic: false,
-  owner: 'owner',
-};
-
-describe('note validation', () => {
-  describe('new note', () => {
-    it('should contain a valid new note', async () => {
-      const noteMeta = {
-        id: 'foo',
-        modified: new Date(),
-      };
-
-      validate(noteMeta)
-        .then(() => expect('Should not reach').toBe(true))
-        .catch(({ name }) => expect(name).toMatch('ValidationError'));
-
-      const fullNote = {
-        ...noteMeta,
-        ...validNewNote,
-      };
-
-      expect(await validate(fullNote)).toEqual(fullNote);
-    });
-  });
-
-  describe('id', () => {
+describe('new note validation', () => {
+  describe('text', () => {
     it('should be required', async () => {
-      const note = {
-        ...validNewNote,
-        modified: new Date(),
+      const newNote = {
+        text: '',
+        imageUrl: null,
+        isPublic: false,
+        owner: 'owner',
       };
 
-      validate(note)
-        .then(() => expect('Should not reach').toBe(true))
+      validate(newNote)
+        .then(() => expect(false).toBe(true))
         .catch(({ name }) => expect(name).toMatch('ValidationError'));
     });
   });
 
-  describe('modified', () => {
-    it('should be required', async () => {
-      const note = {
-        ...validNewNote,
-        id: 'foo',
+  describe('imageUrl', () => {
+    it('should not be required', async () => {
+      const newNote = {
+        text: 'foo',
+        isPublic: false,
+        owner: 'owner',
       };
 
-      validate(note)
-        .then(() => expect('Should not reach').toBe(true))
-        .catch(({ name }) => expect(name).toMatch('ValidationError'));
+      expect(await validate(newNote)).toEqual(newNote);
     });
 
-    it('should be a date', async () => {
-      const note = {
-        ...validNewNote,
-        id: 'foo',
-        modified: '123',
+    it('should be a valid url', async () => {
+      const newNote = {
+        text: 'foo',
+        imageUrl: 'a',
+        owner: 'owner',
+        isPublic: false,
       };
 
-      validate(note)
+      validate(newNote)
+        .then(() => expect(false).toBe(true))
+        .catch(({ name }) => expect(name).toMatch('ValidationError'));
+
+      const newNote2 = {
+        ...newNote,
+        imageUrl: 'http://www.example.com',
+      };
+
+      expect(await validate(newNote2)).toEqual(newNote2);
+    });
+  });
+
+  describe('isPublic', () => {
+    it('should be required', async () => {
+      const newNote = {
+        text: 'foo',
+        imageUrl: '',
+        owner: 'owner',
+      };
+
+      validate(newNote)
         .then(() => expect('Should not reach').toBe(true))
         .catch(({ name }) => expect(name).toMatch('ValidationError'));
 
-      const note2 = {
-        ...note,
-        modified: new Date(),
+      const newNote2 = {
+        ...newNote,
+        isPublic: false,
       };
 
-      expect(await validate(note2)).toEqual(note2);
+      expect(await validate(newNote2)).toEqual(newNote2);
+    });
+  });
+
+  describe('owner', () => {
+    it('should be required', async () => {
+      const newNote = {
+        text: 'foo',
+        imageUrl: '',
+        owner: '',
+      };
+
+      validate(newNote)
+        .then(() => expect('Should not reach').toBe(true))
+        .catch(({ name }) => expect(name).toMatch('ValidationError'));
     });
   });
 });

@@ -1,15 +1,16 @@
 const {
   string,
-  date,
   object,
+  boolean,
 } = require('yup');
 
-const newNoteSchema = require('./new-note');
+const userResourceSchema = require('./user-resource');
 
-const noteSchema = newNoteSchema.concat(
+const noteSchema = userResourceSchema.concat(
   object({
-    id: string().required(),
-    modified: date().required(),
+    text: string().required(),
+    imageUrl: string().url().nullable(),
+    isPublic: boolean().required(),
   }),
 ).noUnknown().strict();
 

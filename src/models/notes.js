@@ -7,17 +7,16 @@ const {
 } = require('../db');
 
 const noteSchema = require('../validators/note');
-const newNoteSchema = require('../validators/new-note');
 
 const table = 'Notes';
 
-const insertOne = async (newNote) => {
-  await newNoteSchema.validate(newNote);
+const insertOne = async (note) => {
+  await noteSchema.validate(note);
 
   return dbInsertOne(
     table,
     {
-      ...newNote,
+      ...note,
       modified: new Date(),
     },
   );
@@ -27,18 +26,20 @@ const findOne = (where) => dbFindOne(table, where);
 
 const find = (where, options) => dbFind(table, where, options);
 
-const replaceOne = async (where, replacement) => {
-  const timeStamped = {
-    ...replacement,
-    modified: new Date(),
-  };
+const replaceOne = async (where, { modified, id, ...replacement }) => {
+  if (!id) {
+    throw new Error('id is required');
+  }
 
-  await noteSchema.validate(timeStamped);
+  await noteSchema.validate(replacement);
 
   return dbReplaceOne(
     table,
     where,
-    timeStamped,
+    {
+      ...replacement,
+      modified: new Date(),
+    },
   );
 };
 

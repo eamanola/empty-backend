@@ -1,4 +1,4 @@
-const { countNotes, validNewNote } = require('../jest/test-helpers');
+const { countNotes, validNote } = require('../jest/test-helpers');
 
 const {
   insertOne,
@@ -8,10 +8,10 @@ const {
   findOne,
 } = require('./notes');
 
-const validNewNoteWithOwner = (owner = 'owner') => ({ ...validNewNote(), owner });
+const validNoteWithOwner = (owner = 'owner') => ({ ...validNote(), owner });
 
 const createNote = async () => {
-  const newNote = validNewNoteWithOwner();
+  const newNote = validNoteWithOwner();
   const { id } = await insertOne(newNote);
   return findOne({ id });
 };
@@ -20,7 +20,7 @@ describe('notes model', () => {
   it('should create one', async () => {
     expect(await countNotes()).toBe(0);
 
-    const newNote = validNewNoteWithOwner();
+    const newNote = validNoteWithOwner();
 
     await insertOne(newNote);
 
@@ -101,7 +101,7 @@ describe('notes model', () => {
   it('should find by owner', async () => {
     const owner = 'owner';
 
-    const newNote = validNewNoteWithOwner(owner);
+    const newNote = validNoteWithOwner(owner);
 
     expect(await countNotes()).toBe(0);
     await insertOne(newNote);

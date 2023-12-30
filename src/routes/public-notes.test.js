@@ -2,7 +2,7 @@ const supertest = require('supertest');
 
 const app = require('../app');
 
-const { validNewNote, APIgetToken, APIcreateNotes } = require('../jest/test-helpers');
+const { validNote, APIgetToken, APIcreateNotes } = require('../jest/test-helpers');
 
 const api = supertest(app);
 
@@ -13,7 +13,7 @@ describe('GET /public-notes', () => {
     await APIcreateNotes({
       api,
       token,
-      newNote: validNewNote({ isPublic: false }),
+      newNote: validNote({ isPublic: false }),
       count: PRIVATE_LIMIT,
     });
 
@@ -22,7 +22,7 @@ describe('GET /public-notes', () => {
     await APIcreateNotes({
       api,
       token,
-      newNote: validNewNote({ isPublic: true }),
+      newNote: validNote({ isPublic: true }),
       count: PUBLIC_LIMIT,
     });
 
@@ -41,7 +41,7 @@ describe('GET /public-notes', () => {
       await APIcreateNotes({
         api,
         token,
-        newNote: validNewNote({ isPublic: true }),
+        newNote: validNote({ isPublic: true }),
         count: PUBLIC_LIMIT,
       });
 
@@ -57,7 +57,7 @@ describe('GET /public-notes', () => {
       await APIcreateNotes({
         api,
         token,
-        newNote: validNewNote({ isPublic: true }),
+        newNote: validNote({ isPublic: true }),
         count: PUBLIC_LIMIT,
       });
 
@@ -74,7 +74,7 @@ describe('GET /public-notes', () => {
       await APIcreateNotes({
         api,
         token,
-        newNote: validNewNote({ isPublic: true }),
+        newNote: validNote({ isPublic: true }),
         count: PUBLIC_LIMIT,
       });
 
@@ -93,7 +93,7 @@ describe('GET /public-notes', () => {
       await APIcreateNotes({
         api,
         token,
-        newNote: validNewNote({ isPublic: true }),
+        newNote: validNote({ isPublic: true }),
         count: PUBLIC_LIMIT,
       });
 
@@ -116,7 +116,7 @@ describe('GET /public-notes', () => {
       await APIcreateNotes({
         api,
         token,
-        newNote: validNewNote({ isPublic: true }),
+        newNote: validNote({ isPublic: true }),
         count: PUBLIC_LIMIT,
       });
 
@@ -133,7 +133,7 @@ describe('GET /public-notes', () => {
       await APIcreateNotes({
         api,
         token,
-        newNote: validNewNote({ isPublic: true }),
+        newNote: validNote({ isPublic: true }),
         count: PUBLIC_LIMIT,
       });
 
