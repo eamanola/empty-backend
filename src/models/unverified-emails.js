@@ -1,4 +1,4 @@
-const { upsert, deleteOne } = require('../db');
+const { upsert, deleteOne, findOne } = require('../db');
 
 const unverifiedEmailsSchema = require('../validators/unverified-emails');
 
@@ -12,4 +12,5 @@ module.exports = {
     return upsert(table, { userId }, { newEmail });
   },
   deleteOne: ({ userId }) => deleteOne(table, { userId }),
+  findOne: ({ userId }) => findOne(table, { userId }),
 };

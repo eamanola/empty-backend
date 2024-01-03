@@ -2,6 +2,8 @@ const bcrypt = require('bcrypt');
 
 const { findOne } = require('../../models/users');
 
+const { findOne: findOneUnverifiedEmail } = require('../../models/unverified-emails');
+
 const { countUsers } = require('../../jest/test-helpers');
 
 const { login, signup } = require('.');
@@ -55,5 +57,16 @@ describe('signup', () => {
     expect(user.password).toBe(undefined);
     expect(password).not.toBe(user.passwordHash);
     expect(await bcrypt.compare(password, user.passwordHash)).toBe(true);
+  });
+
+  it('should set email unverified', async () => {
+    const email = 'foo@example.com';
+    const password = '123';
+
+    await signup({ email, password });
+
+    const user = await findOne({ email });
+
+    expect(await findOneUnverifiedEmail({ userId: user.id })).toBeTruthy();
   });
 });

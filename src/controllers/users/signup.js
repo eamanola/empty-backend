@@ -4,6 +4,7 @@ const { info } = require('../../logger');
 const { createParamError, emailTakenError } = require('../../errors');
 const signupSchema = require('../../validators/signup');
 const { findOne, insertOne } = require('../../models/users');
+const { addUnverified: addUnverifiedEmail } = require('../email-verification');
 
 const saltRounds = 11;
 
@@ -23,7 +24,11 @@ const signup = async ({ email, password }) => {
 
   const passwordHash = await bcrypt.hash(password, saltRounds);
 
-  return insertOne({ email, passwordHash });
+  const { id } = await insertOne({ email, passwordHash });
+
+  await addUnverifiedEmail({ id }, email);
+
+  return { id };
 };
 
 module.exports = signup;
