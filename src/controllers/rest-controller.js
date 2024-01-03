@@ -12,7 +12,7 @@ const restController = (model, { table, validator, userRequired = true } = {}) =
     replaceOne,
     deleteOne,
   } = (model || restModel(table, validator, { userRequired }));
-  const addOwner = (user, obj) => (userRequired ? { ...obj, owner: user.email } : { ...obj });
+  const addOwner = (user, obj) => (userRequired ? { ...obj, owner: user.id } : { ...obj });
 
   const byId = async (user, { id }) => findOne(addOwner(user, { id }));
 
@@ -31,7 +31,7 @@ const restController = (model, { table, validator, userRequired = true } = {}) =
     }
   };
 
-  const byOwner = async (user) => find({ owner: user.email });
+  const byOwner = async (user) => find({ owner: user.id });
 
   const update = async (user, resource) => {
     try {

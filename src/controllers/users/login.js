@@ -28,7 +28,7 @@ const login = async ({ email, password }) => {
     throw invalidPasswordError;
   }
 
-  const token = encodeToken({ email });
+  const token = encodeToken({ userId: user.id });
 
   return token;
 };

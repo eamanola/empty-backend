@@ -52,7 +52,7 @@ describe('rest controller', () => {
 
       const inserted = await byId(user, { id });
       expect(inserted.owner).not.toBe(fakeOwner);
-      expect(inserted.owner).toBe(user.email);
+      expect(inserted.owner).toBe(user.id);
     });
   });
 

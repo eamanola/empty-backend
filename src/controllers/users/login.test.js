@@ -1,10 +1,6 @@
 const { countUsers } = require('../../jest/test-helpers');
 
-const { decode: decodeToken } = require('../../token');
-
-const { findOne } = require('../../models/users');
-
-const { signup, login } = require('.');
+const { signup, login, fromToken } = require('.');
 
 describe('login', () => {
   it('should return a token', async () => {
@@ -14,10 +10,9 @@ describe('login', () => {
 
     const token = await login({ email, password });
 
+    expect(token).toBeTruthy();
     expect(token).not.toEqual(expect.objectContaining({ email }));
-    expect(await findOne(token)).toBe(null);
-
-    expect(await findOne(decodeToken(token))).toEqual(expect.objectContaining({ email }));
+    expect(await fromToken(token)).toEqual(expect.objectContaining({ email }));
   });
 
   it('should require existing user', async () => {

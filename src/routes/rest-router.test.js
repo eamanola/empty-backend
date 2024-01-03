@@ -129,7 +129,7 @@ describe('rest router', () => {
 
       const user = await userFromToken(token);
 
-      expect(results.every(({ owner }) => owner === user.email)).toBe(true);
+      expect(results.every(({ owner }) => owner === user.id)).toBe(true);
     });
   });
 

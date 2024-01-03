@@ -119,7 +119,7 @@ describe('/notes', () => {
 
       const user = await userFromToken(token);
 
-      expect(notes.every(({ owner }) => owner === user.email)).toBe(true);
+      expect(notes.every(({ owner }) => owner === user.id)).toBe(true);
     });
   });
 

@@ -4,9 +4,7 @@ const app = require('../app');
 
 const { userNotFoundError, invalidPasswordError, paramError } = require('../errors');
 
-const { decode: decodeToken } = require('../token');
-
-const { findOne } = require('../models/users');
+const { fromToken: userFromToken } = require('../controllers/users');
 
 const api = supertest(app);
 
@@ -23,7 +21,7 @@ describe('/login', () => {
 
     expect(response.status).toBe(200);
     expect(response.body.message).toBe('OK');
-    expect(await findOne(decodeToken(response.body.token)))
+    expect(await userFromToken(response.body.token))
       .toEqual(expect.objectContaining({ email }));
   });
 

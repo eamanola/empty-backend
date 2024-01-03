@@ -5,8 +5,8 @@ const { findOne } = require('../../models/users');
 const fromToken = async (token) => {
   try {
     if (token) {
-      const decodedToken = decodeToken(token);
-      const user = await findOne(decodedToken);
+      const { userId: id } = decodeToken(token);
+      const user = await findOne({ id });
       delete user.passwordHash;
       return user;
     }
