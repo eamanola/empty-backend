@@ -1,4 +1,4 @@
-const { login: controller } = require('../controllers/login');
+const { login: controller } = require('../controllers/users');
 
 const login = async (req, res, next) => {
   let error = null;

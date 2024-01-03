@@ -1,12 +1,10 @@
 const bcrypt = require('bcrypt');
 
-const { findOne } = require('../models/users');
+const { findOne } = require('../../models/users');
 
-const { countUsers } = require('../jest/test-helpers');
+const { countUsers } = require('../../jest/test-helpers');
 
-const { login } = require('./login');
-
-const signup = require('./signup');
+const { login, signup } = require('.');
 
 describe('signup', () => {
   it('should create a user', async () => {

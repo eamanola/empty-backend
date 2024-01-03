@@ -4,7 +4,7 @@ const app = require('../app');
 
 const { validNote, APIgetToken } = require('../jest/test-helpers');
 
-const { userFromToken } = require('../controllers/login');
+const { fromToken: userFromToken } = require('../controllers/users');
 
 const { paramError, accessDenied } = require('../errors');
 

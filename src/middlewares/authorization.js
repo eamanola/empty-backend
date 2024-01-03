@@ -1,5 +1,5 @@
 const { extractToken } = require('../utils/authorization');
-const { userFromToken } = require('../controllers/login');
+const { fromToken: userFromToken } = require('../controllers/users');
 
 const authorization = async (req, res, next) => {
   let error = null;

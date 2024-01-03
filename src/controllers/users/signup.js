@@ -1,9 +1,9 @@
 const bcrypt = require('bcrypt');
 
-const { info } = require('../logger');
-const { createParamError, emailTakenError } = require('../errors');
-const signupSchema = require('../validators/signup');
-const { findOne, insertOne } = require('../models/users');
+const { info } = require('../../logger');
+const { createParamError, emailTakenError } = require('../../errors');
+const signupSchema = require('../../validators/signup');
+const { findOne, insertOne } = require('../../models/users');
 
 const saltRounds = 11;
 
