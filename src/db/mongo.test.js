@@ -23,6 +23,7 @@ describe('connection', () => {
     expect(typeof client.db().collection('collection').replaceOne).toBe('function');
     expect(typeof client.db().collection('collection').deleteOne).toBe('function');
     expect(typeof client.db().collection('collection').find).toBe('function');
+    expect(typeof client.db().collection('collection').updateOne).toBe('function');
   });
 
   describe('connectDB', () => {

@@ -9,6 +9,7 @@ const {
   replaceOne,
   deleteOne,
   find,
+  upsert,
 
   deleteMany,
   count,
@@ -25,6 +26,7 @@ module.exports = {
   replaceOne,
   deleteOne,
   find: (table, where, options = {}) => find(table, where, options),
+  upsert,
 
   deleteMany: (table, where) => isTest && deleteMany(table, where),
   count: (table, where) => isTest && count(table, where),
