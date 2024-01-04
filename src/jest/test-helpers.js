@@ -1,6 +1,6 @@
 const { deleteMany, count: countRows } = require('../db');
 const { table: usersTable, findOne: findOneUser } = require('../models/users');
-const signup = require('../controllers/users/signup');
+const { signup } = require('../controllers/users');
 
 const deleteUsers = () => deleteMany(usersTable);
 

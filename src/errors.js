@@ -33,6 +33,12 @@ const createParamError = ({ message }) => ({
   message,
 });
 
+const emailVerifiedError = {
+  status: 400,
+  message: 'User email is verified',
+  name: 'emailVerifiedError',
+};
+
 module.exports = {
   userNotFoundError,
   invalidPasswordError,
@@ -40,4 +46,5 @@ module.exports = {
   paramError,
   createParamError,
   accessDenied,
+  emailVerifiedError,
 };

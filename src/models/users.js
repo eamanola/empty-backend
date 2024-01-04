@@ -1,6 +1,7 @@
 const {
   findOne,
   insertOne,
+  updateOne,
 } = require('../db');
 
 const userSchema = require('../validators/user');
@@ -22,4 +23,5 @@ module.exports = {
 
     return insertOne(table, user);
   },
+  updateOne: async (where, updates) => updateOne(table, where, updates),
 };

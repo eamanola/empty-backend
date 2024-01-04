@@ -59,10 +59,10 @@ const find = (collection, where, { limit, offset }) => client
   .map((doc) => fromMongoId(doc))
   .toArray();
 
-// const updateOne = (collection, where, updates, options = {}) => client
-//   .db()
-//   .collection(collection)
-//   .updateOne(where, { $set: updates }, options);
+const updateOne = (collection, where, updates, options = {}) => client
+  .db()
+  .collection(collection)
+  .updateOne(toMongoId(where), { $set: updates }, options);
 
 // const upsert = (collection, where, updates) => (
 //  updateOne(collection, where, updates, { upsert: true })
@@ -87,7 +87,7 @@ module.exports = {
   replaceOne,
   deleteOne,
   find,
-  // updateOne,
+  updateOne,
   // upsert,
   deleteMany,
   count,

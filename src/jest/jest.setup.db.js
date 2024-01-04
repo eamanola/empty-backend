@@ -1,5 +1,4 @@
 const { initDB, connectDB, closeDB } = require('../db');
-const { deleteUsers } = require('./test-helpers');
 
 const SKIP_PATHS = [
   'src/db',
@@ -24,5 +23,6 @@ afterAll(async () => {
 beforeEach(async () => {
   if (skip()) { return; }
 
+  const { deleteUsers } = jest.requireActual('./test-helpers');
   await deleteUsers();
 });
