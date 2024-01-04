@@ -1,6 +1,6 @@
 const userNotFoundError = {
   status: 400,
-  message: 'Login failed',
+  message: 'User not found',
   name: 'userNotFoundError',
 };
 

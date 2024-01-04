@@ -6,6 +6,8 @@ const authorization = require('./middlewares/authorization');
 
 const signup = require('./routes/signup');
 const login = require('./routes/login');
+const emailVerification = require('./routes/email-verification');
+
 const { router: notes } = require('./routes/notes');
 const publicNotes = require('./routes/public-notes');
 
@@ -18,6 +20,8 @@ app.post('/signup', signup);
 app.post('/login', login);
 
 app.use(authorization);
+
+app.use('/email-verification', emailVerification);
 
 app.use('/notes', notes);
 app.get('/public-notes', publicNotes);
