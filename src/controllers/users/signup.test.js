@@ -65,7 +65,6 @@ describe('signup', () => {
 
     const user = await findOne({ email });
 
-    // expect(user.emailVerificationCode).toBeTruthy();
-    expect(user.emailVerificationCode).toBeFalsy();
+    expect(user.emailVerified).toBe(false);
   });
 });

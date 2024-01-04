@@ -9,7 +9,14 @@ const table = 'Users';
 
 module.exports = {
   table,
-  findOne: (where) => findOne(table, where),
+  findOne: async (where) => {
+    const result = await findOne(table, where);
+    if (result) {
+      return { ...result, emailVerified: !result.emailVerificationCode };
+    }
+
+    return result;
+  },
   insertOne: async (user) => {
     await userSchema.validate(user);
 
