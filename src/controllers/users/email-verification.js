@@ -1,14 +1,14 @@
 const { emailVerifiedError, invalidEmailVerificationCodeError } = require('../../errors');
-const { updateOne } = require('../../models/users');
+const { updateOne, findOne } = require('../../models/users');
 const sendEmailVerificationMail = require('../../utils/send-email-verification-mail');
-const { encode: encodeToken } = require('../../token');
-const { log } = require('../../logger');
+const { encode: encodeToken, decode: decodeToken } = require('../../token');
+const { info } = require('../../logger');
 
 const setEmailVerified = async ({ id, emailVerificationCode }) => {
   try {
     await updateOne({ id, emailVerificationCode }, { emailVerificationCode: null });
   } catch (e) {
-    log(e);
+    info(e);
     throw e;
   }
 };
@@ -28,7 +28,7 @@ const request = async (user, { byCode = null, byLink = null }) => {
   try {
     await updateOne({ id: user.id }, { emailVerificationCode: code });
   } catch (e) {
-    log(e);
+    info(e);
     throw e;
   }
 
@@ -50,13 +50,27 @@ const verifyByCode = async (user, code) => {
   return setEmailVerified({ id: user.id, emailVerificationCode: code });
 };
 
-const verify = (/* token */) => {
+const verifyByLink = async (token) => {
+  const {
+    code,
+    userId,
+    byLink,
+  } = decodeToken(token);
 
+  try {
+    const user = await findOne({ id: userId });
+    await verifyByCode(user, code);
+
+    return byLink.onSuccess;
+  } catch (e) {
+    info(e);
+    return byLink.onFail;
+  }
 };
 
 module.exports = {
   getCode,
   request,
   verifyByCode,
-  verify,
+  verifyByLink,
 };
