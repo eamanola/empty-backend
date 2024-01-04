@@ -39,6 +39,12 @@ const emailVerifiedError = {
   name: 'emailVerifiedError',
 };
 
+const invalidEmailVerificationCodeError = {
+  status: 400,
+  message: 'Wrong code',
+  name: 'invalidEmailVerificationCodeError',
+};
+
 module.exports = {
   userNotFoundError,
   invalidPasswordError,
@@ -47,4 +53,5 @@ module.exports = {
   createParamError,
   accessDenied,
   emailVerifiedError,
+  invalidEmailVerificationCodeError,
 };
