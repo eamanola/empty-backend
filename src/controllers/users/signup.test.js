@@ -2,8 +2,6 @@ const bcrypt = require('bcrypt');
 
 const { findOne } = require('../../models/users');
 
-const { findOne: findOneUnverifiedEmail } = require('../../models/unverified-emails');
-
 const { countUsers } = require('../../jest/test-helpers');
 
 const { login, signup } = require('.');
@@ -67,6 +65,7 @@ describe('signup', () => {
 
     const user = await findOne({ email });
 
-    expect(await findOneUnverifiedEmail({ userId: user.id })).toBeTruthy();
+    // expect(user.emailVerificationCode).toBeTruthy();
+    expect(user.emailVerificationCode).toBeFalsy();
   });
 });
