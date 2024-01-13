@@ -11,7 +11,7 @@ const {
   find,
   updateOne,
 
-  deleteMany,
+  deleteAll,
   count,
 } = require('./mongo');
 
@@ -28,6 +28,6 @@ module.exports = {
   find: (table, where, options = {}) => find(table, where, options),
   updateOne,
 
-  deleteMany: (table, where) => isTest && deleteMany(table, where),
+  deleteAll: (table, where) => isTest && deleteAll(table, where),
   count: (table, where) => isTest && count(table, where),
 };

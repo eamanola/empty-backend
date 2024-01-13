@@ -1,8 +1,8 @@
 const { string, object } = require('yup');
 
-const { createUser } = require('../jest/test-helpers');
+const { createUser, deleteUsers } = require('../jest/test-helpers');
 
-const { count, deleteMany } = require('../db');
+const { count, deleteAll } = require('../db');
 
 const restController = require('./rest-controller');
 
@@ -24,7 +24,10 @@ const createResource = async (user) => {
 };
 
 describe('rest controller', () => {
-  beforeEach(async () => deleteMany(table, {}));
+  beforeEach(async () => {
+    await deleteAll(table);
+    await deleteUsers();
+  });
 
   describe('create', () => {
     it('should create one', async () => {

@@ -1,19 +1,15 @@
-const supertest = require('supertest');
-
-const app = require('../app');
-
 const { accessDenied } = require('../errors');
 
-const { APIgetToken } = require('../jest/test-helpers');
+const { signup, login } = require('../controllers/users');
 
 const authorization = require('./authorization');
-
-const api = supertest(app);
 
 describe('authorization', () => {
   it('should add user to request', async () => {
     const email = 'foo@example.bar';
-    const token = await APIgetToken({ api, email });
+    const password = 'foo';
+    await signup({ email, password });
+    const token = await login({ email, password });
 
     const req = { get: (/* authorization */) => `bearer ${token}` };
     const res = {};

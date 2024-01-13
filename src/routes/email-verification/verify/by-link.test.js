@@ -1,20 +1,23 @@
 const supertest = require('supertest');
 
-const { createUser } = require('../../../jest/test-helpers');
+const { createUser, findUser, deleteUsers } = require('../../../jest/test-helpers');
 
 const { request: requestVerification } = require('../../../controllers/users/email-verification');
-const { findOne, updateOne } = require('../../../models/users');
+
 const sendEmailVerificationMail = require('../../../utils/send-email-verification-mail');
 
 const app = require('../../../app');
+const { setUnverified } = require('../../../controllers/users/email-verification/set-status');
 
 jest.mock('../../../utils/send-email-verification-mail');
 
 const api = supertest(app);
 
 describe('by-link', () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     sendEmailVerificationMail.mockClear();
+
+    await deleteUsers();
   });
 
   it('should verify email', async () => {
@@ -30,7 +33,7 @@ describe('by-link', () => {
 
     await api.get(`/email-verification/by-link?token=${token}`);
 
-    const updatedUser = await findOne({ id: user.id });
+    const updatedUser = await findUser({ id: user.id });
     expect(updatedUser.emailVerified).toBe(true);
   });
 
@@ -58,7 +61,8 @@ describe('by-link', () => {
     await requestVerification(user, { byLink });
     const { token } = sendEmailVerificationMail.mock.calls[0][0];
 
-    await updateOne({ id: user.id }, { emailVerificationCode: 1000 });
+    // refresh code
+    await setUnverified(user.id);
 
     await api.get(`/email-verification/by-link?token=${token}`)
       .expect('Location', onFail);

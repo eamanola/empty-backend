@@ -12,6 +12,6 @@ router.get('/by-link', verifyByLink);
 
 router.post('/request', requestVerification);
 
-router.post('/by-code', requireUser, verifyByCode);
+router.patch('/by-code', requireUser, verifyByCode);
 
 module.exports = router;

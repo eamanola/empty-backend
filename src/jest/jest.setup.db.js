@@ -19,10 +19,3 @@ afterAll(async () => {
 
   await closeDB();
 });
-
-beforeEach(async () => {
-  if (skip()) { return; }
-
-  const { deleteUsers } = jest.requireActual('./test-helpers');
-  await deleteUsers();
-});

@@ -2,13 +2,11 @@ const supertest = require('supertest');
 
 const app = require('../app');
 
-const { validNote, APIgetToken } = require('../jest/test-helpers');
-
-const { fromToken: userFromToken } = require('../controllers/users');
+const { validNote, getToken, deleteUsers } = require('../jest/test-helpers');
 
 const { paramError, accessDenied } = require('../errors');
 
-const { deleteMany } = require('../db');
+const { deleteAll } = require('../db');
 
 const { model } = require('./notes');
 
@@ -39,7 +37,10 @@ const createNote = async ({
 };
 
 describe('/notes', () => {
-  beforeEach(() => deleteMany(model.table, {}));
+  beforeEach(async () => {
+    await deleteAll(model.table);
+    await deleteUsers();
+  });
 
   it('should throw accessDenied, if user missing', async () => {
     const response = await api
@@ -51,7 +52,7 @@ describe('/notes', () => {
 
   describe('POST /notes', () => {
     it('should create a note', async () => {
-      const token = await APIgetToken({ api });
+      const { token } = await getToken();
       const newNote = validNote();
 
       const response = await api
@@ -68,7 +69,7 @@ describe('/notes', () => {
     });
 
     it('should throw paramError, on invalid params', async () => {
-      const token = await APIgetToken({ api });
+      const { token } = await getToken();
       const invalidNote = {};
 
       const response = await api
@@ -83,7 +84,7 @@ describe('/notes', () => {
 
   describe('GET /notes/:id', () => {
     it('should return a note by id', async () => {
-      const token = await APIgetToken({ api });
+      const { token } = await getToken();
       const note = await createNote({ api, token });
 
       const response = await api
@@ -101,8 +102,8 @@ describe('/notes', () => {
 
   describe('GET /notes', () => {
     it('should return all user notes', async () => {
-      const token = await APIgetToken({ api });
-      const token2 = await APIgetToken({ api, email: 'foo2@other.com' });
+      const { token, user } = await getToken();
+      const { token: token2 } = await getToken({ email: 'foo2@other.com' });
 
       await createNote({ api, token });
       await createNote({ api, token });
@@ -117,15 +118,13 @@ describe('/notes', () => {
 
       expect(notes.length).toBe(2);
 
-      const user = await userFromToken(token);
-
       expect(notes.every(({ owner }) => owner === user.id)).toBe(true);
     });
   });
 
   describe('PUT /notes/:id', () => {
     it('should update a note', async () => {
-      const token = await APIgetToken({ api });
+      const { token } = await getToken();
       const insertedNote = await createNote({ api, token });
 
       const modifiedNote = { ...insertedNote, text: 'foo' };
@@ -147,7 +146,7 @@ describe('/notes', () => {
     });
 
     it('should throw paramError, on invalid params', async () => {
-      const token = await APIgetToken({ api });
+      const { token } = await getToken();
       const insertedNote = await createNote({ api, token });
 
       const invalidNote = { ...insertedNote, text: '' };
@@ -165,7 +164,7 @@ describe('/notes', () => {
     });
 
     it('should not update owner, or modified', async () => {
-      const token = await APIgetToken({ api });
+      const { token } = await getToken();
       const insertedNote = await createNote({ api, token });
 
       const modifiedNote = { ...insertedNote, owner: 'foo', modified: 'bar' };
@@ -183,7 +182,7 @@ describe('/notes', () => {
     });
 
     it('should not update id', async () => {
-      const token = await APIgetToken({ api });
+      const { token } = await getToken();
       const insertedNote = await createNote({ api, token });
 
       const modifiedNote = {
@@ -207,7 +206,7 @@ describe('/notes', () => {
 
   describe('DELETE /notes/:id', () => {
     it('should remove a note by id', async () => {
-      const token = await APIgetToken({ api });
+      const { token } = await getToken();
       const note = await createNote({ api, token });
 
       const response = await api

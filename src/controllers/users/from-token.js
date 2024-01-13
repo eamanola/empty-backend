@@ -21,9 +21,8 @@ const fromToken = async (token) => {
   } catch (e) {
     if (e.name === 'JsonWebTokenError') {
       throw accessDenied;
-    } else if (e.name === sessionExipred.name) {
-      throw sessionExipred;
     }
+
     throw e;
   }
 };

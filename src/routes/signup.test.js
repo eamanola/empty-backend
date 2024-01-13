@@ -4,13 +4,13 @@ const app = require('../app');
 
 const { emailTakenError, paramError } = require('../errors');
 
-const { countUsers } = require('../jest/test-helpers');
-
-const { findOne } = require('../models/users');
+const { countUsers, deleteUsers, findUser } = require('../jest/test-helpers');
 
 const api = supertest(app);
 
 describe('/signup', () => {
+  beforeEach(deleteUsers);
+
   it('should return 201 OK', async () => {
     const credentials = {
       email: 'foo@example.com',
@@ -21,7 +21,7 @@ describe('/signup', () => {
 
     expect(response.status).toBe(201);
     expect(response.body.message).toBe('OK');
-    expect(await findOne({ email: credentials.email })).toBeTruthy();
+    expect(await findUser({ email: credentials.email })).toBeTruthy();
   });
 
   it('should throw emailTakenError, on dublicate', async () => {

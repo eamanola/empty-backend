@@ -4,7 +4,7 @@ const restModel = require('./rest-model');
 
 const validator = object({ foo: string().required() }).noUnknown().strict();
 
-const { count, deleteMany } = require('../db');
+const { count, deleteAll } = require('../db');
 
 const table = 'test';
 
@@ -23,7 +23,7 @@ const createResource = async () => {
 };
 
 describe('rest-model', () => {
-  beforeEach(() => deleteMany(table, {}));
+  beforeEach(() => deleteAll(table));
 
   describe('insert', () => {
     it('should create one', async () => {

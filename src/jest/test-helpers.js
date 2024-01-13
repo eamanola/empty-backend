@@ -1,29 +1,24 @@
-const { deleteMany, count: countRows } = require('../db');
+const { deleteAll, count } = require('../db');
 const { table: usersTable, findOne: findOneUser } = require('../models/users');
-const { signup } = require('../controllers/users');
+const { signup, login } = require('../controllers/users');
 
-const deleteUsers = () => deleteMany(usersTable);
+const deleteUsers = () => deleteAll(usersTable);
 
-const countUsers = (filter) => countRows(usersTable, filter);
-
-const createUser = async ({ email = 'foo@example.com', password = '123' } = {}) => {
-  await signup({ email, password });
-
-  return findOneUser({ email });
-};
+const countUsers = (where) => count(usersTable, where);
 
 const validNote = ({ text = 'text', isPublic = false } = {}) => ({ text, isPublic });
 
-const APIgetToken = async ({
-  api,
-  email = 'foo@example.com',
-  password = '123',
-}) => {
-  const credentials = { email, password };
-  await api.post('/signup').send(credentials);
-  const { token } = (await api.post('/login').send(credentials)).body;
+const findUser = async (where) => findOneUser(where);
 
-  return token;
+const createUser = async ({ email = 'foo@example.com', password = '123' } = {}) => {
+  const id = await signup({ email, password });
+
+  return findUser({ id });
+};
+
+const getToken = async ({ email = 'foo@example.com', password = '123' } = {}) => {
+  const user = await createUser({ email, password });
+  return { user, token: await login({ email, password }) };
 };
 
 module.exports = {
@@ -31,5 +26,6 @@ module.exports = {
   countUsers,
   createUser,
   validNote,
-  APIgetToken,
+  findUser,
+  getToken,
 };

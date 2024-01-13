@@ -2,11 +2,11 @@ const supertest = require('supertest');
 
 const app = require('../app');
 
-const { validNote, APIgetToken } = require('../jest/test-helpers');
+const { validNote, getToken, deleteUsers } = require('../jest/test-helpers');
 
 const { model } = require('./notes');
 
-const { deleteMany } = require('../db');
+const { deleteAll } = require('../db');
 
 const api = supertest(app);
 
@@ -42,10 +42,13 @@ const createNotes = async ({
 };
 
 describe('GET /public-notes', () => {
-  beforeEach(() => deleteMany(model.table, {}));
+  beforeEach(async () => {
+    await deleteAll(model.table);
+    await deleteUsers();
+  });
 
   it('should return public notes', async () => {
-    const token = await APIgetToken({ api });
+    const { token } = await getToken();
     const PRIVATE_LIMIT = 4;
     await createNotes({
       api,
@@ -73,7 +76,7 @@ describe('GET /public-notes', () => {
 
   describe('limit option', () => {
     it('should should limit results, if limit is less than all count', async () => {
-      const token = await APIgetToken({ api });
+      const { token } = await getToken();
       const PUBLIC_LIMIT = 4;
       await createNotes({
         api,
@@ -89,7 +92,7 @@ describe('GET /public-notes', () => {
       expect(notes.length).toBe(LIMIT_BELOW);
     });
     it('should return all, if limit is greater than all count', async () => {
-      const token = await APIgetToken({ api });
+      const { token } = await getToken();
       const PUBLIC_LIMIT = 3;
       await createNotes({
         api,
@@ -106,7 +109,7 @@ describe('GET /public-notes', () => {
       expect(notes.length).toBe(PUBLIC_LIMIT);
     });
     it('should have no effect, if invalid', async () => {
-      const token = await APIgetToken({ api });
+      const { token } = await getToken();
       const PUBLIC_LIMIT = 4;
       await createNotes({
         api,
@@ -125,7 +128,7 @@ describe('GET /public-notes', () => {
 
   describe('offset option', () => {
     it('should skip spesified offset', async () => {
-      const token = await APIgetToken({ api });
+      const { token } = await getToken();
       const PUBLIC_LIMIT = 4;
       await createNotes({
         api,
@@ -148,7 +151,7 @@ describe('GET /public-notes', () => {
     });
 
     it('should return no results, if offset is greater than all count', async () => {
-      const token = await APIgetToken({ api });
+      const { token } = await getToken();
       const PUBLIC_LIMIT = 4;
       await createNotes({
         api,
@@ -165,7 +168,7 @@ describe('GET /public-notes', () => {
     });
 
     it('should have no effect, if invalid', async () => {
-      const token = await APIgetToken({ api });
+      const { token } = await getToken();
       const PUBLIC_LIMIT = 4;
       await createNotes({
         api,

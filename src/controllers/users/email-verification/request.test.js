@@ -1,15 +1,19 @@
 const { emailVerifiedError, userNotFoundError } = require('../../../errors');
-const { createUser } = require('../../../jest/test-helpers');
-const { findOne, updateOne } = require('../../../models/users');
+const { createUser, deleteUsers } = require('../../../jest/test-helpers');
+const { findOne } = require('../../../models/users');
 const sendEmailVerificationMail = require('../../../utils/send-email-verification-mail');
 const { decode: decodeEmailVerificationToken } = require('../../../token');
+const { setVerified } = require('./set-status');
+
 const request = require('./request');
 
 jest.mock('../../../utils/send-email-verification-mail');
 
 describe('email verification', () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     sendEmailVerificationMail.mockClear();
+
+    await deleteUsers();
   });
 
   describe('request', () => {
@@ -24,7 +28,8 @@ describe('email verification', () => {
 
     it('should throw already verified error', async () => {
       const user = await createUser();
-      await updateOne({ id: user.id }, { emailVerificationCode: null });
+      await setVerified(user.id);
+
       try {
         await request(user, {});
         expect('unreachable').toBe(true);
@@ -48,9 +53,8 @@ describe('email verification', () => {
 
       await request(user, { });
 
-      expect(sendEmailVerificationMail).toHaveBeenCalledWith(expect.objectContaining({
-        to: user.email,
-      }));
+      expect(sendEmailVerificationMail)
+        .toHaveBeenCalledWith(expect.objectContaining({ to: user.email }));
     });
 
     describe('byCode', () => {

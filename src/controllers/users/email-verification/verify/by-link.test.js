@@ -1,15 +1,18 @@
-const { createUser } = require('../../../../jest/test-helpers');
-const { findOne, updateOne } = require('../../../../models/users');
+const { createUser, deleteUsers } = require('../../../../jest/test-helpers');
+const { findOne } = require('../../../../models/users');
 const sendEmailVerificationMail = require('../../../../utils/send-email-verification-mail');
 const request = require('../request');
+const { setUnverified } = require('../set-status');
 
 const verifyByLink = require('./by-link');
 
 jest.mock('../../../../utils/send-email-verification-mail');
 
 describe('email verification', () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     sendEmailVerificationMail.mockClear();
+
+    await deleteUsers();
   });
 
   describe('verify by link', () => {
@@ -42,7 +45,8 @@ describe('email verification', () => {
       await request(user, { byLink });
       const { token } = sendEmailVerificationMail.mock.calls[0][0];
 
-      await updateOne({ id: user.id }, { emailVerificationCode: 1000 });
+      // refresh code
+      await setUnverified(user.id);
 
       const redirectUrl = await verifyByLink(token);
       expect(redirectUrl).toBe(byLink.onFail);

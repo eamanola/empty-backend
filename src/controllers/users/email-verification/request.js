@@ -1,9 +1,9 @@
 const { emailVerifiedError, userNotFoundError } = require('../../../errors');
-const { updateOne, findOne } = require('../../../models/users');
+const { findOne } = require('../../../models/users');
 const sendEmailVerificationMail = require('../../../utils/send-email-verification-mail');
 const { encode: encodeEmailVerificationToken } = require('../../../token');
 const { info } = require('../../../logger');
-const getCode = require('./get-code');
+const { setUnverified } = require('./set-status');
 
 const request = async ({ email }, { byCode = null, byLink = null }) => {
   const user = await findOne({ email });
@@ -15,10 +15,9 @@ const request = async ({ email }, { byCode = null, byLink = null }) => {
     throw emailVerifiedError;
   }
 
-  const code = getCode();
-
+  let code;
   try {
-    await updateOne({ id: user.id }, { emailVerificationCode: code });
+    code = await setUnverified(user.id, code);
   } catch (e) {
     info(e);
     throw e;

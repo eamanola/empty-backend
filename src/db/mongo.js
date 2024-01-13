@@ -68,7 +68,7 @@ const updateOne = (collection, where, updates, options = {}) => client
 //  updateOne(collection, where, updates, { upsert: true })
 // );
 
-const deleteMany = (collection, where) => client
+const deleteAll = (collection, where) => client
   .db()
   .collection(collection)
   .deleteMany(where);
@@ -89,6 +89,6 @@ module.exports = {
   find,
   updateOne,
   // upsert,
-  deleteMany,
+  deleteAll,
   count,
 };

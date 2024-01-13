@@ -4,18 +4,22 @@ const app = require('../app');
 
 const { userNotFoundError, invalidPasswordError, paramError } = require('../errors');
 
-const { fromToken: userFromToken } = require('../controllers/users');
+const { fromToken: userFromToken, signup } = require('../controllers/users');
+
+const { deleteUsers } = require('../jest/test-helpers');
 
 const api = supertest(app);
 
 describe('/login', () => {
+  beforeEach(deleteUsers);
+
   it('should return 200 OK with a token', async () => {
     const email = 'foo@example.com';
     const credentials = {
       email,
       password: '123',
     };
-    await api.post('/signup').send(credentials);
+    await signup(credentials);
 
     const response = await api.post('/login').send(credentials);
 
@@ -42,7 +46,7 @@ describe('/login', () => {
       email: 'foo@example.com',
       password: '123',
     };
-    await api.post('/signup').send(credentials);
+    await signup(credentials);
 
     const response = await api.post('/login').send({
       ...credentials,
@@ -58,7 +62,7 @@ describe('/login', () => {
       email: 'foo@example.com',
       password: '123',
     };
-    await api.post('/signup').send(credentials);
+    await signup(credentials);
 
     expect((await api.post('/login').send({ email: 'foo', password: '123' })).status)
       .toBe(paramError.status);

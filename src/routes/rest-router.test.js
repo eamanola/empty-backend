@@ -4,13 +4,11 @@ const supertest = require('supertest');
 
 const app = require('../app');
 
-const { APIgetToken } = require('../jest/test-helpers');
-
-const { fromToken: userFromToken } = require('../controllers/users');
+const { getToken, deleteUsers } = require('../jest/test-helpers');
 
 const { paramError, accessDenied } = require('../errors');
 
-const { deleteMany } = require('../db');
+const { deleteAll } = require('../db');
 
 const validator = object({ foo: string().required() }).noUnknown().strict();
 
@@ -54,7 +52,10 @@ const create = async ({
 };
 
 describe('rest router', () => {
-  beforeEach(() => deleteMany(model.table, {}));
+  beforeEach(async () => {
+    await deleteAll(model.table);
+    await deleteUsers();
+  });
 
   it('should throw accessDenied, if user missing', async () => {
     const response = await api.get(baseUrl);
@@ -64,7 +65,7 @@ describe('rest router', () => {
 
   describe('POST /', () => {
     it('should create one', async () => {
-      const token = await APIgetToken({ api });
+      const { token } = await getToken();
       const resource = { foo: 'bar' };
 
       const response = await api
@@ -81,7 +82,7 @@ describe('rest router', () => {
     });
 
     it('should throw paramError, on invalid params', async () => {
-      const token = await APIgetToken({ api });
+      const { token } = await getToken();
       const invalid = {};
 
       const response = await api
@@ -96,7 +97,7 @@ describe('rest router', () => {
 
   describe('GET /:id', () => {
     it('should return a result by id', async () => {
-      const token = await APIgetToken({ api });
+      const { token } = await getToken();
       const resource = await create({ api, token });
 
       const response = await api
@@ -111,8 +112,8 @@ describe('rest router', () => {
 
   describe('GET /', () => {
     it('should return all user resources', async () => {
-      const token = await APIgetToken({ api });
-      const token2 = await APIgetToken({ api, email: 'foo2@other.com' });
+      const { token, user } = await getToken();
+      const { token: token2 } = await getToken({ email: 'foo2@other.com' });
 
       await create({ api, token });
       await create({ api, token });
@@ -127,15 +128,13 @@ describe('rest router', () => {
 
       expect(results.length).toBe(2);
 
-      const user = await userFromToken(token);
-
       expect(results.every(({ owner }) => owner === user.id)).toBe(true);
     });
   });
 
   describe('PUT /:id', () => {
     it('should update one', async () => {
-      const token = await APIgetToken({ api });
+      const { token } = await getToken();
       const inserted = await create({ api, token });
 
       const changed = { ...inserted, foo: 'foo1' };
@@ -157,7 +156,7 @@ describe('rest router', () => {
     });
 
     it('should throw paramError, on invalid params', async () => {
-      const token = await APIgetToken({ api });
+      const { token } = await getToken();
       const inserted = await create({ api, token });
 
       const invalid = { ...inserted, foo: '' };
@@ -175,7 +174,7 @@ describe('rest router', () => {
     });
 
     it('should not update owner, or modified', async () => {
-      const token = await APIgetToken({ api });
+      const { token } = await getToken();
       const inserted = await create({ api, token });
 
       const modified = { ...inserted, owner: 'foo', modified: 'bar' };
@@ -193,7 +192,7 @@ describe('rest router', () => {
     });
 
     it('should not update id', async () => {
-      const token = await APIgetToken({ api });
+      const { token } = await getToken();
       const inserted = await create({ api, token });
 
       const modified = {
@@ -217,7 +216,7 @@ describe('rest router', () => {
 
   describe('DELETE /:id', () => {
     it('should remove by id', async () => {
-      const token = await APIgetToken({ api });
+      const { token } = await getToken();
       const resource = await create({ api, token });
 
       const response = await api

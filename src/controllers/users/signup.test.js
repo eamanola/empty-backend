@@ -2,11 +2,13 @@ const bcrypt = require('bcrypt');
 
 const { findOne } = require('../../models/users');
 
-const { countUsers } = require('../../jest/test-helpers');
+const { countUsers, deleteUsers } = require('../../jest/test-helpers');
 
 const { login, signup } = require('.');
 
 describe('signup', () => {
+  beforeEach(deleteUsers);
+
   it('should create a user', async () => {
     const email = 'foo@example.com';
     const password = '123';
@@ -66,5 +68,16 @@ describe('signup', () => {
     const user = await findOne({ email });
 
     expect(user.emailVerified).toBe(false);
+  });
+
+  it('should return id of created user', async () => {
+    const email = 'foo@example.com';
+    const password = '123';
+
+    const id = await signup({ email, password });
+
+    const user = await findOne({ id });
+
+    expect(user.email).toBe(email);
   });
 });

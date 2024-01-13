@@ -3,8 +3,11 @@ const { accessDenied, sessionExipred } = require('../../errors');
 const { findOne, updateOne } = require('../../models/users');
 
 const { signup, login, fromToken } = require('.');
+const { deleteUsers } = require('../../jest/test-helpers');
 
 describe('fromToken', () => {
+  beforeEach(deleteUsers);
+
   it('should return a user', async () => {
     const email = 'foo@example.com';
     const password = '123';

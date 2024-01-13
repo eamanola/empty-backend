@@ -1,5 +1,5 @@
 const { invalidEmailVerificationCodeError } = require('../../../../errors');
-const { createUser } = require('../../../../jest/test-helpers');
+const { createUser, deleteUsers } = require('../../../../jest/test-helpers');
 const { findOne } = require('../../../../models/users');
 const request = require('../request');
 const verifyByCode = require('./by-code');
@@ -7,6 +7,8 @@ const verifyByCode = require('./by-code');
 jest.mock('../../../../utils/send-email-verification-mail');
 
 describe('email verification', () => {
+  beforeEach(deleteUsers);
+
   describe('verify by code', () => {
     it('should set email verified', async () => {
       const user = await createUser();

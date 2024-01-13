@@ -2,7 +2,7 @@ const { validNote } = require('../jest/test-helpers');
 
 const { model } = require('../routes/notes');
 
-const { deleteMany } = require('../db');
+const { deleteAll } = require('../db');
 
 const publicNotes = require('./public-notes');
 
@@ -11,7 +11,7 @@ const createNote = async ({ isPublic = true } = {}) => (
 );
 
 describe('publicNotes', () => {
-  beforeEach(() => deleteMany(model.table, {}));
+  beforeEach(() => deleteAll(model.table));
 
   it('should return public notes', async () => {
     const PUBLIC_LIMIT = 2;

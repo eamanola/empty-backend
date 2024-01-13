@@ -1,8 +1,10 @@
-const { countUsers } = require('../../jest/test-helpers');
+const { countUsers, deleteUsers } = require('../../jest/test-helpers');
 
 const { signup, login, fromToken } = require('.');
 
 describe('login', () => {
+  beforeEach(deleteUsers);
+
   it('should return a token', async () => {
     const email = 'foo@example.com';
     const password = '123';

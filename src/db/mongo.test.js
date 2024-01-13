@@ -4,7 +4,7 @@ const {
   initDB,
   connectDB,
   closeDB,
-  deleteMany,
+  deleteAll,
   count,
   insertOne,
 } = require('./mongo');
@@ -31,7 +31,7 @@ describe('connection', () => {
       await initDB();
       await connectDB();
 
-      await deleteMany('collection', {});
+      await deleteAll('collection');
       expect(await count('collection')).toBe(0);
       await insertOne('collection', { foo: 'bar' });
       expect(await count('collection')).toBe(1);
@@ -45,7 +45,7 @@ describe('connection', () => {
       await initDB();
       await connectDB();
 
-      await deleteMany('collection', {});
+      await deleteAll('collection');
       expect(await count('collection')).toBe(0);
 
       await closeDB();
