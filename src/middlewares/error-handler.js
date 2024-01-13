@@ -7,6 +7,7 @@ const {
   emailVerifiedError,
   invalidEmailVerificationCodeError,
   emailNotVerifiedError,
+  sessionExipred,
 } = require('../errors');
 
 const { err: logError } = require('../logger');
@@ -24,6 +25,7 @@ const errorHandler = (err, req, res, next) => {
     case emailVerifiedError.name:
     case invalidEmailVerificationCodeError.name:
     case emailNotVerifiedError.name:
+    case sessionExipred.name:
       res.status(status).json({ message });
 
       break;

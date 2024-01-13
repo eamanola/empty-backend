@@ -1,5 +1,4 @@
 const bcrypt = require('bcrypt');
-// const crypto = require('crypto');
 
 const {
   createParamError,
@@ -10,6 +9,7 @@ const {
 const { info } = require('../../logger');
 const { encode: encodeToken } = require('../../token');
 const { findOne } = require('../../models/users');
+const { getSession } = require('./session');
 
 const loginSchema = require('../../validators/login');
 
@@ -34,13 +34,7 @@ const login = async ({ email, password }, { REQUIRE_VERIFIED_EMAIL = false } = {
     throw emailNotVerifiedError;
   }
 
-  /*
-  const hash = crypto
-    .createHash('md5')
-    .update(`${user.email}${user.passwordHash}`)
-    .digest('hex');
-  */
-  const token = encodeToken({ userId: user.id /* , hash */ });
+  const token = encodeToken({ userId: user.id, session: getSession(user) });
 
   return token;
 };

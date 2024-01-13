@@ -51,6 +51,12 @@ const emailNotVerifiedError = {
   name: 'emailNotVerifiedError',
 };
 
+const sessionExipred = {
+  status: 403,
+  message: 'Session Exipred',
+  name: 'sessionExipred',
+};
+
 module.exports = {
   userNotFoundError,
   invalidPasswordError,
@@ -61,4 +67,5 @@ module.exports = {
   emailVerifiedError,
   invalidEmailVerificationCodeError,
   emailNotVerifiedError,
+  sessionExipred,
 };

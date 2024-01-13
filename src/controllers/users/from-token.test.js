@@ -1,6 +1,6 @@
-const { accessDenied } = require('../../errors');
+const { accessDenied, sessionExipred } = require('../../errors');
 
-const { findOne } = require('../../models/users');
+const { findOne, updateOne } = require('../../models/users');
 
 const { signup, login, fromToken } = require('.');
 
@@ -45,6 +45,38 @@ describe('fromToken', () => {
       expect(false).toBe(true);
     } catch ({ name }) {
       expect(name).toBe(accessDenied.name);
+    }
+  });
+
+  it('should throw sessionExpired, if password changed', async () => {
+    const email = 'foo@example.com';
+    const password = '123';
+    await signup({ email, password });
+    const token = await login({ email, password });
+
+    await updateOne({ email }, { passwordHash: 'a new hash' });
+
+    try {
+      await fromToken(token);
+      expect(false).toBe(true);
+    } catch ({ name }) {
+      expect(name).toBe(sessionExipred.name);
+    }
+  });
+
+  it('should throw sessionExpired, if email changed', async () => {
+    const email = 'foo@example.com';
+    const password = '123';
+    await signup({ email, password });
+    const token = await login({ email, password });
+
+    await updateOne({ email }, { email: 'bar@example.com' });
+
+    try {
+      await fromToken(token);
+      expect(false).toBe(true);
+    } catch ({ name }) {
+      expect(name).toBe(sessionExipred.name);
     }
   });
 });

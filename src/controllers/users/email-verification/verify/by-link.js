@@ -1,5 +1,5 @@
 const { findOne } = require('../../../../models/users');
-const { decode: decodeToken } = require('../../../../token');
+const { decode: decodeEmailVerificationToken } = require('../../../../token');
 const { info } = require('../../../../logger');
 const verifyByCode = require('./by-code');
 
@@ -8,7 +8,7 @@ const verifyByLink = async (token) => {
     code,
     userId,
     byLink,
-  } = decodeToken(token);
+  } = decodeEmailVerificationToken(token);
 
   try {
     const user = await findOne({ id: userId });

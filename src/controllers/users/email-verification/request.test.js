@@ -2,7 +2,7 @@ const { emailVerifiedError, userNotFoundError } = require('../../../errors');
 const { createUser } = require('../../../jest/test-helpers');
 const { findOne, updateOne } = require('../../../models/users');
 const sendEmailVerificationMail = require('../../../utils/send-email-verification-mail');
-const { decode: decodeToken } = require('../../../token');
+const { decode: decodeEmailVerificationToken } = require('../../../token');
 const request = require('./request');
 
 jest.mock('../../../utils/send-email-verification-mail');
@@ -96,7 +96,7 @@ describe('email verification', () => {
         const { token } = sendEmailVerificationMail.mock.calls[0][0];
         expect(token).toBeTruthy();
 
-        const decodedToken = decodeToken(token);
+        const decodedToken = decodeEmailVerificationToken(token);
         expect(decodedToken.userId).toBeTruthy();
         expect(decodedToken.userId).toBe(user.id);
 
