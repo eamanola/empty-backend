@@ -1,7 +1,7 @@
 const { emailVerifiedError, userNotFoundError } = require('../../../errors');
 const { updateOne, findOne } = require('../../../models/users');
 const sendEmailVerificationMail = require('../../../utils/send-email-verification-mail');
-const { encode: encodeToken } = require('../../../token');
+const { encode: encodeEmailVerificationToken } = require('../../../token');
 const { info } = require('../../../logger');
 const getCode = require('./get-code');
 
@@ -24,7 +24,7 @@ const request = async ({ email }, { byCode = null, byLink = null }) => {
     throw e;
   }
 
-  const token = byLink ? encodeToken({ userId: user.id, byLink, code }) : null;
+  const token = byLink ? encodeEmailVerificationToken({ userId: user.id, byLink, code }) : null;
 
   sendEmailVerificationMail({
     to: user.email,

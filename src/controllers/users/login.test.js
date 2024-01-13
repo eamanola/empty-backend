@@ -41,4 +41,21 @@ describe('login', () => {
       expect(e).toBeTruthy();
     }
   });
+
+  it('should accept optional require verified email', async () => {
+    const email = 'foo@example.com';
+    const password = '123';
+    await signup({ email, password });
+    const token = await login({ email, password }, { REQUIRE_VERIFIED_EMAIL: false });
+
+    const user = await fromToken(token);
+    expect(user.emailVerified).toBe(false);
+
+    try {
+      await login({ email, password }, { REQUIRE_VERIFIED_EMAIL: true });
+      expect('Should not reach').toBe(true);
+    } catch (e) {
+      expect(e).toBeTruthy();
+    }
+  });
 });
