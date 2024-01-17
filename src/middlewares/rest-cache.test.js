@@ -1,9 +1,10 @@
 const supertest = require('supertest');
 const express = require('express');
 
-const app = require('../app');
 const { getItem, removeItem, setItem } = require('../cache');
 const { cacheKey, cache } = require('./rest-cache');
+
+const app = require('../app');
 
 const success = { message: 'ok' };
 

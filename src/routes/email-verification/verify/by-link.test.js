@@ -1,13 +1,16 @@
 const supertest = require('supertest');
 
-const { createUser, findUser, deleteUsers } = require('../../../jest/test-helpers');
-
-const { request: requestVerification } = require('../../../controllers/users/email-verification');
+const {
+  createUser,
+  findUser,
+  deleteUsers,
+  setEmailStatus,
+  emailVerification,
+} = require('../../../jest/test-helpers');
 
 const sendEmailVerificationMail = require('../../../utils/send-email-verification-mail');
 
 const app = require('../../../app');
-const { setUnverified } = require('../../../controllers/users/email-verification/set-status');
 
 jest.mock('../../../utils/send-email-verification-mail');
 
@@ -28,7 +31,7 @@ describe('by-link', () => {
     const onFail = 'http://example.com/something-went-wrong';
     const byLink = { onSuccess, onFail };
 
-    await requestVerification(user, { byLink });
+    await emailVerification.request(user, { byLink });
     const { token } = sendEmailVerificationMail.mock.calls[0][0];
 
     await api.get(`/email-verification/by-link?token=${token}`);
@@ -44,7 +47,7 @@ describe('by-link', () => {
     const onFail = 'http://example.com/something-went-wrong';
     const byLink = { onSuccess, onFail };
 
-    await requestVerification(user, { byLink });
+    await emailVerification.request(user, { byLink });
     const { token } = sendEmailVerificationMail.mock.calls[0][0];
 
     await api.get(`/email-verification/by-link?token=${token}`)
@@ -58,11 +61,11 @@ describe('by-link', () => {
     const onFail = 'http://example.com/something-went-wrong';
     const byLink = { onSuccess, onFail };
 
-    await requestVerification(user, { byLink });
+    await emailVerification.request(user, { byLink });
     const { token } = sendEmailVerificationMail.mock.calls[0][0];
 
     // refresh code
-    await setUnverified(user.id);
+    await setEmailStatus({ verified: false, userId: user.id });
 
     await api.get(`/email-verification/by-link?token=${token}`)
       .expect('Location', onFail);

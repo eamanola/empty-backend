@@ -1,9 +1,13 @@
-const { emailVerifiedError, userNotFoundError } = require('../../../errors');
-const { createUser, deleteUsers } = require('../../../jest/test-helpers');
-const { findOne } = require('../../../models/users');
-const sendEmailVerificationMail = require('../../../utils/send-email-verification-mail');
+const {
+  createUser,
+  deleteUsers,
+  findUser,
+  setEmailStatus,
+  errors,
+} = require('../../../jest/test-helpers');
+
 const { decode: decodeEmailVerificationToken } = require('../../../token');
-const { setVerified } = require('./set-status');
+const sendEmailVerificationMail = require('../../../utils/send-email-verification-mail');
 
 const request = require('./request');
 
@@ -18,6 +22,7 @@ describe('email verification', () => {
 
   describe('request', () => {
     it('should throw user not found', async () => {
+      const { userNotFoundError } = errors;
       try {
         await request({ email: 'fake' }, {});
         expect('unreachable').toBe(true);
@@ -27,8 +32,9 @@ describe('email verification', () => {
     });
 
     it('should throw already verified error', async () => {
+      const { emailVerifiedError } = errors;
       const user = await createUser();
-      await setVerified(user.id);
+      await setEmailStatus({ userId: user.id, verified: true });
 
       try {
         await request(user, {});
@@ -43,7 +49,7 @@ describe('email verification', () => {
 
       await request(user, { });
 
-      const updatedUser = await findOne({ id: user.id });
+      const updatedUser = await findUser({ id: user.id });
       expect(user.emailVerificationCode).not.toBe(updatedUser.emailVerificationCode);
       expect(updatedUser.emailVerificationCode).toBeTruthy();
     });
@@ -64,7 +70,7 @@ describe('email verification', () => {
 
         await request(user, { byCode });
 
-        const updatedUser = await findOne({ id: user.id });
+        const updatedUser = await findUser({ id: user.id });
 
         expect(sendEmailVerificationMail).toHaveBeenCalledWith(expect.objectContaining({
           code: updatedUser.emailVerificationCode,
@@ -95,7 +101,7 @@ describe('email verification', () => {
 
         await request(user, { byLink });
 
-        const updatedUser = await findOne({ id: user.id });
+        const updatedUser = await findUser({ id: user.id });
 
         const { token } = sendEmailVerificationMail.mock.calls[0][0];
         expect(token).toBeTruthy();

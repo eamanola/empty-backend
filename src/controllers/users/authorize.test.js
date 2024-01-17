@@ -1,11 +1,15 @@
-const { accessDenied, sessionExipred } = require('../../errors');
+const {
+  deleteUsers,
+  findUser,
+  updateUser,
+  signup,
+  login,
+  errors,
+} = require('../../jest/test-helpers');
 
-const { findOne, updateOne } = require('../../models/users');
+const authorize = require('./authorize');
 
-const { signup, login, fromToken } = require('.');
-const { deleteUsers } = require('../../jest/test-helpers');
-
-describe('fromToken', () => {
+describe('authorize', () => {
   beforeEach(deleteUsers);
 
   it('should return a user', async () => {
@@ -14,7 +18,7 @@ describe('fromToken', () => {
     await signup({ email, password });
 
     const token = await login({ email, password });
-    const user = await fromToken(token);
+    const user = await authorize(token);
 
     expect(user).toEqual(expect.objectContaining({ email }));
   });
@@ -25,10 +29,10 @@ describe('fromToken', () => {
     await signup({ email, password });
 
     const token = await login({ email, password });
-    const user = await fromToken(token);
+    const user = await authorize(token);
 
     expect(user).toEqual(expect.objectContaining({ email }));
-    const userFromDB = await findOne({ email });
+    const userFromDB = await findUser({ email });
 
     expect(userFromDB).toEqual(expect.objectContaining(user));
     expect(userFromDB.passwordHash).toBeTruthy();
@@ -36,15 +40,17 @@ describe('fromToken', () => {
   });
 
   it('should return falsy, if no token', async () => {
-    const user = await fromToken(null);
+    const user = await authorize(null);
 
     expect(user).toBeFalsy();
   });
 
   it('should throw access denied, if token is invalid', async () => {
+    const { accessDenied } = errors;
+
     try {
       const token = 'fakeToken';
-      await fromToken(token);
+      await authorize(token);
       expect(false).toBe(true);
     } catch ({ name }) {
       expect(name).toBe(accessDenied.name);
@@ -52,15 +58,16 @@ describe('fromToken', () => {
   });
 
   it('should throw sessionExpired, if password changed', async () => {
+    const { sessionExipred } = errors;
     const email = 'foo@example.com';
     const password = '123';
     await signup({ email, password });
     const token = await login({ email, password });
 
-    await updateOne({ email }, { passwordHash: 'a new hash' });
+    await updateUser({ email }, { passwordHash: 'a new hash' });
 
     try {
-      await fromToken(token);
+      await authorize(token);
       expect(false).toBe(true);
     } catch ({ name }) {
       expect(name).toBe(sessionExipred.name);
@@ -68,15 +75,16 @@ describe('fromToken', () => {
   });
 
   it('should throw sessionExpired, if email changed', async () => {
+    const { sessionExipred } = errors;
     const email = 'foo@example.com';
     const password = '123';
     await signup({ email, password });
     const token = await login({ email, password });
 
-    await updateOne({ email }, { email: 'bar@example.com' });
+    await updateUser({ email }, { email: 'bar@example.com' });
 
     try {
-      await fromToken(token);
+      await authorize(token);
       expect(false).toBe(true);
     } catch ({ name }) {
       expect(name).toBe(sessionExipred.name);

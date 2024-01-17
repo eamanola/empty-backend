@@ -1,8 +1,12 @@
-const { createUser, deleteUsers } = require('../../../../jest/test-helpers');
-const { findOne } = require('../../../../models/users');
+const {
+  createUser,
+  deleteUsers,
+  findUser,
+  emailVerification,
+  setEmailStatus,
+} = require('../../../../jest/test-helpers');
+
 const sendEmailVerificationMail = require('../../../../utils/send-email-verification-mail');
-const request = require('../request');
-const { setUnverified } = require('../set-status');
 
 const verifyByLink = require('./by-link');
 
@@ -24,13 +28,13 @@ describe('email verification', () => {
         onSuccess,
         onFail,
       };
-      await request(user, { byLink });
+      await emailVerification.request(user, { byLink });
       const { token } = sendEmailVerificationMail.mock.calls[0][0];
 
       const redirectUrl = await verifyByLink(token);
       expect(redirectUrl).toBe(byLink.onSuccess);
 
-      const verifiedUser = await findOne({ id: user.id });
+      const verifiedUser = await findUser({ id: user.id });
       expect(verifiedUser.emailVerified).toBe(true);
     });
 
@@ -42,16 +46,16 @@ describe('email verification', () => {
         onSuccess,
         onFail,
       };
-      await request(user, { byLink });
+      await emailVerification.request(user, { byLink });
       const { token } = sendEmailVerificationMail.mock.calls[0][0];
 
       // refresh code
-      await setUnverified(user.id);
+      await setEmailStatus({ userId: user.id, verified: false });
 
       const redirectUrl = await verifyByLink(token);
       expect(redirectUrl).toBe(byLink.onFail);
 
-      const unVerifiedUser = await findOne({ id: user.id });
+      const unVerifiedUser = await findUser({ id: user.id });
       expect(unVerifiedUser.emailVerified).toBe(false);
     });
   });

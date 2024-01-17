@@ -1,13 +1,11 @@
 const { string, object } = require('yup');
 
+const { count, deleteAll } = require('../jest/test-helpers');
+
 const restModel = require('./rest-model');
 
 const validator = object({ foo: string().required() }).noUnknown().strict();
-
-const { count, deleteAll } = require('../db');
-
 const table = 'test';
-
 const {
   insertOne,
   replaceOne,

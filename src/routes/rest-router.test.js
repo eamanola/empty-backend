@@ -1,28 +1,24 @@
 const { object, string } = require('yup');
-
 const supertest = require('supertest');
 
-const app = require('../app');
-
-const { getToken, deleteUsers } = require('../jest/test-helpers');
-
-const { paramError, accessDenied } = require('../errors');
-
-const { deleteAll } = require('../db');
-
-const validator = object({ foo: string().required() }).noUnknown().strict();
-
-const table = 'test';
+const {
+  getToken,
+  deleteUsers,
+  deleteAll,
+  errors,
+} = require('../jest/test-helpers');
 
 const restModel = require('../models/rest-model');
 const restController = require('../controllers/rest-controller');
 const restRouter = require('./rest-router');
 
+const app = require('../app');
+
+const validator = object({ foo: string().required() }).noUnknown().strict();
+const table = 'test';
 const model = restModel(table, validator);
 const router = restRouter(restController(model));
-
 const baseUrl = '/test';
-
 app.use(baseUrl, router);
 
 const api = supertest(app);
@@ -58,6 +54,8 @@ describe('rest router', () => {
   });
 
   it('should throw accessDenied, if user missing', async () => {
+    const { accessDenied } = errors;
+
     const response = await api.get(baseUrl);
 
     expect(response.status).toBe(accessDenied.status);
@@ -82,6 +80,7 @@ describe('rest router', () => {
     });
 
     it('should throw paramError, on invalid params', async () => {
+      const { paramError } = errors;
       const { token } = await getToken();
       const invalid = {};
 
@@ -156,6 +155,7 @@ describe('rest router', () => {
     });
 
     it('should throw paramError, on invalid params', async () => {
+      const { paramError } = errors;
       const { token } = await getToken();
       const inserted = await create({ api, token });
 

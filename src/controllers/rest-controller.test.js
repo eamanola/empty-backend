@@ -1,8 +1,11 @@
 const { string, object } = require('yup');
 
-const { createUser, deleteUsers } = require('../jest/test-helpers');
-
-const { count, deleteAll } = require('../db');
+const {
+  createUser,
+  deleteUsers,
+  count,
+  deleteAll,
+} = require('../jest/test-helpers');
 
 const restController = require('./rest-controller');
 

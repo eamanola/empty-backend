@@ -1,14 +1,16 @@
 const supertest = require('supertest');
 
-const app = require('../app');
-
-const { validNote, getToken, deleteUsers } = require('../jest/test-helpers');
-
-const { paramError, accessDenied } = require('../errors');
-
-const { deleteAll } = require('../db');
+const {
+  validNote,
+  getToken,
+  deleteUsers,
+  deleteAll,
+  errors,
+} = require('../jest/test-helpers');
 
 const { model } = require('./notes');
+
+const app = require('../app');
 
 const api = supertest(app);
 
@@ -43,8 +45,8 @@ describe('/notes', () => {
   });
 
   it('should throw accessDenied, if user missing', async () => {
-    const response = await api
-      .get('/notes');
+    const { accessDenied } = errors;
+    const response = await api.get('/notes');
 
     expect(response.status).toBe(accessDenied.status);
     expect(response.body.message).toBe(accessDenied.message);
@@ -69,6 +71,7 @@ describe('/notes', () => {
     });
 
     it('should throw paramError, on invalid params', async () => {
+      const { paramError } = errors;
       const { token } = await getToken();
       const invalidNote = {};
 
@@ -146,6 +149,7 @@ describe('/notes', () => {
     });
 
     it('should throw paramError, on invalid params', async () => {
+      const { paramError } = errors;
       const { token } = await getToken();
       const insertedNote = await createNote({ api, token });
 

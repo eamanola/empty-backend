@@ -1,10 +1,13 @@
 const supertest = require('supertest');
 
+const {
+  countUsers,
+  deleteUsers,
+  findUser,
+  errors,
+} = require('../jest/test-helpers');
+
 const app = require('../app');
-
-const { emailTakenError, paramError } = require('../errors');
-
-const { countUsers, deleteUsers, findUser } = require('../jest/test-helpers');
 
 const api = supertest(app);
 
@@ -12,10 +15,7 @@ describe('/signup', () => {
   beforeEach(deleteUsers);
 
   it('should return 201 OK', async () => {
-    const credentials = {
-      email: 'foo@example.com',
-      password: '123',
-    };
+    const credentials = { email: 'foo@example.com', password: '123' };
 
     const response = await api.post('/signup').send(credentials);
 
@@ -25,10 +25,8 @@ describe('/signup', () => {
   });
 
   it('should throw emailTakenError, on dublicate', async () => {
-    const credentials = {
-      email: 'foo@example.com',
-      password: '123',
-    };
+    const { emailTakenError } = errors;
+    const credentials = { email: 'foo@example.com', password: '123' };
 
     await api.post('/signup').send(credentials);
 
@@ -40,6 +38,8 @@ describe('/signup', () => {
   });
 
   it('should throw paramError, on invalid params', async () => {
+    const { paramError } = errors;
+
     expect((await api.post('/signup').send({ email: 'foo', password: '123' })).status)
       .toBe(paramError.status);
     expect((await api.post('/signup').send({ password: '123' })).status)

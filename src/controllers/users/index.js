@@ -1,9 +1,9 @@
-const signup = require('./signup');
-const login = require('./login');
-const fromToken = require('./from-token');
+const create = require('./create');
+const authenticate = require('./authenticate');
+const authorize = require('./authorize');
 
 module.exports = {
-  signup,
-  login,
-  fromToken,
+  create,
+  authenticate,
+  authorize,
 };

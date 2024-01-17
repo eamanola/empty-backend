@@ -1,4 +1,4 @@
-const { signup: controller } = require('../controllers/users');
+const { create: controller } = require('../controllers/users');
 
 const signup = async (req, res, next) => {
   let error = null;

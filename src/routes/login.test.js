@@ -1,12 +1,13 @@
 const supertest = require('supertest');
 
+const {
+  deleteUsers,
+  signup,
+  userFromToken,
+  errors,
+} = require('../jest/test-helpers');
+
 const app = require('../app');
-
-const { userNotFoundError, invalidPasswordError, paramError } = require('../errors');
-
-const { fromToken: userFromToken, signup } = require('../controllers/users');
-
-const { deleteUsers } = require('../jest/test-helpers');
 
 const api = supertest(app);
 
@@ -15,10 +16,7 @@ describe('/login', () => {
 
   it('should return 200 OK with a token', async () => {
     const email = 'foo@example.com';
-    const credentials = {
-      email,
-      password: '123',
-    };
+    const credentials = { email, password: '123' };
     await signup(credentials);
 
     const response = await api.post('/login').send(credentials);
@@ -30,10 +28,8 @@ describe('/login', () => {
   });
 
   it('should throw userNotFoundError, if user doesn exist', async () => {
-    const credentials = {
-      email: 'foo@example.com',
-      password: '123',
-    };
+    const { userNotFoundError } = errors;
+    const credentials = { email: 'foo@example.com', password: '123' };
 
     const response = await api.post('/login').send(credentials);
 
@@ -42,10 +38,8 @@ describe('/login', () => {
   });
 
   it('should throw invalidPasswordError, if wrong password', async () => {
-    const credentials = {
-      email: 'foo@example.com',
-      password: '123',
-    };
+    const { invalidPasswordError } = errors;
+    const credentials = { email: 'foo@example.com', password: '123' };
     await signup(credentials);
 
     const response = await api.post('/login').send({
@@ -58,10 +52,8 @@ describe('/login', () => {
   });
 
   it('should throw paramError, on invalid params', async () => {
-    const credentials = {
-      email: 'foo@example.com',
-      password: '123',
-    };
+    const { paramError } = errors;
+    const credentials = { email: 'foo@example.com', password: '123' };
     await signup(credentials);
 
     expect((await api.post('/login').send({ email: 'foo', password: '123' })).status)

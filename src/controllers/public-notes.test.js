@@ -1,8 +1,6 @@
-const { validNote } = require('../jest/test-helpers');
+const { validNote, deleteAll } = require('../jest/test-helpers');
 
 const { model } = require('../routes/notes');
-
-const { deleteAll } = require('../db');
 
 const publicNotes = require('./public-notes');
 

@@ -1,6 +1,4 @@
-const { accessDenied } = require('../errors');
-
-const { signup, login } = require('../controllers/users');
+const { signup, login, errors } = require('../jest/test-helpers');
 
 const authorization = require('./authorization');
 
@@ -39,6 +37,8 @@ describe('authorization', () => {
   });
 
   it('should not add user, if token is invalid bearer', async () => {
+    const { accessDenied } = errors;
+
     let error;
     const req = { get: (/* authorization */) => 'bearer foo' };
     const res = {};

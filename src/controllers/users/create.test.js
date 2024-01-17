@@ -1,10 +1,13 @@
 const bcrypt = require('bcrypt');
 
-const { findOne } = require('../../models/users');
+const {
+  countUsers,
+  deleteUsers,
+  findUser,
+  login,
+} = require('../../jest/test-helpers');
 
-const { countUsers, deleteUsers } = require('../../jest/test-helpers');
-
-const { login, signup } = require('.');
+const create = require('./create');
 
 describe('signup', () => {
   beforeEach(deleteUsers);
@@ -21,7 +24,7 @@ describe('signup', () => {
       expect(e).toBeTruthy();
     }
 
-    await signup({
+    await create({
       email,
       password,
     });
@@ -33,11 +36,11 @@ describe('signup', () => {
   it('should not allow dublicate emails', async () => {
     const email = 'foo@example.com';
 
-    await signup({ email, password: '123' });
+    await create({ email, password: '123' });
     expect(await countUsers()).toBe(1);
 
     try {
-      await signup({ email, password: '123' });
+      await create({ email, password: '123' });
       expect('Should not reach').toBe(true);
     } catch (e) {
       expect(e).toBeTruthy();
@@ -50,9 +53,9 @@ describe('signup', () => {
     const email = 'foo@example.com';
     const password = '123';
 
-    await signup({ email, password });
+    await create({ email, password });
 
-    const user = await findOne({ email });
+    const user = await findUser({ email });
 
     expect(user.password).toBe(undefined);
     expect(password).not.toBe(user.passwordHash);
@@ -63,9 +66,9 @@ describe('signup', () => {
     const email = 'foo@example.com';
     const password = '123';
 
-    await signup({ email, password });
+    await create({ email, password });
 
-    const user = await findOne({ email });
+    const user = await findUser({ email });
 
     expect(user.emailVerified).toBe(false);
   });
@@ -74,9 +77,9 @@ describe('signup', () => {
     const email = 'foo@example.com';
     const password = '123';
 
-    const id = await signup({ email, password });
+    const id = await create({ email, password });
 
-    const user = await findOne({ id });
+    const user = await findUser({ id });
 
     expect(user.email).toBe(email);
   });

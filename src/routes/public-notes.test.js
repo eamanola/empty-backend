@@ -1,12 +1,15 @@
 const supertest = require('supertest');
 
-const app = require('../app');
-
-const { validNote, getToken, deleteUsers } = require('../jest/test-helpers');
+const {
+  validNote,
+  getToken,
+  deleteUsers,
+  deleteAll,
+} = require('../jest/test-helpers');
 
 const { model } = require('./notes');
 
-const { deleteAll } = require('../db');
+const app = require('../app');
 
 const api = supertest(app);
 
