@@ -12,7 +12,7 @@ const restModel = require('../models/rest-model');
 const restController = require('../controllers/rest-controller');
 const restRouter = require('./rest-router');
 
-const app = require('../../app');
+const app = require('../app');
 
 const validator = object({ foo: string().required() }).noUnknown().strict();
 const table = 'test';

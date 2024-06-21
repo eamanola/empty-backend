@@ -4,7 +4,7 @@ const express = require('express');
 const { getItem, removeItem, setItem } = require('../cache');
 const { cacheKey, cache } = require('./rest-cache');
 
-const app = require('../../app');
+const app = require('../app');
 
 const success = { message: 'ok' };
 
