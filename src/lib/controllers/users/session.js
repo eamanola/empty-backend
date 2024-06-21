@@ -1,4 +1,4 @@
-const crypto = require('crypto');
+const crypto = require('node:crypto');
 
 const getSession = (user) => crypto
   .createHash('md5')
