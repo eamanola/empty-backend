@@ -1,8 +1,8 @@
 const validator = require('../validators/note');
 
-const restModel = require('../models/rest-model');
-const restController = require('../controllers/rest-controller');
-const restRouter = require('./rest-router');
+const restModel = require('../lib/models/rest-model');
+const restController = require('../lib/controllers/rest-controller');
+const restRouter = require('../lib/routes/rest-router');
 
 const table = 'Notes';
 

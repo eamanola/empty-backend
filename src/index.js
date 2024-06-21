@@ -1,8 +1,8 @@
-const { initCache, connectCache, closeCache } = require('./cache');
-const { initDB, connectDB, closeDB } = require('./db');
+const { initCache, connectCache, closeCache } = require('./lib/cache');
+const { initDB, connectDB, closeDB } = require('./lib/db');
 const app = require('./app');
 const { PORT } = require('./config');
-const { info, err } = require('./logger');
+const { info, err } = require('./lib/utils/logger');
 
 const shutdown = (server) => async () => {
   await closeDB();

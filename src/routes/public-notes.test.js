@@ -1,11 +1,8 @@
 const supertest = require('supertest');
 
-const {
-  validNote,
-  getToken,
-  deleteUsers,
-  deleteAll,
-} = require('../jest/test-helpers');
+const { getToken, deleteUsers, deleteAll } = require('../lib/jest/test-helpers');
+
+const { validNote } = require('../jest/note-helpers');
 
 const { model } = require('./notes');
 

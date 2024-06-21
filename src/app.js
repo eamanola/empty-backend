@@ -1,12 +1,12 @@
 const express = require('express');
 const cors = require('cors');
 
-const errorHandler = require('./middlewares/error-handler');
-const authorization = require('./middlewares/authorization');
+const errorHandler = require('./lib/middlewares/error-handler');
+const authorization = require('./lib/middlewares/authorization');
 
-const signup = require('./routes/signup');
-const login = require('./routes/login');
-const emailVerification = require('./routes/email-verification');
+const signup = require('./lib/routes/signup');
+const login = require('./lib/routes/login');
+const emailVerification = require('./lib/routes/email-verification');
 
 const { router: notes } = require('./routes/notes');
 const publicNotes = require('./routes/public-notes');
