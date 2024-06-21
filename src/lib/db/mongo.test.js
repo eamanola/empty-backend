@@ -9,7 +9,7 @@ const {
   insertOne,
 } = require('./mongo');
 
-describe.skip('connection', () => {
+describe('connection', () => {
   it('MongoClient should have used API', async () => {
     const client = new MongoClient('mongodb://foo');
     expect(typeof client.connect).toBe('function');
@@ -24,6 +24,8 @@ describe.skip('connection', () => {
     expect(typeof client.db().collection('collection').deleteOne).toBe('function');
     expect(typeof client.db().collection('collection').find).toBe('function');
     expect(typeof client.db().collection('collection').updateOne).toBe('function');
+
+    await closeDB();
   });
 
   describe('connectDB', () => {
@@ -40,7 +42,7 @@ describe.skip('connection', () => {
     });
   });
 
-  describe('connectDB', () => {
+  describe('closeDB', () => {
     it('should disconnect', async () => {
       await initDB();
       await connectDB();
