@@ -1,2 +1,3 @@
-# fullstack-demo-backend
-A coding demo
+# empty-backend
+
+A base repo for backend development
