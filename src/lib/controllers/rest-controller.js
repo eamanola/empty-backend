@@ -21,13 +21,13 @@ const restController = (model, { table, validator, userRequired = true } = {}) =
       const { id } = await insertOne(addOwner(user, newResource));
 
       return id;
-    } catch (e) {
-      if (e.name === 'ValidationError') {
-        logger.info(e.message);
-        throw createParamError(e);
+    } catch (err) {
+      if (err.name === 'ValidationError') {
+        logger.info(err.message);
+        throw createParamError(err);
       }
 
-      throw e;
+      throw err;
     }
   };
 
@@ -39,13 +39,13 @@ const restController = (model, { table, validator, userRequired = true } = {}) =
         addOwner(user, { id: resource.id }),
         addOwner(user, resource),
       );
-    } catch (e) {
-      if (e.name === 'ValidationError') {
-        logger.info(e.message);
-        throw createParamError(e);
+    } catch (err) {
+      if (err.name === 'ValidationError') {
+        logger.info(err.message);
+        throw createParamError(err);
       }
 
-      throw e;
+      throw err;
     }
   };
 

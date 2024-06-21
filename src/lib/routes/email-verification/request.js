@@ -10,8 +10,8 @@ const request = async (req, res, next) => {
 
     await controller({ email }, { byCode, byLink });
     res.status(200).json({ message: 'OK' });
-  } catch (e) {
-    next(e);
+  } catch (err) {
+    next(err);
   }
 };
 

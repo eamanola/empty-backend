@@ -9,8 +9,8 @@ const authorization = async (req, res, next) => {
     const user = await userFromToken(token);
 
     req.user = user;
-  } catch (e) {
-    error = e;
+  } catch (err) {
+    error = err;
   }
 
   next(error);

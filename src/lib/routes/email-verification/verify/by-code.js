@@ -7,8 +7,8 @@ const verifyByCode = async (req, res, next) => {
 
     await controller(user, code);
     res.status(200).json({ message: 'OK' });
-  } catch (e) {
-    next(e);
+  } catch (err) {
+    next(err);
   }
 };
 

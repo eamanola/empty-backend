@@ -31,8 +31,8 @@ const restRouter = (controller, {
       const result = await byId(user, { id });
 
       res.status(201).json({ message: 'CREATED', [resultKey]: result });
-    } catch (e) {
-      error = e;
+    } catch (err) {
+      error = err;
     } finally {
       next(error);
     }
@@ -46,8 +46,8 @@ const restRouter = (controller, {
       const result = await byId(user, { id: params.id });
 
       res.status(200).json({ message: 'OK', [resultKey]: result });
-    } catch (e) {
-      error = e;
+    } catch (err) {
+      error = err;
     } finally {
       next(error);
     }
@@ -61,8 +61,8 @@ const restRouter = (controller, {
       const results = await byOwner(user);
 
       res.status(200).json({ message: 'OK', [resultsKey]: results });
-    } catch (e) {
-      error = e;
+    } catch (err) {
+      error = err;
     } finally {
       next(error);
     }
@@ -79,8 +79,8 @@ const restRouter = (controller, {
       const updated = await byId(user, { id });
 
       res.status(200).json({ message: 'OK', [resultKey]: updated });
-    } catch (e) {
-      error = e;
+    } catch (err) {
+      error = err;
     } finally {
       next(error);
     }
@@ -95,8 +95,8 @@ const restRouter = (controller, {
       await remove(user, { id });
 
       res.status(200).json({ message: 'OK' });
-    } catch (e) {
-      error = e;
+    } catch (err) {
+      error = err;
     } finally {
       next(error);
     }

@@ -11,8 +11,8 @@ const publicNotes = async (req, res, next) => {
       offset: Number(offset),
     });
     res.status(200).json({ message: 'OK', notes });
-  } catch (e) {
-    error = e;
+  } catch (err) {
+    error = err;
   } finally {
     next(error);
   }

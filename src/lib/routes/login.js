@@ -8,8 +8,8 @@ const login = async (req, res, next) => {
   try {
     const token = await controller(body);
     res.status(200).json({ message: 'OK', token });
-  } catch (e) {
-    error = e;
+  } catch (err) {
+    error = err;
   } finally {
     next(error);
   }

@@ -42,8 +42,8 @@ describe('rest-model', () => {
 
       try {
         await insertOne(newResource);
-      } catch (e) {
-        expect(e).toBeTruthy();
+      } catch (err) {
+        expect(err).toBeTruthy();
       } finally {
         expect(await count(table)).toBe(0);
       }
@@ -73,8 +73,8 @@ describe('rest-model', () => {
 
       try {
         await replaceOne(inserted, modified);
-      } catch (e) {
-        expect(e).toBeTruthy();
+      } catch (err) {
+        expect(err).toBeTruthy();
       } finally {
         expect(await findOne(inserted)).toBeTruthy();
         expect(await findOne(modified)).toBeFalsy();
@@ -110,8 +110,8 @@ describe('rest-model', () => {
       try {
         await deleteOne(null);
         expect('Should not reach').toBe(true);
-      } catch (e) {
-        expect(e).toBeTruthy();
+      } catch (err) {
+        expect(err).toBeTruthy();
       } finally {
         expect(await count(table)).toBe(1);
       }
@@ -119,8 +119,8 @@ describe('rest-model', () => {
       try {
         await deleteOne();
         expect('Should not reach').toBe(true);
-      } catch (e) {
-        expect(e).toBeTruthy();
+      } catch (err) {
+        expect(err).toBeTruthy();
       } finally {
         expect(await count(table)).toBe(1);
       }
@@ -128,8 +128,8 @@ describe('rest-model', () => {
       try {
         await deleteOne({});
         expect('Should not reach').toBe(true);
-      } catch (e) {
-        expect(e).toBeTruthy();
+      } catch (err) {
+        expect(err).toBeTruthy();
       } finally {
         expect(await count(table)).toBe(1);
       }
@@ -137,8 +137,8 @@ describe('rest-model', () => {
       try {
         await deleteOne({ foo: '1234' });
         expect('Should not reach').toBe(true);
-      } catch (e) {
-        expect(e).toBeTruthy();
+      } catch (err) {
+        expect(err).toBeTruthy();
       } finally {
         expect(await count(table)).toBe(1);
       }
@@ -181,8 +181,8 @@ describe('rest-model', () => {
 
       try {
         await insertRequireUser(newResource);
-      } catch (e) {
-        expect(e).toBeTruthy();
+      } catch (err) {
+        expect(err).toBeTruthy();
       } finally {
         expect(await count(table)).toBe(0);
       }
@@ -203,8 +203,8 @@ describe('rest-model', () => {
 
       try {
         await replaceRequireUser(inserted, modified);
-      } catch (e) {
-        expect(e).toBeTruthy();
+      } catch (err) {
+        expect(err).toBeTruthy();
       } finally {
         expect((await findOne({ id })).foo).toBe(inserted.foo);
       }

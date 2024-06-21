@@ -8,8 +8,8 @@ const signup = async (req, res, next) => {
   try {
     await controller(body);
     res.status(201).json({ message: 'OK' });
-  } catch (e) {
-    error = e;
+  } catch (err) {
+    error = err;
   } finally {
     next(error);
   }

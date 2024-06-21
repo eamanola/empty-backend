@@ -20,8 +20,8 @@ describe('signup', () => {
     try {
       await login({ email, password });
       expect('Should not reach').toBe(true);
-    } catch (e) {
-      expect(e).toBeTruthy();
+    } catch (err) {
+      expect(err).toBeTruthy();
     }
 
     await create({
@@ -42,8 +42,8 @@ describe('signup', () => {
     try {
       await create({ email, password: '123' });
       expect('Should not reach').toBe(true);
-    } catch (e) {
-      expect(e).toBeTruthy();
+    } catch (err) {
+      expect(err).toBeTruthy();
     } finally {
       expect(await countUsers()).toBe(1);
     }

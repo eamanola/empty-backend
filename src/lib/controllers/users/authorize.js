@@ -18,12 +18,12 @@ const fromToken = async (token) => {
     }
 
     return null;
-  } catch (e) {
-    if (e.name === 'JsonWebTokenError') {
+  } catch (err) {
+    if (err.name === 'JsonWebTokenError') {
       throw accessDenied;
     }
 
-    throw e;
+    throw err;
   }
 };
 
