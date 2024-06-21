@@ -1,4 +1,4 @@
-const { log } = require('./logger');
+const logger = require('./logger');
 
 const sendEmailVerificationMail = async ({
   to,
@@ -6,12 +6,12 @@ const sendEmailVerificationMail = async ({
   byCode,
   token,
 }) => {
-  log('send email to', to);
+  logger.info('send email to', to);
   if (byCode) {
-    log(`${byCode}, with ${code}`);
+    logger.info(`${byCode}, with ${code}`);
   }
   if (token) {
-    log(`http://localhost:3000/email/verify/by-link?token=${token}`);
+    logger.info(`http://localhost:3000/email/verify/by-link?token=${token}`);
   }
 };
 

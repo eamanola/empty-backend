@@ -1,6 +1,6 @@
 const bcrypt = require('bcrypt');
 
-const { info } = require('../../utils/logger');
+const logger = require('../../utils/logger');
 const { createParamError, emailTakenError } = require('../../errors');
 const signupSchema = require('../../validators/signup');
 const { findOne, insertOne } = require('../../models/users');
@@ -13,9 +13,9 @@ const isEmailTaken = ({ email }) => findOne({ email });
 const signup = async ({ email, password }) => {
   try {
     await signupSchema.validate({ email, password });
-  } catch (e) {
-    info(e.message);
-    throw createParamError(e);
+  } catch (err) {
+    logger.info(err.message);
+    throw createParamError(err);
   }
 
   if (await isEmailTaken({ email })) {

@@ -1,5 +1,5 @@
 const { getItem, setItem, removeItem } = require('../cache');
-const { log, info } = require('../utils/logger');
+const logger = require('../utils/logger');
 
 const cacheKey = ({ user, url }) => `${user?.email || ''}${url}`;
 
@@ -22,8 +22,8 @@ const cacheResult = async (req, res, data) => {
 
     try {
       await setItem(key, { body: data, statusCode });
-    } catch (e) {
-      log(e);
+    } catch (err) {
+      logger.info(err);
     }
   }
 };
@@ -42,8 +42,8 @@ const invalidateCache = async (req, res) => {
 
       try {
         await removeItem(key2);
-      } catch (e) {
-        log(e);
+      } catch (err) {
+        logger.info(err);
       }
     }
   }
@@ -60,7 +60,7 @@ const cache = async (req, res, next) => {
       const cached = await getItem(key);
       if (cached) {
         res.status(cached.statusCode).json(cached.body);
-        info('from cache');
+        logger.info('from cache');
         // TODO:
         return;
       } // else {
@@ -69,8 +69,8 @@ const cache = async (req, res, next) => {
     } else if (['POST', 'PUT', 'DELETE'].includes(method)) {
       onFinish(req, res, invalidateCache);
     }
-  } catch (e) {
-    error = e;
+  } catch (err) {
+    error = err;
   }
 
   next(error);

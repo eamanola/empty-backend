@@ -1,6 +1,6 @@
 const knownErrors = require('../errors');
 
-const { err: logError } = require('../utils/logger');
+const logger = require('../utils/logger');
 
 // eslint-disable-next-line no-unused-vars
 const errorHandler = (err, req, res, next) => {
@@ -11,7 +11,7 @@ const errorHandler = (err, req, res, next) => {
     res.status(status).json({ message });
   } else {
     res.status(500).json({ message: 'internal error' });
-    logError('unhandled error', err);
+    logger.error('unhandled error', err);
   }
 };
 

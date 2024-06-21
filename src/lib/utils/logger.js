@@ -1,10 +1,17 @@
 const { NODE_ENV } = require('../../config');
 
-// eslint-disable-next-line no-console
-const info = (...args) => NODE_ENV !== 'test' && console.log(...args);
-// eslint-disable-next-line no-console
-const log = (...args) => console.log(...args);
-// eslint-disable-next-line no-console
-const err = (...args) => console.error(...args);
+const error = console.error.bind(console);
 
-module.exports = { err, info, log };
+const info = NODE_ENV === 'test'
+  ? () => null
+  : console.info.bind(console);
+
+const warn = console.warn.bind(console);
+
+const logger = {
+  error,
+  info,
+  warn,
+};
+
+module.exports = logger;

@@ -2,17 +2,17 @@ const { initCache, connectCache, closeCache } = require('./lib/cache');
 const { initDB, connectDB, closeDB } = require('./lib/db');
 const app = require('./app');
 const { PORT } = require('./config');
-const { info, err } = require('./lib/utils/logger');
+const logger = require('./lib/utils/logger');
 
 const shutdown = (server) => async () => {
   await closeDB();
-  info('db connection closed');
+  logger.info('db connection closed');
 
   await closeCache();
-  info('cache connection closed');
+  logger.info('cache connection closed');
 
   server.close(() => {
-    info('server closed');
+    logger.info('server closed');
     process.exit(0);
   });
 };
@@ -21,14 +21,14 @@ const start = async () => {
   initDB();
 
   await connectDB();
-  info('DB Connected');
+  logger.info('DB Connected');
 
   await initCache();
   await connectCache();
-  info('Cache Connected');
+  logger.info('Cache Connected');
 
   const server = app.listen(PORT, () => {
-    info(`Running on port ${PORT}`);
+    logger.info(`Running on port ${PORT}`);
   });
 
   const onExit = shutdown(server);
@@ -39,6 +39,6 @@ const start = async () => {
 
 try {
   start();
-} catch (e) {
-  err(e);
+} catch (err) {
+  logger.error(err);
 }

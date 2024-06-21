@@ -1,6 +1,6 @@
 const { createParamError } = require('../errors');
 
-const { info } = require('../utils/logger');
+const logger = require('../utils/logger');
 
 const restModel = require('../models/rest-model');
 
@@ -23,7 +23,7 @@ const restController = (model, { table, validator, userRequired = true } = {}) =
       return id;
     } catch (e) {
       if (e.name === 'ValidationError') {
-        info(e.message);
+        logger.info(e.message);
         throw createParamError(e);
       }
 
@@ -41,7 +41,7 @@ const restController = (model, { table, validator, userRequired = true } = {}) =
       );
     } catch (e) {
       if (e.name === 'ValidationError') {
-        info(e.message);
+        logger.info(e.message);
         throw createParamError(e);
       }
 

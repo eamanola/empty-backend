@@ -6,7 +6,7 @@ const {
   invalidPasswordError,
   emailNotVerifiedError,
 } = require('../../errors');
-const { info } = require('../../utils/logger');
+const logger = require('../../utils/logger');
 const { encode: encodeToken } = require('../../utils/token');
 const { findOne } = require('../../models/users');
 const { getSession } = require('./session');
@@ -16,9 +16,9 @@ const loginSchema = require('../../validators/login');
 const login = async ({ email, password }, { REQUIRE_VERIFIED_EMAIL = false } = {}) => {
   try {
     await loginSchema.validate({ email, password });
-  } catch (e) {
-    info(e.message);
-    throw createParamError(e);
+  } catch (err) {
+    logger.info(err.message);
+    throw createParamError(err);
   }
 
   const user = await findOne({ email });
