@@ -6,9 +6,9 @@ describe('new note validation', () => {
   describe('text', () => {
     it('should be required', async () => {
       const newNote = {
-        text: '',
         imageUrl: null,
         isPublic: false,
+        text: '',
       };
 
       validate(newNote)
@@ -20,8 +20,8 @@ describe('new note validation', () => {
   describe('imageUrl', () => {
     it('should not be required', async () => {
       const newNote = {
-        text: 'foo',
         isPublic: false,
+        text: 'foo',
       };
 
       expect(await validate(newNote)).toEqual(newNote);
@@ -29,9 +29,9 @@ describe('new note validation', () => {
 
     it('should be a valid url', async () => {
       const newNote = {
-        text: 'foo',
         imageUrl: 'a',
         isPublic: false,
+        text: 'foo',
       };
 
       validate(newNote)
@@ -50,8 +50,8 @@ describe('new note validation', () => {
   describe('isPublic', () => {
     it('should be required', async () => {
       const newNote = {
-        text: 'foo',
         imageUrl: '',
+        text: 'foo',
       };
 
       validate(newNote)

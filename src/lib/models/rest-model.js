@@ -41,12 +41,12 @@ const restModel = (table, validator, { userRequired = true } = {}) => {
   const deleteOne = (where) => !!where.id && dbDeleteOne(table, where);
 
   return {
-    table,
-    insertOne,
-    findOne,
-    find,
-    replaceOne,
     deleteOne,
+    find,
+    findOne,
+    insertOne,
+    replaceOne,
+    table,
   };
 };
 

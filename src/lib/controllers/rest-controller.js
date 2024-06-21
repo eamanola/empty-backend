@@ -52,11 +52,11 @@ const restController = (model, { table, validator, userRequired = true } = {}) =
   const remove = async (user, { id }) => deleteOne(addOwner(user, { id }));
 
   return {
-    create,
     byId,
     byOwner,
-    update,
+    create,
     remove,
+    update,
   };
 };
 

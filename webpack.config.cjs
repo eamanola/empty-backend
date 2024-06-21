@@ -13,13 +13,11 @@ const output = {
 const aModule = {
   rules: [
     {
-      test: /\.js$/i,
-      exclude: [/node_modules/],
+      exclude: [/node_modules/u],
+      test: /\.js$/ui,
       use: {
         loader: 'babel-loader',
-        options: {
-          presets: ['@babel/preset-env'],
-        },
+        options: { presets: ['@babel/preset-env'] },
       },
     },
   ],
@@ -34,12 +32,11 @@ const optimization = {
 };
 
 module.exports = {
-  mode: 'production',
   entry,
-  output,
-  module: aModule,
-  plugins,
-  optimization,
-  // externalsPresets: { node: true },
   externals: [nodeExternals()],
+  mode: 'production',
+  module: aModule,
+  optimization,
+  output,
+  plugins,
 };

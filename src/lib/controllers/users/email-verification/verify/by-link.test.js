@@ -24,10 +24,7 @@ describe('email verification', () => {
       const user = await createUser();
       const onSuccess = 'http://example.com/your-email-has-been-verified';
       const onFail = 'http://example.com/something-went-wrong';
-      const byLink = {
-        onSuccess,
-        onFail,
-      };
+      const byLink = { onFail, onSuccess };
       await emailVerification.request(user, { byLink });
       const { token } = sendEmailVerificationMail.mock.calls[0][0];
 
@@ -42,10 +39,7 @@ describe('email verification', () => {
       const user = await createUser();
       const onSuccess = 'http://example.com/your-email-has-been-verified';
       const onFail = 'http://example.com/something-went-wrong';
-      const byLink = {
-        onSuccess,
-        onFail,
-      };
+      const byLink = { onFail, onSuccess };
       await emailVerification.request(user, { byLink });
       const { token } = sendEmailVerificationMail.mock.calls[0][0];
 

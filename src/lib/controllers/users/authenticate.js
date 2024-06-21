@@ -34,7 +34,7 @@ const login = async ({ email, password }, { REQUIRE_VERIFIED_EMAIL = false } = {
     throw emailNotVerifiedError;
   }
 
-  const token = encodeToken({ userId: user.id, session: getSession(user) });
+  const token = encodeToken({ session: getSession(user), userId: user.id });
 
   return token;
 };

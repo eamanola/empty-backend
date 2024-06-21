@@ -177,7 +177,7 @@ describe('rest router', () => {
       const { token } = await getToken();
       const inserted = await create({ api, token });
 
-      const modified = { ...inserted, owner: 'foo', modified: 'bar' };
+      const modified = { ...inserted, modified: 'bar', owner: 'foo' };
       expect(modified.owner).not.toBe(inserted.owner);
       expect(modified.modified).not.toBe(inserted.modified);
 

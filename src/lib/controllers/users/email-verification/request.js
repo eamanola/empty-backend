@@ -23,12 +23,12 @@ const request = async ({ email }, { byCode = null, byLink = null }) => {
     throw e;
   }
 
-  const token = byLink ? encodeEmailVerificationToken({ userId: user.id, byLink, code }) : null;
+  const token = byLink ? encodeEmailVerificationToken({ byLink, code, userId: user.id }) : null;
 
   sendEmailVerificationMail({
-    to: user.email,
-    code: byCode ? code : null,
     byCode,
+    code: byCode ? code : null,
+    to: user.email,
     token,
   });
 };

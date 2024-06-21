@@ -55,7 +55,7 @@ describe('cache middleware', () => {
     it('should use a cached value, if available', async () => {
       const key = cacheKey({ url: '/test/id' });
 
-      const cached = { statusCode: 234, body: 'foo' };
+      const cached = { body: 'foo', statusCode: 234 };
       expect(cached).not.toEqual(success);
 
       await setItem(key, cached);
@@ -92,7 +92,7 @@ describe('cache middleware', () => {
     it('should use a cached value, if available', async () => {
       const key = cacheKey({ url: '/test' });
 
-      const cached = { statusCode: 234, body: 'foo' };
+      const cached = { body: 'foo', statusCode: 234 };
       expect(cached).not.toEqual(success);
 
       await setItem(key, cached);

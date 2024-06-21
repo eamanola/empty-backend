@@ -9,14 +9,14 @@ const table = 'Notes';
 const model = restModel(table, validator);
 const controller = restController(model);
 const router = restRouter(controller, {
-  useCache: true,
-  userRequired: true,
   resultKey: 'note',
   resultsKey: 'notes',
+  useCache: true,
+  userRequired: true,
 });
 
 module.exports = {
-  model,
   controller,
+  model,
   router,
 };

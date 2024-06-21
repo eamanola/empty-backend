@@ -18,16 +18,15 @@ const {
 const isTest = NODE_ENV === 'test';
 
 module.exports = {
-  initDB,
-  connectDB,
   closeDB,
-  findOne,
-  insertOne,
-  replaceOne,
+  connectDB,
+  count: (table, where) => isTest && count(table, where),
+  deleteAll: (table, where) => isTest && deleteAll(table, where),
   deleteOne,
   find: (table, where, options = {}) => find(table, where, options),
+  findOne,
+  initDB,
+  insertOne,
+  replaceOne,
   updateOne,
-
-  deleteAll: (table, where) => isTest && deleteAll(table, where),
-  count: (table, where) => isTest && count(table, where),
 };

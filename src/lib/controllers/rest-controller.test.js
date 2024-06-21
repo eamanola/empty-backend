@@ -237,7 +237,7 @@ describe('rest controller', () => {
         update: updateUnAuth,
         remove: removeUnAuth,
 
-      } = restController(null, { table, validator, userRequired: false });
+      } = restController(null, { table, userRequired: false, validator });
 
       const resource = { foo: 'bar' };
       const user = null;

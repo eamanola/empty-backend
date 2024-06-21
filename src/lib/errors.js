@@ -1,31 +1,31 @@
 const userNotFoundError = {
-  status: 400,
   message: 'User not found',
   name: 'userNotFoundError',
+  status: 400,
 };
 
 const invalidPasswordError = {
-  status: 400,
   message: 'Login failed',
   name: 'invalidPasswordError',
+  status: 400,
 };
 
 const emailTakenError = {
-  status: 400,
   message: 'Email already in use.',
   name: 'emailTakenError',
+  status: 400,
 };
 
 const paramError = {
-  status: 400,
   message: 'Invalid parameters',
   name: 'paramError',
+  status: 400,
 };
 
 const accessDenied = {
-  status: 403,
   message: 'Access denied',
   name: 'accessDenied',
+  status: 403,
 };
 
 const createParamError = ({ message }) => ({
@@ -34,38 +34,38 @@ const createParamError = ({ message }) => ({
 });
 
 const emailVerifiedError = {
-  status: 400,
   message: 'User email is verified',
   name: 'emailVerifiedError',
+  status: 400,
 };
 
 const invalidEmailVerificationCodeError = {
-  status: 400,
   message: 'Wrong code',
   name: 'invalidEmailVerificationCodeError',
+  status: 400,
 };
 
 const emailNotVerifiedError = {
-  status: 400,
   message: 'Email Not Verified',
   name: 'emailNotVerifiedError',
+  status: 400,
 };
 
 const sessionExipred = {
-  status: 403,
   message: 'Session Exipred',
   name: 'sessionExipred',
+  status: 403,
 };
 
 module.exports = {
-  userNotFoundError,
-  invalidPasswordError,
-  emailTakenError,
-  paramError,
-  createParamError,
   accessDenied,
+  createParamError,
+  emailNotVerifiedError,
+  emailTakenError,
   emailVerifiedError,
   invalidEmailVerificationCodeError,
-  emailNotVerifiedError,
+  invalidPasswordError,
+  paramError,
   sessionExipred,
+  userNotFoundError,
 };

@@ -15,11 +15,11 @@ jest.mock('redis', () => {
 
   return {
     createClient: async () => ({
+      connect: async () => {},
+      del: removeItem,
+      disconnect: async () => {},
       get: getItem,
       set: setItem,
-      del: removeItem,
-      connect: async () => {},
-      disconnect: async () => {},
     }),
   };
 });

@@ -30,13 +30,13 @@ const createNotes = async ({
   newNote = validNote(),
 }) => {
   if (count > 0) {
-    await createNote({ api, token, newNote });
+    await createNote({ api, newNote, token });
 
     await createNotes({
       api,
-      token,
       count: count - 1,
       newNote,
+      token,
     });
   }
 };
@@ -52,18 +52,18 @@ describe('GET /public-notes', () => {
     const PRIVATE_LIMIT = 4;
     await createNotes({
       api,
-      token,
-      newNote: validNote({ isPublic: false }),
       count: PRIVATE_LIMIT,
+      newNote: validNote({ isPublic: false }),
+      token,
     });
 
     const PUBLIC_LIMIT = 2;
     expect(PUBLIC_LIMIT > 0);
     await createNotes({
       api,
-      token,
-      newNote: validNote({ isPublic: true }),
       count: PUBLIC_LIMIT,
+      newNote: validNote({ isPublic: true }),
+      token,
     });
 
     const response = await api.get('/public-notes');
@@ -80,9 +80,9 @@ describe('GET /public-notes', () => {
       const PUBLIC_LIMIT = 4;
       await createNotes({
         api,
-        token,
-        newNote: validNote({ isPublic: true }),
         count: PUBLIC_LIMIT,
+        newNote: validNote({ isPublic: true }),
+        token,
       });
 
       const LIMIT_BELOW = 3;
@@ -96,9 +96,9 @@ describe('GET /public-notes', () => {
       const PUBLIC_LIMIT = 3;
       await createNotes({
         api,
-        token,
-        newNote: validNote({ isPublic: true }),
         count: PUBLIC_LIMIT,
+        newNote: validNote({ isPublic: true }),
+        token,
       });
 
       const LIMIT_ABOVE = 4;
@@ -113,9 +113,9 @@ describe('GET /public-notes', () => {
       const PUBLIC_LIMIT = 4;
       await createNotes({
         api,
-        token,
-        newNote: validNote({ isPublic: true }),
         count: PUBLIC_LIMIT,
+        newNote: validNote({ isPublic: true }),
+        token,
       });
 
       const LIMIT_INVALID = 'foo';
@@ -132,9 +132,9 @@ describe('GET /public-notes', () => {
       const PUBLIC_LIMIT = 4;
       await createNotes({
         api,
-        token,
-        newNote: validNote({ isPublic: true }),
         count: PUBLIC_LIMIT,
+        newNote: validNote({ isPublic: true }),
+        token,
       });
 
       const OFFSET = 1;
@@ -155,9 +155,9 @@ describe('GET /public-notes', () => {
       const PUBLIC_LIMIT = 4;
       await createNotes({
         api,
-        token,
-        newNote: validNote({ isPublic: true }),
         count: PUBLIC_LIMIT,
+        newNote: validNote({ isPublic: true }),
+        token,
       });
 
       const OFFSET = 5;
@@ -172,9 +172,9 @@ describe('GET /public-notes', () => {
       const PUBLIC_LIMIT = 4;
       await createNotes({
         api,
-        token,
-        newNote: validNote({ isPublic: true }),
         count: PUBLIC_LIMIT,
+        newNote: validNote({ isPublic: true }),
+        token,
       });
 
       const INVALID_OFFSET = 'foo';

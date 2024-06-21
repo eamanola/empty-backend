@@ -17,15 +17,15 @@ describe('request verification', () => {
     const byCode = 'http://example.com/form-to-enter-your-code';
     const onSuccess = 'http://example.com/your-email-has-been-verified';
     const onFail = 'http://example.com/something-went-wrong';
-    const byLink = { onSuccess, onFail };
+    const byLink = { onFail, onSuccess };
 
     await api.post('/email-verification/request')
-      .send({ email: user.email, byCode, byLink });
+      .send({ byCode, byLink, email: user.email });
 
     expect(sendEmailVerificationMail).toHaveBeenCalledWith(expect.objectContaining({
-      to: user.email,
       byCode,
       code: expect.any(Number),
+      to: user.email,
       token: expect.any(String),
     }));
   });

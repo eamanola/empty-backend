@@ -25,22 +25,22 @@ const setEmailStatus = ({ userId, verified }) => (verified === true
 
 const getToken = async ({ email = 'foo@example.com', password = '123' } = {}) => {
   const user = await createUser({ email, password });
-  return { user, token: await userController.authenticate({ email, password }) };
+  return { token: await userController.authenticate({ email, password }), user };
 };
 
 module.exports = {
-  deleteUsers,
+  count,
   countUsers,
   createUser,
-  findUser,
-  updateUser,
-  getToken,
-  signup: userController.create,
-  login: userController.authenticate,
-  userFromToken: userController.authorize,
-  emailVerification,
-  setEmailStatus,
   deleteAll,
-  count,
+  deleteUsers,
+  emailVerification,
   errors,
+  findUser,
+  getToken,
+  login: userController.authenticate,
+  setEmailStatus,
+  signup: userController.create,
+  updateUser,
+  userFromToken: userController.authorize,
 };

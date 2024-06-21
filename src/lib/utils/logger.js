@@ -7,4 +7,4 @@ const log = (...args) => console.log(...args);
 // eslint-disable-next-line no-console
 const err = (...args) => console.error(...args);
 
-module.exports = { info, log, err };
+module.exports = { err, info, log };

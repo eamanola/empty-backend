@@ -10,6 +10,6 @@ const decode = (token) => {
 };
 
 module.exports = {
-  encode,
   decode,
+  encode,
 };

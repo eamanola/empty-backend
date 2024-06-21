@@ -79,16 +79,16 @@ const count = (collection, where) => client
   .countDocuments(where);
 
 module.exports = {
-  initDB,
-  connectDB: () => client.connect(),
   closeDB: () => client.close(),
-  findOne,
-  insertOne,
-  replaceOne,
+  connectDB: () => client.connect(),
+  count,
+  deleteAll,
   deleteOne,
   find,
+  findOne,
+  initDB,
+  insertOne,
+  replaceOne,
   updateOne,
   // upsert,
-  deleteAll,
-  count,
 };

@@ -172,7 +172,7 @@ describe('/notes', () => {
       const { token } = await getToken();
       const insertedNote = await createNote({ api, token });
 
-      const modifiedNote = { ...insertedNote, owner: 'foo', modified: 'bar' };
+      const modifiedNote = { ...insertedNote, modified: 'bar', owner: 'foo' };
       expect(modifiedNote.owner).not.toBe(insertedNote.owner);
       expect(modifiedNote.modified).not.toBe(insertedNote.modified);
 

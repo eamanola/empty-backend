@@ -3,7 +3,7 @@ const authenticate = require('./authenticate');
 const authorize = require('./authorize');
 
 module.exports = {
-  create,
   authenticate,
   authorize,
+  create,
 };

@@ -26,11 +26,10 @@ const removeItem = async (key) => {
 };
 
 module.exports = {
-  initCache,
-  connectCache,
   closeCache,
-
-  setItem,
+  connectCache,
   getItem,
+  initCache,
   removeItem,
+  setItem,
 };

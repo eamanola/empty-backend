@@ -9,7 +9,6 @@ const userSchema = require('../validators/user');
 const table = 'Users';
 
 module.exports = {
-  table,
   findOne: async (where) => {
     const result = await findOne(table, where);
     if (result) {
@@ -23,5 +22,6 @@ module.exports = {
 
     return insertOne(table, user);
   },
+  table,
   updateOne: async (where, updates) => updateOne(table, where, updates),
 };

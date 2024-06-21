@@ -20,7 +20,7 @@ const restRouter = (controller, {
     byOwner,
     update,
     remove,
-  } = (controller || restController(null, { table, validator, userRequired }));
+  } = (controller || restController(null, { table, userRequired, validator }));
 
   const post = async (req, res, next) => {
     let error = null;

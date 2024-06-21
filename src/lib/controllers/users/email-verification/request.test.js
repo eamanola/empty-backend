@@ -73,8 +73,8 @@ describe('email verification', () => {
         const updatedUser = await findUser({ id: user.id });
 
         expect(sendEmailVerificationMail).toHaveBeenCalledWith(expect.objectContaining({
-          code: updatedUser.emailVerificationCode,
           byCode,
+          code: updatedUser.emailVerificationCode,
         }));
       });
 
@@ -94,10 +94,7 @@ describe('email verification', () => {
         const user = await createUser();
         const onSuccess = 'http://example.com/your-email-has-been-verified';
         const onFail = 'http://example.com/something-went-wrong';
-        const byLink = {
-          onSuccess,
-          onFail,
-        };
+        const byLink = { onFail, onSuccess };
 
         await request(user, { byLink });
 

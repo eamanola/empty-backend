@@ -15,7 +15,7 @@ jest.mock('../db/mongo', () => {
 
   return {
     ...mongo,
-    initDB,
     closeDB,
+    initDB,
   };
 });
