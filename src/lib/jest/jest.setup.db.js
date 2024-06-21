@@ -1,8 +1,9 @@
 const { initDB, connectDB, closeDB } = require('../db');
 
 const SKIP_PATHS = [
-  'src/db',
+  'src/lib/db',
   'src/validators',
+  'src/lib/validators',
 ];
 const { testPath } = expect.getState();
 const skip = () => SKIP_PATHS.some((skipPath) => testPath.includes(skipPath));

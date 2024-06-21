@@ -24,8 +24,6 @@ describe('connection', () => {
     expect(typeof client.db().collection('collection').deleteOne).toBe('function');
     expect(typeof client.db().collection('collection').find).toBe('function');
     expect(typeof client.db().collection('collection').updateOne).toBe('function');
-
-    await closeDB();
   });
 
   describe('connectDB', () => {

@@ -1,36 +1,42 @@
 # Base
 # use non alpine for mongodb-memory-server
-FROM node:21 AS base
+FROM node:22 AS base
 WORKDIR /app
 COPY package.json package-lock.json .
 RUN npm install
+
+# prod specific
+FROM base AS prod-base
+# pre-download memory-server-binaries
+COPY ./bin/download-memory-server-binaries.js .
+ENV MONGOMS_VERSION=7.0.11
+ENV RUNTIME_DOWNLOAD=true
+RUN node ./download-memory-server-binaries.js
+# dev uses src as volumes
 COPY src src
 
 # lint
-FROM base as lint
-COPY .eslintrc.js .
+FROM prod-base as lint
+COPY .eslintrc.cjs .
 COPY .eslintignore .
 RUN npm run lint
 
 # test
 FROM lint as test
-COPY jest.config.js .
-# mongodb-memory-server dependencies
-RUN wget http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2_amd64.deb
-RUN dpkg -i libssl1.1_1.1.1f-1ubuntu2_amd64.deb
+COPY jest.config.cjs .
 RUN npm test
 
+# build
 FROM test as build
-COPY webpack.config.js .
+COPY webpack.config.cjs .
 RUN npm run build
 
 # prod
-FROM node:21-alpine AS prod
+FROM node:22-alpine AS prod
 WORKDIR /app
 COPY package.json package-lock.json .
 RUN npm install --omit=dev
 COPY --from=build /app/dist/index.bundle.js src/index.js
-RUN ls -laR src
 USER node
 CMD npm start
 

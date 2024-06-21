@@ -1,4 +1,3 @@
-version: "3.4"
 services:
   app:
     build:
@@ -19,7 +18,7 @@ services:
       PORT: 3000
 
   mongo:
-    image: mongodb/mongodb-community-server:6.0-ubi8
+    image: mongodb/mongodb-community-server:latest # freeze for prod
 
     environment:
       MONGODB_INITDB_ROOT_USERNAME: ${MONGODB_INITDB_ROOT_USERNAME:-root}
@@ -32,7 +31,7 @@ services:
       - "./mongo-init:/docker-entrypoint-initdb.d:ro"
 
   redis:
-    image: redis/redis-stack-server:latest
+    image: redis/redis-stack-server:latest # freeze for prod
 
     environment:
       REDIS_ARGS: "--requirepass ${REDIS_PASSWORD:-supersecure}"
