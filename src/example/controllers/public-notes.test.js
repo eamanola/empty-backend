@@ -1,4 +1,4 @@
-const { deleteAll } = require('../lib/jest/test-helpers');
+const { deleteAll } = require('../../lib/jest/test-helpers');
 
 const { validNote } = require('../jest/note-helpers');
 

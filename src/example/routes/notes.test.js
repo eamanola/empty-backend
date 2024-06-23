@@ -5,7 +5,7 @@ const {
   deleteUsers,
   deleteAll,
   errors,
-} = require('../lib/jest/test-helpers');
+} = require('../../lib/jest/test-helpers');
 
 const { validNote } = require('../jest/note-helpers');
 

@@ -1,6 +1,6 @@
 const { initCache, connectCache, closeCache } = require('./lib/cache');
 const { initDB, connectDB, closeDB } = require('./lib/db');
-const app = require('./app');
+const app = require('./example/app');
 const { PORT } = require('./config');
 const logger = require('./lib/utils/logger');
 

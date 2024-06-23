@@ -1,4 +1,4 @@
-const app = require('./lib/app');
+const app = require('../lib/app');
 
 const noteErrorHandler = require('./middlewares/note-error-handler');
 const { router: notes } = require('./routes/notes');
