@@ -12,9 +12,9 @@ install redis, mongo, and node.
 
 ### development
 
-create an app.js, that extends lib/app.js, and point src/index.js to the module.
+create an app.js, that extends lib/app.js, and point src/index.js to the module. add your routes the and implementations there.
 
-add your routes the and implementations there.
+see example/app.js
 
 ### env
 
@@ -33,7 +33,7 @@ locally
 
 ```npm run dev```
 
-#### production
+#### production build
 
 with docker
 
