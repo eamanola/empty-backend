@@ -12,9 +12,9 @@ install redis, mongo, and node.
 
 ### development
 
-add your routes the and implementations to app.js.
+extend your app.js from './lib/app.js, and add your routes and implementations there.
 
-see [fullstack-demo-backend-node/src/example/app.js](https://github.com/eamanola/fullstack-demo-backend-node/blob/main/src/fullstack-demo-backend-node/app.js) for example.
+see [fullstack-demo-backend-node/src/app.js](https://github.com/eamanola/fullstack-demo-backend-node/blob/main/src/fullstack-demo-backend-node/app.js) for example.
 
 ### env
 
@@ -64,7 +64,7 @@ for verifying email
 
 ## notes
 
-* Add ./lib/middlewares/error-handlers to the end of app.js. see [[fullstack-demo-backend-node/src/example/app.js](https://github.com/eamanola/fullstack-demo-backend-node/blob/main/src/fullstack-demo-backend-node/app.js) for howto.
+* Add ./lib/middlewares/error-handlers to the end of app.js. see [[fullstack-demo-backend-node/src/app.js](https://github.com/eamanola/fullstack-demo-backend-node/blob/main/src/fullstack-demo-backend-node/app.js) for howto.
 
 ## TODOs
 
