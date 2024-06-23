@@ -1,9 +1,7 @@
-const knownErrors = require('../errors');
-
 const logger = require('../utils/logger');
 
 // eslint-disable-next-line no-unused-vars
-const errorHandler = (err, req, res, next) => {
+const errorHandler = (knownErrors) => (err, req, res, next) => {
   const { name, status, message } = err;
 
   const knownError = Object.values(knownErrors).find(({ name: n }) => name === n);

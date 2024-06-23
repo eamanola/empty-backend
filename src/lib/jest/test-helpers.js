@@ -1,9 +1,10 @@
 const { deleteAll, count } = require('../db');
-const userModel = require('../models/users');
-const userController = require('../controllers/users');
-const emailVerification = require('../controllers/users/email-verification');
-const { setVerified, setUnverified } = require('../controllers/users/email-verification/set-status');
+const userModel = require('../users/model');
+const userController = require('../users/controllers');
+const emailVerification = require('../users/controllers/email-verification');
+const { setVerified, setUnverified } = require('../users/controllers/email-verification/set-status');
 const errors = require('../errors');
+const userErrors = require('../users/errors');
 
 const deleteUsers = () => deleteAll(userModel.table);
 
@@ -42,5 +43,6 @@ module.exports = {
   setEmailStatus,
   signup: userController.create,
   updateUser,
+  userErrors,
   userFromToken: userController.authorize,
 };

@@ -62,10 +62,6 @@ for for authenticating users
 
 for verifying email
 
-## notes
-
-* Add ./lib/middlewares/error-handlers to the end of app.js. see [fullstack-demo-backend-node/src/app.js](https://github.com/eamanola/fullstack-demo-backend-node/blob/main/src/app.js) for howto.
-
 ## TODOs
 
 * upgrade to eslint@9, when airbnb adds support

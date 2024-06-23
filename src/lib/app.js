@@ -1,12 +1,17 @@
 const express = require('express');
 const cors = require('cors');
 
-const errorHandler = require('./middlewares/error-handler');
-const authorization = require('./middlewares/authorization');
+const errors = require('./errors');
+const userErrors = require('./users/errors');
 
-const signup = require('./routes/signup');
-const login = require('./routes/login');
-const emailVerification = require('./routes/email-verification');
+const errorHandler = require('./middlewares/error-handler');
+const authorization = require('./users/middlewares/authorization');
+
+const {
+  emailVerification,
+  login,
+  signup,
+} = require('./users/routes');
 
 const app = express();
 
@@ -20,6 +25,11 @@ app.use(authorization);
 
 app.use('/email-verification', emailVerification);
 
-app.use(errorHandler);
+const knownErrors = {
+  ...errors,
+  ...userErrors,
+};
+
+app.use(errorHandler(knownErrors));
 
 module.exports = app;
