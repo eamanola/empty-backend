@@ -6,18 +6,15 @@ const {
   deleteUsers,
   deleteAll,
   errors,
-} = require('../../jest/test-helpers');
+} = require('../jest/test-helpers');
 
-const restModel = require('../model/rest-model');
-const restController = require('../controller/rest-controller');
 const restRouter = require('./rest-router');
 
-const app = require('../../app');
+const app = require('../app');
 
 const validator = object({ foo: string().required() }).noUnknown().strict();
 const table = 'test';
-const model = restModel(table, validator);
-const router = restRouter(restController(model));
+const { router } = restRouter(null, { table, validator });
 const baseUrl = '/test';
 app.use(baseUrl, router);
 
@@ -49,7 +46,7 @@ const create = async ({
 
 describe('rest router', () => {
   beforeEach(async () => {
-    await deleteAll(model.table);
+    await deleteAll(table);
     await deleteUsers();
   });
 

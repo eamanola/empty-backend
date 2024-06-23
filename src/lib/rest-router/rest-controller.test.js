@@ -5,7 +5,7 @@ const {
   deleteUsers,
   count,
   deleteAll,
-} = require('../../jest/test-helpers');
+} = require('../jest/test-helpers');
 
 const restController = require('./rest-controller');
 
@@ -19,7 +19,7 @@ const {
   byOwner,
   update,
   remove,
-} = restController(null, { table, validator });
+} = restController(null, { table, validator }).controller;
 
 const createResource = async (user) => {
   const resource = { foo: 'bar' };
@@ -236,8 +236,7 @@ describe('rest controller', () => {
         byId: byIdAuth,
         update: updateUnAuth,
         remove: removeUnAuth,
-
-      } = restController(null, { table, userRequired: false, validator });
+      } = restController(null, { table, userRequired: false, validator }).controller;
 
       const resource = { foo: 'bar' };
       const user = null;

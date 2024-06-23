@@ -2,7 +2,8 @@ const supertest = require('supertest');
 const express = require('express');
 
 const { getItem, removeItem, setItem } = require('../cache');
-const { cacheKey, cache } = require('./rest-cache');
+const cache = require('./rest-cache');
+const { cacheKey } = require('./rest-cache');
 
 const app = require('../app');
 

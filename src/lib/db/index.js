@@ -15,13 +15,9 @@ const {
   count,
 } = require('./mongo');
 
-const isTest = NODE_ENV === 'test';
-
 module.exports = {
   closeDB,
   connectDB,
-  count: (table, where) => isTest && count(table, where),
-  deleteAll: (table, where) => isTest && deleteAll(table, where),
   deleteOne,
   find: (table, where, options = {}) => find(table, where, options),
   findOne,
@@ -30,3 +26,8 @@ module.exports = {
   replaceOne,
   updateOne,
 };
+
+if (NODE_ENV === 'test') {
+  module.exports.count = (table, where) => count(table, where);
+  module.exports.deleteAll = (table, where) => deleteAll(table, where);
+}

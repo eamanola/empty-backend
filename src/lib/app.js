@@ -2,16 +2,12 @@ const express = require('express');
 const cors = require('cors');
 
 const errors = require('./errors');
+
+const { errorHandler } = require('./middlewares');
+
+const { authorization } = require('./users/middlewares');
+const { emailVerification, login, signup } = require('./users/routes');
 const userErrors = require('./users/errors');
-
-const errorHandler = require('./middlewares/error-handler');
-const authorization = require('./users/middlewares/authorization');
-
-const {
-  emailVerification,
-  login,
-  signup,
-} = require('./users/routes');
 
 const app = express();
 

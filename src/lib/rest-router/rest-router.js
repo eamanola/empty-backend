@@ -1,11 +1,13 @@
 const express = require('express');
 
-const { cache } = require('../../middlewares/rest-cache');
-const requireUser = require('../../middlewares/require-user');
+const { requireUser } = require('../middlewares');
 
-const restController = require('../controller/rest-controller');
+const cache = require('./rest-cache');
 
-const restRouter = (controller, {
+const restController = require('./rest-controller');
+const { NODE_ENV } = require('../../config');
+
+const restRouter = (aController, {
   useCache = true,
   userRequired = true,
   resultKey = 'result',
@@ -14,13 +16,16 @@ const restRouter = (controller, {
   table = null,
   validator = null,
 } = {}) => {
+  const controller = aController
+    || restController(null, { table, userRequired, validator }).controller;
+
   const {
     create,
     byId,
     byOwner,
     update,
     remove,
-  } = (controller || restController(null, { table, userRequired, validator }));
+  } = controller;
 
   const post = async (req, res, next) => {
     let error = null;
@@ -118,7 +123,10 @@ const restRouter = (controller, {
 
   router.delete('/:id', deleteHandler);
 
-  return router;
+  return {
+    controller: NODE_ENV === 'test' ? controller : undefined,
+    router,
+  };
 };
 
 module.exports = restRouter;

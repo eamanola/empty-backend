@@ -1,7 +1,4 @@
-const {
-  string,
-  object,
-} = require('yup');
+const { string, object } = require('yup');
 
 const signupSchema = object({
   email: string().email().required(),

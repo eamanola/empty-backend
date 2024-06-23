@@ -1,4 +1,6 @@
-const { verifyByLink: controller } = require('../../../controllers/email-verification');
+const { emailVerification } = require('../../../controllers');
+
+const { verifyByLink: controller } = emailVerification;
 
 const verifyByLink = async (req, res, next) => {
   try {

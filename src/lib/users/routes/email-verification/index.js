@@ -1,6 +1,6 @@
 const express = require('express');
 
-const requireUser = require('../../../middlewares/require-user');
+const { requireUser } = require('../../../middlewares');
 
 const requestVerification = require('./request');
 const verifyByLink = require('./verify/by-link');

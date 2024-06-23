@@ -10,16 +10,16 @@ const toMongoId = (doc) => {
   const { id, ...rest } = doc;
   if (!id) return { ...rest };
 
-  return { _id: new ObjectId(id), ...rest };
+  return { _id: ObjectId.createFromHexString(id), ...rest };
 };
 
 const fromMongoId = (doc) => {
   if (!doc) return doc;
 
-  const { _id: id, ...rest } = doc;
-  if (!id) return { ...rest };
+  const { _id, ...rest } = doc;
+  if (!_id) return { ...rest };
 
-  return { id: String(id), ...rest };
+  return { id: _id.toHexString(), ...rest };
 };
 
 const initDB = (url = MONGO_URL) => {
@@ -39,7 +39,7 @@ const insertOne = async (collection, doc) => {
     .collection(collection)
     .insertOne(doc);
 
-  return { id: String(insertedId) };
+  return fromMongoId({ _id: insertedId });
 };
 
 const replaceOne = (collection, where, replacement) => client
