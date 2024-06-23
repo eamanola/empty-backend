@@ -21,6 +21,31 @@ add your routes the and implementations there.
 create .env.development.local, and .env.production.local in project root. see env.sample for
 available options
 
+### run
+
+#### dev build
+
+with docker
+
+```./bin/dev.sh```
+
+locally
+
+```npm run dev```
+
+#### production
+
+with docker
+
+```./bin/start.sh```
+
+locally
+
+```
+  npm run build
+  npm run start
+```
+
 ## reserved endpoints
 
 see lib/app.js for up to date reserve endpoint

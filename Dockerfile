@@ -36,7 +36,7 @@ FROM node:22-alpine AS prod
 WORKDIR /app
 COPY package.json package-lock.json .
 RUN npm install --omit=dev
-COPY --from=build /app/dist/index.bundle.js src/index.js
+COPY --from=build /app/dist/index.bundle.js dist/index.bundle.js
 USER node
 CMD npm start
 
