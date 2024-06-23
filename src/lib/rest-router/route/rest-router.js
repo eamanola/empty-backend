@@ -1,9 +1,9 @@
 const express = require('express');
 
-const { cache } = require('../middlewares/rest-cache');
-const requireUser = require('../middlewares/require-user');
+const { cache } = require('../../middlewares/rest-cache');
+const requireUser = require('../../middlewares/require-user');
 
-const restController = require('../controllers/rest-controller');
+const restController = require('../controller/rest-controller');
 
 const restRouter = (controller, {
   useCache = true,

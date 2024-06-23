@@ -1,6 +1,6 @@
 const { string, object } = require('yup');
 
-const { count, deleteAll } = require('../jest/test-helpers');
+const { count, deleteAll } = require('../../jest/test-helpers');
 
 const restModel = require('./rest-model');
 

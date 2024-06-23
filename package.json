@@ -1,6 +1,6 @@
 {
   "name": "fullstack-demo-backend",
-  "version": "0.0.14",
+  "version": "0.0.15",
   "description": "repo for backend development",
   "main": "index.js",
   "scripts": {

@@ -1,8 +1,8 @@
-const { createParamError } = require('../errors');
+const { createParamError } = require('../../errors');
 
-const logger = require('../utils/logger');
+const logger = require('../../utils/logger');
 
-const restModel = require('../models/rest-model');
+const restModel = require('../model/rest-model');
 
 const restController = (model, { table, validator, userRequired = true } = {}) => {
   const {

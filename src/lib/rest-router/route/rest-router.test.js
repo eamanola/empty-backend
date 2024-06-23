@@ -6,13 +6,13 @@ const {
   deleteUsers,
   deleteAll,
   errors,
-} = require('../jest/test-helpers');
+} = require('../../jest/test-helpers');
 
-const restModel = require('../models/rest-model');
-const restController = require('../controllers/rest-controller');
+const restModel = require('../model/rest-model');
+const restController = require('../controller/rest-controller');
 const restRouter = require('./rest-router');
 
-const app = require('../app');
+const app = require('../../app');
 
 const validator = object({ foo: string().required() }).noUnknown().strict();
 const table = 'test';
