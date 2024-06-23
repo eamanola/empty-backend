@@ -65,3 +65,7 @@ for verifying email
 ## notes
 
 * Add ./lib/middlewares/error-handlers to the end of app.js. see example/app.js for howto.
+
+## TODOs
+
+* upgrade to eslint@9, when airbnb adds support

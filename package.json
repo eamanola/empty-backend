@@ -1,7 +1,7 @@
 {
   "name": "fullstack-demo-backend",
-  "version": "0.0.8",
-  "description": "A coding demo",
+  "version": "0.0.10",
+  "description": "repo for backend development",
   "main": "index.js",
   "scripts": {
     "start": "node dist/index.bundle.js",
