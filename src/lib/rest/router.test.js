@@ -7,7 +7,7 @@ const { deleteAll } = require('../db');
 
 const errors = require('../errors');
 
-const restRouter = require('./rest-router');
+const restRouter = require('./router');
 
 const app = require('../../app');
 

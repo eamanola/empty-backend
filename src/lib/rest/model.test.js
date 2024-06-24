@@ -2,7 +2,7 @@ const { string, object } = require('yup');
 
 const { deleteAll, count } = require('../db');
 
-const restModel = require('./rest-model');
+const restModel = require('./model');
 
 const table = 'test';
 

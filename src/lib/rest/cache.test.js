@@ -2,15 +2,15 @@ const supertest = require('supertest');
 const express = require('express');
 
 const { getItem, removeItem, setItem } = require('../cache');
-const cache = require('./rest-cache');
-const { cacheKey } = require('./rest-cache');
+const restCache = require('./cache');
+const { cacheKey } = require('./cache');
 
 const app = require('../../app');
 
 const success = { message: 'ok' };
 
 const router = express.Router();
-router.use(cache);
+router.use(restCache);
 router.use((req, res, next) => {
   if (req.get('fail')) {
     res.status(400).json({});

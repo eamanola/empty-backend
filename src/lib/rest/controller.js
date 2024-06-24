@@ -3,7 +3,7 @@ const { createParamError } = require('../errors');
 
 const logger = require('../utils/logger');
 
-const restModel = require('./rest-model');
+const restModel = require('./model');
 
 const restController = (aModel, { table, validator, userRequired = true } = {}) => {
   const model = aModel || restModel(table, validator, { userRequired });

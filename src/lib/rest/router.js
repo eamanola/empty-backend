@@ -2,9 +2,9 @@ const express = require('express');
 
 const { requireUser } = require('../middlewares');
 
-const cache = require('./rest-cache');
+const restCache = require('./cache');
 
-const restController = require('./rest-controller');
+const restController = require('./controller');
 const { NODE_ENV } = require('../../config');
 
 const restRouter = (aController, {
@@ -111,7 +111,7 @@ const restRouter = (aController, {
 
   if (userRequired) { router.use(requireUser); }
 
-  if (useCache) { router.use(cache); }
+  if (useCache) { router.use(restCache); }
 
   router.post('/', post);
 

@@ -4,7 +4,7 @@ const { createUser, deleteUsers } = require('../jest/test-helpers');
 
 const { deleteAll, count } = require('../db');
 
-const restController = require('./rest-controller');
+const restController = require('./controller');
 
 const table = 'test';
 
