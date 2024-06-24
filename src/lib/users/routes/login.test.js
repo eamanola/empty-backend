@@ -6,7 +6,7 @@ const { create: signup, authorize: userFromToken } = require('../controllers');
 
 const userErrors = require('../errors');
 
-const app = require('../../app');
+const app = require('../../../app');
 
 const api = supertest(app);
 

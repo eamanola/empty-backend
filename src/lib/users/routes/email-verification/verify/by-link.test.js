@@ -11,7 +11,7 @@ const { request } = require('../../../controllers/email-verification');
 
 const sendEmailVerificationMail = require('../../../utils/send-email-verification-mail');
 
-const app = require('../../../../app');
+const app = require('../../../../../app');
 
 jest.mock('../../../utils/send-email-verification-mail');
 

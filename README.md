@@ -12,9 +12,7 @@ install redis, mongo, and node.
 
 ### development
 
-extend your app.js from './lib/app.js, and add your routes and implementations there.
-
-see [fullstack-demo-backend-node/src/app.js](https://github.com/eamanola/fullstack-demo-backend-node/blob/main/src/app.js) for howto.
+Add your implementations to app.js.
 
 ### env
 

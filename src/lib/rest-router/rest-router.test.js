@@ -9,7 +9,7 @@ const errors = require('../errors');
 
 const restRouter = require('./rest-router');
 
-const app = require('../app');
+const app = require('../../app');
 
 const table = 'test';
 

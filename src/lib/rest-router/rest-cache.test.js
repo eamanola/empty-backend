@@ -5,7 +5,7 @@ const { getItem, removeItem, setItem } = require('../cache');
 const cache = require('./rest-cache');
 const { cacheKey } = require('./rest-cache');
 
-const app = require('../app');
+const app = require('../../app');
 
 const success = { message: 'ok' };
 
