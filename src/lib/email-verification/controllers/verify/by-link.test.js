@@ -3,15 +3,15 @@ const {
   deleteUsers,
   findUser,
   setEmailStatus,
-} = require('../../../../jest/test-helpers');
+} = require('../../../jest/test-helpers');
 
 const { request } = require('..');
 
-const sendEmailVerificationMail = require('../../../utils/send-email-verification-mail');
+const sendEmailVerificationMail = require('../../utils/send-email-verification-mail');
 
 const verifyByLink = require('./by-link');
 
-jest.mock('../../../utils/send-email-verification-mail');
+jest.mock('../../utils/send-email-verification-mail');
 
 describe('email verification', () => {
   beforeEach(async () => {

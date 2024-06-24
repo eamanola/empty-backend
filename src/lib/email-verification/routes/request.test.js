@@ -1,12 +1,12 @@
 const supertest = require('supertest');
 
-const { createUser } = require('../../../jest/test-helpers');
+const { createUser } = require('../../jest/test-helpers');
 
-const sendEmailVerificationMail = require('../../utils/send-email-verification-mail');
+const sendEmailVerificationMail = require('../utils/send-email-verification-mail');
 
-const app = require('../../../../app');
+const app = require('../../../app');
 
-jest.mock('../../utils/send-email-verification-mail');
+jest.mock('../utils/send-email-verification-mail');
 
 const api = supertest(app);
 

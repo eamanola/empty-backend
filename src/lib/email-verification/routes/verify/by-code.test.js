@@ -1,8 +1,8 @@
 const supertest = require('supertest');
 
-const { getToken, findUser, deleteUsers } = require('../../../../jest/test-helpers');
+const { getToken, findUser, deleteUsers } = require('../../../jest/test-helpers');
 
-const app = require('../../../../../app');
+const app = require('../../../../app');
 
 const api = supertest(app);
 

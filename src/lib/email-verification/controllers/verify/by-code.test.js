@@ -1,12 +1,12 @@
-const { createUser, deleteUsers, findUser } = require('../../../../jest/test-helpers');
+const { createUser, deleteUsers, findUser } = require('../../../jest/test-helpers');
 
 const { request } = require('..');
 
-const userErrors = require('../../../errors');
+const emailVerificationErrors = require('../../errors');
 
 const verifyByCode = require('./by-code');
 
-jest.mock('../../../utils/send-email-verification-mail');
+jest.mock('../../utils/send-email-verification-mail');
 
 describe('email verification', () => {
   beforeEach(deleteUsers);
@@ -27,7 +27,7 @@ describe('email verification', () => {
     });
 
     it('should throw invalidEmailVerificationCodeError, on mismatch', async () => {
-      const { invalidEmailVerificationCodeError } = userErrors;
+      const { invalidEmailVerificationCodeError } = emailVerificationErrors;
       const user = await createUser();
       await request(user, { });
 

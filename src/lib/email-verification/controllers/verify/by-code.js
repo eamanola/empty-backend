@@ -1,4 +1,4 @@
-const { invalidEmailVerificationCodeError } = require('../../../errors');
+const { invalidEmailVerificationCodeError } = require('../../errors');
 const { setVerified } = require('../set-status');
 
 const verifyByCode = async (user, code) => {

@@ -1,6 +1,6 @@
-const { findOne } = require('../../../model');
-const { decode: decodeEmailVerificationToken } = require('../../../utils/token');
-const logger = require('../../../../utils/logger');
+const { findOne } = require('../../../users/model');
+const { decode: decodeEmailVerificationToken } = require('../../../users/utils/token');
+const logger = require('../../../utils/logger');
 const verifyByCode = require('./by-code');
 
 const verifyByLink = async (token) => {

@@ -5,15 +5,15 @@ const {
   findUser,
   deleteUsers,
   setEmailStatus,
-} = require('../../../../jest/test-helpers');
+} = require('../../../jest/test-helpers');
 
-const { request } = require('../../../controllers/email-verification');
+const { request } = require('../../controllers');
 
-const sendEmailVerificationMail = require('../../../utils/send-email-verification-mail');
+const sendEmailVerificationMail = require('../../utils/send-email-verification-mail');
 
-const app = require('../../../../../app');
+const app = require('../../../../app');
 
-jest.mock('../../../utils/send-email-verification-mail');
+jest.mock('../../utils/send-email-verification-mail');
 
 const api = supertest(app);
 

@@ -4,7 +4,7 @@ const logger = require('../utils/logger');
 const errorHandler = (knownErrors, { defaultTo500 = true } = {}) => (err, req, res, next) => {
   const { name, status, message } = err;
 
-  const knownError = Object.values(knownErrors).find(({ name: n }) => name === n);
+  const knownError = Object.values(knownErrors).some(({ name: n }) => name === n);
   if (knownError) {
     res.status(status).json({ message });
   } else if (defaultTo500) {

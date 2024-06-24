@@ -3,16 +3,17 @@ const {
   deleteUsers,
   findUser,
   setEmailStatus,
-} = require('../../../jest/test-helpers');
+} = require('../../jest/test-helpers');
 
-const userErrors = require('../../errors');
+const userErrors = require('../../users/errors');
+const emailVerificationErrors = require('../errors');
 
-const { decode: decodeEmailVerificationToken } = require('../../utils/token');
-const sendEmailVerificationMail = require('../../utils/send-email-verification-mail');
+const { decode: decodeEmailVerificationToken } = require('../../users/utils/token');
+const sendEmailVerificationMail = require('../utils/send-email-verification-mail');
 
 const request = require('./request');
 
-jest.mock('../../utils/send-email-verification-mail');
+jest.mock('../utils/send-email-verification-mail');
 
 describe('email verification', () => {
   beforeEach(async () => {
@@ -33,7 +34,7 @@ describe('email verification', () => {
     });
 
     it('should throw already verified error', async () => {
-      const { emailVerifiedError } = userErrors;
+      const { emailVerifiedError } = emailVerificationErrors;
       const user = await createUser();
       await setEmailStatus({ userId: user.id, verified: true });
 

@@ -1,6 +1,7 @@
 const { deleteAll, count } = require('../db');
 const userModel = require('../users/model');
 const userControllers = require('../users/controllers');
+const emailVerification = require('../email-verification/controllers');
 
 const countUsers = (where) => count(userModel.table, where);
 
@@ -17,8 +18,8 @@ const deleteUsers = () => deleteAll(userModel.table);
 const updateUser = async (where, updates) => userModel.updateOne(where, updates);
 
 const setEmailStatus = ({ userId, verified }) => (verified === true
-  ? userControllers.emailVerification.setStatus.setVerified(userId)
-  : userControllers.emailVerification.setStatus.setUnverified(userId));
+  ? emailVerification.setStatus.setVerified(userId)
+  : emailVerification.setStatus.setUnverified(userId));
 
 const getToken = async ({ email = 'foo@example.com', password = '123' } = {}) => {
   const user = await createUser({ email, password });

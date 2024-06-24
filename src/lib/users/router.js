@@ -1,6 +1,7 @@
 const express = require('express');
 const userErrors = require('./errors');
-const { emailVerification, login, signup } = require('./routes');
+const { login, signup } = require('./routes');
+const emailVerification = require('../email-verification/router');
 const { authorization } = require('./middlewares');
 const { errorHandler } = require('../middlewares');
 

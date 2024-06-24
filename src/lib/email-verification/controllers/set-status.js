@@ -1,4 +1,4 @@
-const { updateOne } = require('../../model');
+const { updateOne } = require('../../users/model');
 const getCode = require('./get-code');
 
 const setVerified = async (userId) => updateOne({ id: userId }, { emailVerificationCode: null });

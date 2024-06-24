@@ -12,18 +12,6 @@ const emailTakenError = {
   status: 400,
 };
 
-const emailVerifiedError = {
-  message: 'User email is verified',
-  name: 'emailVerifiedError',
-  status: 400,
-};
-
-const invalidEmailVerificationCodeError = {
-  message: 'Wrong code',
-  name: 'invalidEmailVerificationCodeError',
-  status: 400,
-};
-
 const invalidPasswordError = {
   message: 'Login failed',
   name: 'invalidPasswordError',
@@ -46,8 +34,6 @@ module.exports = {
   ...errors,
   emailNotVerifiedError,
   emailTakenError,
-  emailVerifiedError,
-  invalidEmailVerificationCodeError,
   invalidPasswordError,
   sessionExipred,
   userNotFoundError,

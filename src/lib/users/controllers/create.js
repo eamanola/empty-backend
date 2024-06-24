@@ -4,7 +4,7 @@ const logger = require('../../utils/logger');
 const { createParamError, emailTakenError } = require('../errors');
 const signupSchema = require('../validators/signup');
 const { findOne, insertOne } = require('../model');
-const { setUnverified } = require('./email-verification/set-status');
+const { setUnverified } = require('../../email-verification/controllers/set-status');
 
 const saltRounds = 11;
 
