@@ -15,7 +15,7 @@ const table = 'test';
 
 const validator = object({ foo: string().required() }).noUnknown().strict();
 
-const { router } = restRouter(null, { table, validator });
+const router = restRouter(null, { table, validator });
 
 const baseUrl = '/test';
 

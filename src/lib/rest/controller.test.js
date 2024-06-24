@@ -16,7 +16,7 @@ const {
   byOwner,
   update,
   remove,
-} = restController(null, { table, validator }).controller;
+} = restController(null, { table, validator });
 
 const createResource = async (user) => {
   const resource = { foo: 'bar' };
@@ -233,7 +233,7 @@ describe('rest controller', () => {
         byId: byIdAuth,
         update: updateUnAuth,
         remove: removeUnAuth,
-      } = restController(null, { table, userRequired: false, validator }).controller;
+      } = restController(null, { table, userRequired: false, validator });
 
       const resource = { foo: 'bar' };
       const user = null;

@@ -1,20 +1,17 @@
-const { NODE_ENV } = require('../../config');
 const { createParamError } = require('../errors');
 
 const logger = require('../utils/logger');
 
 const restModel = require('./model');
 
-const restController = (aModel, { table, validator, userRequired = true } = {}) => {
-  const model = aModel || restModel(table, validator, { userRequired });
-
+const restController = (model, { table, validator, userRequired = true } = {}) => {
   const {
     insertOne,
     findOne,
     find,
     replaceOne,
     deleteOne,
-  } = model;
+  } = model || restModel(table, validator, { userRequired });
 
   const addOwner = (user, obj) => (userRequired ? { ...obj, owner: user.id } : { ...obj });
 
@@ -56,14 +53,11 @@ const restController = (aModel, { table, validator, userRequired = true } = {}) 
   const remove = async (user, { id }) => deleteOne(addOwner(user, { id }));
 
   return {
-    controller: {
-      byId,
-      byOwner,
-      create,
-      remove,
-      update,
-    },
-    model: NODE_ENV === 'test' ? model : undefined,
+    byId,
+    byOwner,
+    create,
+    remove,
+    update,
   };
 };
 
