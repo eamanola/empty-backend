@@ -4,7 +4,8 @@ const { errorHandler } = require('./middlewares');
 const rest = require('./rest');
 
 module.exports = {
-  errorHandler: errorHandler(errors),
+  errorHandler,
+  errors,
   rest,
   usersRouter,
 };

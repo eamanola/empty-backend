@@ -1,5 +1,3 @@
-const errors = require('../errors');
-
 const emailNotVerifiedError = {
   message: 'Email Not Verified',
   name: 'emailNotVerifiedError',
@@ -31,7 +29,6 @@ const userNotFoundError = {
 };
 
 module.exports = {
-  ...errors,
   emailNotVerifiedError,
   emailTakenError,
   invalidPasswordError,

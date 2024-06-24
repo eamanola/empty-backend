@@ -1,4 +1,5 @@
-const { accessDenied, sessionExipred } = require('../errors');
+const { sessionExipred } = require('../errors');
+const { accessDenied } = require('../../errors');
 const { decode: decodeToken } = require('../utils/token');
 const { findOne } = require('../model');
 const { isValidSession } = require('./session');

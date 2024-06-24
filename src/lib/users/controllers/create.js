@@ -1,7 +1,8 @@
 const bcrypt = require('bcrypt');
 
 const logger = require('../../utils/logger');
-const { createParamError, emailTakenError } = require('../errors');
+const { emailTakenError } = require('../errors');
+const { createParamError } = require('../../errors');
 const signupSchema = require('../validators/signup');
 const { findOne, insertOne } = require('../model');
 const { setUnverified } = require('../../email-verification/controllers/set-status');

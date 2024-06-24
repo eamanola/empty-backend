@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const { usersRouter, errorHandler } = require('./lib');
+const { usersRouter, errorHandler, errors } = require('./lib');
 
 const app = express();
 
@@ -9,6 +9,6 @@ app.use(express.json());
 
 app.use(usersRouter);
 
-app.use(errorHandler);
+app.use(errorHandler(errors, { defaultTo500: true }));
 
 module.exports = app;

@@ -5,6 +5,7 @@ const { create: signup } = require('.');
 const { authenticate: login } = require('.');
 
 const userErrors = require('../errors');
+const errors = require('../../errors');
 
 const authorize = require('./authorize');
 
@@ -45,7 +46,7 @@ describe('authorize', () => {
   });
 
   it('should throw access denied, if token is invalid', async () => {
-    const { accessDenied } = userErrors;
+    const { accessDenied } = errors;
 
     try {
       const token = 'fakeToken';

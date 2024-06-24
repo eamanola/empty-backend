@@ -1,6 +1,6 @@
 const { authenticate: login, create: signup } = require('../controllers');
 
-const userErrors = require('../errors');
+const errors = require('../../errors');
 
 const authorization = require('./authorization');
 
@@ -39,7 +39,7 @@ describe('authorization', () => {
   });
 
   it('should not add user, if token is invalid bearer', async () => {
-    const { accessDenied } = userErrors;
+    const { accessDenied } = errors;
 
     let error;
     const req = { get: (/* authorization */) => 'bearer foo' };

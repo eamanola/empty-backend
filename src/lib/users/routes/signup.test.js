@@ -3,6 +3,7 @@ const supertest = require('supertest');
 const { countUsers, deleteUsers, findUser } = require('../../jest/test-helpers');
 
 const userErrors = require('../errors');
+const errors = require('../../errors');
 
 const app = require('../../../app');
 
@@ -35,7 +36,7 @@ describe('/signup', () => {
   });
 
   it('should throw paramError, on invalid params', async () => {
-    const { paramError } = userErrors;
+    const { paramError } = errors;
 
     expect((await api.post('/signup').send({ email: 'foo', password: '123' })).status)
       .toBe(paramError.status);

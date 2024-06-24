@@ -1,10 +1,7 @@
 const bcrypt = require('bcrypt');
-const {
-  createParamError,
-  userNotFoundError,
-  invalidPasswordError,
-  emailNotVerifiedError,
-} = require('../errors');
+const { userNotFoundError, invalidPasswordError, emailNotVerifiedError } = require('../errors');
+const { createParamError } = require('../../errors');
+
 const logger = require('../../utils/logger');
 const { encode: encodeToken } = require('../utils/token');
 const { findOne } = require('../model');

@@ -5,6 +5,7 @@ const { deleteUsers } = require('../../jest/test-helpers');
 const { create: signup, authorize: userFromToken } = require('../controllers');
 
 const userErrors = require('../errors');
+const errors = require('../../errors');
 
 const app = require('../../../app');
 
@@ -51,7 +52,7 @@ describe('/login', () => {
   });
 
   it('should throw paramError, on invalid params', async () => {
-    const { paramError } = userErrors;
+    const { paramError } = errors;
     const credentials = { email: 'foo@example.com', password: '123' };
     await signup(credentials);
 
