@@ -1,10 +1,8 @@
-const {
-  createUser,
-  deleteUsers,
-  findUser,
-  emailVerification,
-  userErrors,
-} = require('../../../../jest/test-helpers');
+const { createUser, deleteUsers, findUser } = require('../../../../jest/test-helpers');
+
+const { request } = require('..');
+
+const userErrors = require('../../../errors');
 
 const verifyByCode = require('./by-code');
 
@@ -16,7 +14,7 @@ describe('email verification', () => {
   describe('verify by code', () => {
     it('should set email verified', async () => {
       const user = await createUser();
-      await emailVerification.request(user, { });
+      await request(user, { });
 
       const requestingUser = await findUser({ id: user.id });
       expect(requestingUser.emailVerified).toBe(false);
@@ -31,7 +29,7 @@ describe('email verification', () => {
     it('should throw invalidEmailVerificationCodeError, on mismatch', async () => {
       const { invalidEmailVerificationCodeError } = userErrors;
       const user = await createUser();
-      await emailVerification.request(user, { });
+      await request(user, { });
 
       const code = 1000;
       const requestingUser = await findUser({ id: user.id });

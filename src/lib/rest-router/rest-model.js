@@ -14,10 +14,7 @@ const restModel = (table, validator, { userRequired = true } = {}) => {
   const insertOne = async (row) => {
     await shape.validate(row);
 
-    return dbInsertOne(
-      table,
-      { ...row, modified: new Date() },
-    );
+    return dbInsertOne(table, { ...row, modified: new Date() });
   };
 
   const findOne = (where) => dbFindOne(table, where);
@@ -31,11 +28,7 @@ const restModel = (table, validator, { userRequired = true } = {}) => {
 
     await shape.validate(replacement);
 
-    return dbReplaceOne(
-      table,
-      where,
-      { ...replacement, modified: new Date() },
-    );
+    return dbReplaceOne(table, where, { ...replacement, modified: new Date() });
   };
 
   const deleteOne = (where) => !!where.id && dbDeleteOne(table, where);

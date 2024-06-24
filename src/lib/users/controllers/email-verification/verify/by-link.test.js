@@ -2,9 +2,10 @@ const {
   createUser,
   deleteUsers,
   findUser,
-  emailVerification,
   setEmailStatus,
 } = require('../../../../jest/test-helpers');
+
+const { request } = require('..');
 
 const sendEmailVerificationMail = require('../../../utils/send-email-verification-mail');
 
@@ -25,7 +26,8 @@ describe('email verification', () => {
       const onSuccess = 'http://example.com/your-email-has-been-verified';
       const onFail = 'http://example.com/something-went-wrong';
       const byLink = { onFail, onSuccess };
-      await emailVerification.request(user, { byLink });
+
+      await request(user, { byLink });
       const { token } = sendEmailVerificationMail.mock.calls[0][0];
 
       const redirectUrl = await verifyByLink(token);
@@ -40,7 +42,8 @@ describe('email verification', () => {
       const onSuccess = 'http://example.com/your-email-has-been-verified';
       const onFail = 'http://example.com/something-went-wrong';
       const byLink = { onFail, onSuccess };
-      await emailVerification.request(user, { byLink });
+
+      await request(user, { byLink });
       const { token } = sendEmailVerificationMail.mock.calls[0][0];
 
       // refresh code

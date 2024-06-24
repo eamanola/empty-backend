@@ -1,11 +1,8 @@
 const bcrypt = require('bcrypt');
 
-const {
-  countUsers,
-  deleteUsers,
-  findUser,
-  login,
-} = require('../../jest/test-helpers');
+const { countUsers, deleteUsers, findUser } = require('../../jest/test-helpers');
+
+const { authenticate: login } = require('.');
 
 const create = require('./create');
 

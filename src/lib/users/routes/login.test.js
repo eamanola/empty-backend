@@ -1,11 +1,10 @@
 const supertest = require('supertest');
 
-const {
-  deleteUsers,
-  signup,
-  userFromToken,
-  userErrors,
-} = require('../../jest/test-helpers');
+const { deleteUsers } = require('../../jest/test-helpers');
+
+const { create: signup, authorize: userFromToken } = require('../controllers');
+
+const userErrors = require('../errors');
 
 const app = require('../../app');
 

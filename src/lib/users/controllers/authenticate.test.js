@@ -1,9 +1,6 @@
-const {
-  signup,
-  countUsers,
-  deleteUsers,
-  userFromToken,
-} = require('../../jest/test-helpers');
+const { countUsers, deleteUsers } = require('../../jest/test-helpers');
+
+const { create: signup, authorize: userFromToken } = require('.');
 
 const authenticate = require('./authenticate');
 

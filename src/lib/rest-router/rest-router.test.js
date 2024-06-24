@@ -1,21 +1,24 @@
 const { object, string } = require('yup');
 const supertest = require('supertest');
 
-const {
-  getToken,
-  deleteUsers,
-  deleteAll,
-  errors,
-} = require('../jest/test-helpers');
+const { getToken, deleteUsers } = require('../jest/test-helpers');
+
+const { deleteAll } = require('../db');
+
+const errors = require('../errors');
 
 const restRouter = require('./rest-router');
 
 const app = require('../app');
 
-const validator = object({ foo: string().required() }).noUnknown().strict();
 const table = 'test';
+
+const validator = object({ foo: string().required() }).noUnknown().strict();
+
 const { router } = restRouter(null, { table, validator });
+
 const baseUrl = '/test';
+
 app.use(baseUrl, router);
 
 const api = supertest(app);

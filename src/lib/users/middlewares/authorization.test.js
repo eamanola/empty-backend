@@ -1,4 +1,6 @@
-const { signup, login, userErrors } = require('../../jest/test-helpers');
+const { authenticate: login, create: signup } = require('../controllers');
+
+const userErrors = require('../errors');
 
 const authorization = require('./authorization');
 

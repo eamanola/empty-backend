@@ -1,11 +1,10 @@
-const {
-  deleteUsers,
-  findUser,
-  updateUser,
-  signup,
-  login,
-  userErrors,
-} = require('../../jest/test-helpers');
+const { deleteUsers, findUser, updateUser } = require('../../jest/test-helpers');
+
+const { create: signup } = require('.');
+
+const { authenticate: login } = require('.');
+
+const userErrors = require('../errors');
 
 const authorize = require('./authorize');
 

@@ -3,8 +3,9 @@ const {
   deleteUsers,
   findUser,
   setEmailStatus,
-  userErrors,
 } = require('../../../jest/test-helpers');
+
+const userErrors = require('../../errors');
 
 const { decode: decodeEmailVerificationToken } = require('../../utils/token');
 const sendEmailVerificationMail = require('../../utils/send-email-verification-mail');

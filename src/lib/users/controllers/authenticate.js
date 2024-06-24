@@ -1,5 +1,4 @@
 const bcrypt = require('bcrypt');
-
 const {
   createParamError,
   userNotFoundError,

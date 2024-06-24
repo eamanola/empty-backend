@@ -1,11 +1,8 @@
 const supertest = require('supertest');
 
-const {
-  countUsers,
-  deleteUsers,
-  findUser,
-  userErrors,
-} = require('../../jest/test-helpers');
+const { countUsers, deleteUsers, findUser } = require('../../jest/test-helpers');
+
+const userErrors = require('../errors');
 
 const app = require('../../app');
 

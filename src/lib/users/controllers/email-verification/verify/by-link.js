@@ -4,11 +4,7 @@ const logger = require('../../../../utils/logger');
 const verifyByCode = require('./by-code');
 
 const verifyByLink = async (token) => {
-  const {
-    code,
-    userId,
-    byLink,
-  } = decodeEmailVerificationToken(token);
+  const { code, userId, byLink } = decodeEmailVerificationToken(token);
 
   try {
     const user = await findOne({ id: userId });
