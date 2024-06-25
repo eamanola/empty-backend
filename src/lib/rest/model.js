@@ -6,7 +6,7 @@ const {
   find: dbFind,
 } = require('../db');
 
-const userResourece = require('../validators/user-resource');
+const userResourece = require('./user-resource');
 
 const restModel = (table, validator, { userRequired = true } = {}) => {
   const shape = userRequired ? validator.concat(userResourece) : validator;
