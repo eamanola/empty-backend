@@ -141,6 +141,8 @@ describe('cache middleware', () => {
       expect(await getItem(key2)).toBe('foo2');
 
       await api.put('/test/id');
+
+      // TODO: why? repoducable, against actual redis
       // eslint-disable-next-line no-promise-executor-return
       await new Promise((r) => setTimeout(r, 0));
 
@@ -158,6 +160,8 @@ describe('cache middleware', () => {
       expect(await getItem(key2)).toBe('foo2');
 
       await api.put('/test/id').set({ fail: 1 });
+
+      // TODO: why? repoducable, against actual redis
       // eslint-disable-next-line no-promise-executor-return
       await new Promise((r) => setTimeout(r, 0));
 
@@ -178,6 +182,7 @@ describe('cache middleware', () => {
 
       await api.delete('/test/id');
 
+      // TODO: why? repoducable, against actual redis
       // eslint-disable-next-line no-promise-executor-return
       await new Promise((r) => setTimeout(r, 0));
 
@@ -195,6 +200,8 @@ describe('cache middleware', () => {
       expect(await getItem(key2)).toBe('foo2');
 
       await api.delete('/test/id').set({ fail: 1 });
+
+      // TODO: why? repoducable, against actual redis
       // eslint-disable-next-line no-promise-executor-return
       await new Promise((r) => setTimeout(r, 0));
 
