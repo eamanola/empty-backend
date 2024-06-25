@@ -1,14 +1,19 @@
 const { authenticate: login, create: signup } = require('../controllers');
 
+const { deleteUsers } = require('../../jest/test-helpers');
+
 const errors = require('../../errors');
 
 const authorization = require('./authorization');
 
 describe('authorization', () => {
+  beforeAll(deleteUsers);
+
   it('should add user to request', async () => {
     const email = 'foo@example.bar';
     const password = 'foo';
     await signup({ email, password });
+
     const token = await login({ email, password });
 
     const req = { get: (/* authorization */) => `bearer ${token}` };
@@ -19,8 +24,7 @@ describe('authorization', () => {
 
     await authorization(req, res, next);
 
-    expect(req.user)
-      .toEqual(expect.objectContaining({ email }));
+    expect(req.user).toEqual(expect.objectContaining({ email }));
   });
 
   it('should not add user, if token is missing', async () => {

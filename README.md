@@ -16,8 +16,10 @@ Add your implementations to app.js.
 
 ### env
 
-create .env.development.local, and .env.production.local in project root. see env.sample for
+create .env.development.local, .env.test.local, and .env.production.local in project root. see env.sample for
 available options
+
+make sure test and production dbs are different :)
 
 ### run
 

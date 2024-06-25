@@ -8,8 +8,10 @@ services:
       - "${PORT:-3000}:3000"
 
     depends_on:
-      - mongo
-      - redis
+      mongo:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
 
     environment:
       MONGO_URL: mongodb://${DB_USERNAME:-dbuser}:${DB_PASSWORD:-dbpassword}@mongo/${DB_NAME:-dbname}
@@ -30,9 +32,15 @@ services:
     volumes:
       - "./mongo-init:/docker-entrypoint-initdb.d:ro"
 
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/${DB_NAME} --quiet
+
   redis:
     image: redis/redis-stack-server:latest # freeze for prod
 
     environment:
       REDIS_ARGS: "--requirepass ${REDIS_PASSWORD:-supersecure}"
+
+    healthcheck:
+      test: [ "CMD", "redis-cli", "--raw", "incr", "ping" ]
 

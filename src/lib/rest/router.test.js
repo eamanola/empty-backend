@@ -33,10 +33,7 @@ const getById = async (id, token) => {
   return result;
 };
 
-const create = async ({
-  token,
-  resource = { foo: 'bar' },
-}) => {
+const create = async ({ token, resource = { foo: 'bar' } }) => {
   const { result } = (
     await api
       .post(baseUrl)
@@ -97,7 +94,7 @@ describe('rest router', () => {
   describe('GET /:id', () => {
     it('should return a result by id', async () => {
       const { token } = await getToken();
-      const resource = await create({ api, token });
+      const resource = await create({ token });
 
       const response = await api
         .get(`${baseUrl}/${resource.id}`)
@@ -114,10 +111,10 @@ describe('rest router', () => {
       const { token, user } = await getToken();
       const { token: token2 } = await getToken({ email: 'foo2@other.com' });
 
-      await create({ api, token });
-      await create({ api, token });
+      await create({ token });
+      await create({ token });
 
-      await create({ api, token: token2 });
+      await create({ token: token2 });
 
       const { results } = (
         await api
@@ -134,7 +131,7 @@ describe('rest router', () => {
   describe('PUT /:id', () => {
     it('should update one', async () => {
       const { token } = await getToken();
-      const inserted = await create({ api, token });
+      const inserted = await create({ token });
 
       const changed = { ...inserted, foo: 'foo1' };
       expect(changed.foo).not.toBe(inserted.foo);
@@ -157,7 +154,7 @@ describe('rest router', () => {
     it('should throw paramError, on invalid params', async () => {
       const { paramError } = errors;
       const { token } = await getToken();
-      const inserted = await create({ api, token });
+      const inserted = await create({ token });
 
       const invalid = { ...inserted, foo: '' };
       expect(invalid.foo).not.toBe(inserted.foo);
@@ -175,7 +172,7 @@ describe('rest router', () => {
 
     it('should not update owner, or modified', async () => {
       const { token } = await getToken();
-      const inserted = await create({ api, token });
+      const inserted = await create({ token });
 
       const modified = { ...inserted, modified: 'bar', owner: 'foo' };
       expect(modified.owner).not.toBe(inserted.owner);
@@ -193,7 +190,7 @@ describe('rest router', () => {
 
     it('should not update id', async () => {
       const { token } = await getToken();
-      const inserted = await create({ api, token });
+      const inserted = await create({ token });
 
       const modified = {
         ...inserted,
@@ -217,7 +214,7 @@ describe('rest router', () => {
   describe('DELETE /:id', () => {
     it('should remove by id', async () => {
       const { token } = await getToken();
-      const resource = await create({ api, token });
+      const resource = await create({ token });
 
       const response = await api
         .delete(`${baseUrl}/${resource.id}`)

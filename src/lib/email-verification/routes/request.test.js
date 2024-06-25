@@ -1,6 +1,6 @@
 const supertest = require('supertest');
 
-const { createUser } = require('../../jest/test-helpers');
+const { createUser, deleteUsers } = require('../../jest/test-helpers');
 
 const sendEmailVerificationMail = require('../utils/send-email-verification-mail');
 
@@ -11,6 +11,8 @@ jest.mock('../utils/send-email-verification-mail');
 const api = supertest(app);
 
 describe('request verification', () => {
+  beforeAll(deleteUsers);
+
   it('should send verification mail', async () => {
     const user = await createUser();
 
