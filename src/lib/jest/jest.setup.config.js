@@ -3,6 +3,8 @@ jest.mock('../../config', () => {
   return {
     ...actual,
     CACHE_ENABLED: true,
-    SECRET: 'shhhhh',
+    MONGO_URL: actual.MONGO_URL || 'use-memory-server',
+    REDIS_URL: actual.REDIS_URL || 'use-mock',
+    SECRET: actual.SECRET || 'shhhhh',
   };
 });
