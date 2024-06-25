@@ -25,7 +25,7 @@ const cacheResult = async ( // req, res, body
     try {
       await setItem(key, { body, statusCode });
     } catch (err) {
-      logger.error(err);
+      logger.info(err);
     }
   }
 };
@@ -46,7 +46,7 @@ const invalidateCache = async ( // req, res
         await removeItem(key2);
       }
     } catch (err) {
-      logger.error(err);
+      logger.info(err);
     }
   }
 };
