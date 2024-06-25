@@ -2,4 +2,4 @@ services:
   app:
     build:
       target: test
-    command: npm test -- --bail --runInBand
+    command: npm test -- --runInBand

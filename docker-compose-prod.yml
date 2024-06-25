@@ -22,6 +22,8 @@ services:
   mongo:
     image: mongodb/mongodb-community-server:latest # freeze for prod
 
+    # restart: unless-stopped
+
     environment:
       MONGODB_INITDB_ROOT_USERNAME: ${MONGODB_INITDB_ROOT_USERNAME:-root}
       MONGODB_INITDB_ROOT_PASSWORD: ${MONGODB_INITDB_ROOT_PASSWORD:-rootme}
@@ -33,14 +35,22 @@ services:
       - "./mongo-init:/docker-entrypoint-initdb.d:ro"
 
     healthcheck:
-      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/${DB_NAME} --quiet
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/${DB_NAME:-dbname} --quiet
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
+
+    # command: --quiet
 
   redis:
     image: redis/redis-stack-server:latest # freeze for prod
+
+    # restart: unless-stopped
 
     environment:
       REDIS_ARGS: "--requirepass ${REDIS_PASSWORD:-supersecure}"
 
     healthcheck:
-      test: [ "CMD", "redis-cli", "--raw", "incr", "ping" ]
+      test: "redis-cli --raw incr ping"
 

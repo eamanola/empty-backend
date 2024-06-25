@@ -16,18 +16,18 @@ RUN node ./download-memory-server-binaries.js
 COPY src src
 
 # lint
-FROM prod-base as lint
+FROM prod-base AS lint
 COPY .eslintrc.cjs .
 COPY .eslintignore .
 RUN npm run lint
 
 # test
-FROM lint as test
+FROM lint AS test
 COPY jest.config.cjs .
 RUN npm test
 
 # build
-FROM test as build
+FROM test AS build
 COPY webpack.config.cjs .
 RUN npm run build
 
@@ -41,6 +41,6 @@ USER node
 CMD npm start
 
 # dev
-FROM base as dev
+FROM base AS dev
 USER node
 CMD npm run dev
