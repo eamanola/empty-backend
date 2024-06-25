@@ -111,7 +111,7 @@ describe('cache middleware', () => {
       const key = cacheKey({ url: '/test' });
 
       await setItem(key, 'foo');
-      expect(await getItem(key)).toBeTruthy();
+      expect(await getItem(key)).toBe('foo');
 
       await api.post('/test');
 
@@ -122,7 +122,7 @@ describe('cache middleware', () => {
       const key = cacheKey({ url: '/test' });
 
       await setItem(key, 'foo');
-      expect(await getItem(key)).toBeTruthy();
+      expect(await getItem(key)).toBe('foo');
 
       await api.post('/test').set({ fail: 1 });
 
@@ -141,6 +141,8 @@ describe('cache middleware', () => {
       expect(await getItem(key2)).toBe('foo2');
 
       await api.put('/test/id');
+      // eslint-disable-next-line no-promise-executor-return
+      await new Promise((r) => setTimeout(r, 0));
 
       expect(await getItem(key1)).toBeFalsy();
       expect(await getItem(key2)).toBeFalsy();
@@ -156,6 +158,8 @@ describe('cache middleware', () => {
       expect(await getItem(key2)).toBe('foo2');
 
       await api.put('/test/id').set({ fail: 1 });
+      // eslint-disable-next-line no-promise-executor-return
+      await new Promise((r) => setTimeout(r, 0));
 
       expect(await getItem(key1)).toBe('foo1');
       expect(await getItem(key2)).toBe('foo2');
@@ -174,6 +178,9 @@ describe('cache middleware', () => {
 
       await api.delete('/test/id');
 
+      // eslint-disable-next-line no-promise-executor-return
+      await new Promise((r) => setTimeout(r, 0));
+
       expect(await getItem(key1)).toBeFalsy();
       expect(await getItem(key2)).toBeFalsy();
     });
@@ -188,6 +195,8 @@ describe('cache middleware', () => {
       expect(await getItem(key2)).toBe('foo2');
 
       await api.delete('/test/id').set({ fail: 1 });
+      // eslint-disable-next-line no-promise-executor-return
+      await new Promise((r) => setTimeout(r, 0));
 
       expect(await getItem(key1)).toBe('foo1');
       expect(await getItem(key2)).toBe('foo2');

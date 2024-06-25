@@ -11,18 +11,20 @@ const initCache = async (url = REDIS_URL) => {
 const connectCache = async () => client.connect();
 const closeCache = async () => client.disconnect();
 
+const removeItem = async (key) => client.del(key);
+
 const setItem = async (key, value, expiresInSeconds = 60 * 60 * 24) => {
-  await client.set(key, JSON.stringify(value), { EX: expiresInSeconds });
+  if (value === undefined) {
+    return removeItem(key);
+  }
+
+  return client.set(key, JSON.stringify(value), { EX: expiresInSeconds });
 };
 
 const getItem = async (key) => {
   const cached = await client.get(key);
 
-  return cached !== undefined ? JSON.parse(cached) : undefined;
-};
-
-const removeItem = async (key) => {
-  await client.del(key);
+  return typeof cached === 'string' ? JSON.parse(cached) : cached;
 };
 
 module.exports = {
