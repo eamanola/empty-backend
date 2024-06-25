@@ -11,7 +11,11 @@ if (REDIS_URL === 'use-mock') {
     const getItem = async (key) => cache[key];
 
     const removeItem = async (key) => {
-      delete cache[key];
+      if (typeof key === 'string') {
+        delete cache[key];
+      } else if (Array.isArray(key)) {
+        key.forEach((k) => delete cache[k]);
+      }
     };
 
     return {

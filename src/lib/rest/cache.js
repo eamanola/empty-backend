@@ -8,9 +8,10 @@ const onFinish = (req, res, callback) => {
   const old = res.json;
 
   res.json = (body) => {
-    old.call(res, body);
+    // Accepted pitfall: may lead to unsync, if same request done before cache server updates
+    old.call(res, body); // continue request forward
 
-    callback(req, res, body);
+    callback(req, res, body); // do cache in parallel
   };
 };
 
@@ -35,16 +36,13 @@ const invalidateCache = async ( // req, res
   { statusCode },
 ) => {
   if (statusCode === 200 || statusCode === 201) {
-    const key = cacheKey({ url: originalUrl, user });
-
     try {
-      await removeItem(key);
-
+      const keys = [cacheKey({ url: originalUrl, user })];
       if (baseUrl !== originalUrl) {
-        const key2 = cacheKey({ url: baseUrl, user });
-
-        await removeItem(key2);
+        keys.push(cacheKey({ url: baseUrl, user }));
       }
+
+      await removeItem(keys);
     } catch (err) {
       logger.info(err);
     }

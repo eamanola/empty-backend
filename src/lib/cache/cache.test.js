@@ -36,4 +36,18 @@ describe('cache test', () => {
     await cache.removeItem(TEST_KEY);
     expect(await cache.getItem(TEST_KEY)).toBeFalsy();
   });
+
+  it('should remove list of items', async () => {
+    const keys = ['foo', 'bar'];
+    await cache.setItem(keys[0], 'foo');
+    await cache.setItem(keys[1], 'bar');
+
+    expect(await cache.getItem(keys[0])).toBe('foo');
+    expect(await cache.getItem(keys[1])).toBe('bar');
+
+    await cache.removeItem(keys);
+
+    expect(await cache.getItem(keys[0])).toBeFalsy();
+    expect(await cache.getItem(keys[1])).toBeFalsy();
+  });
 });

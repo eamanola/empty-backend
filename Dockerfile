@@ -1,4 +1,4 @@
-# Base
+# base
 # use non alpine for mongodb-memory-server
 FROM node:22 AS base
 WORKDIR /app
@@ -6,8 +6,8 @@ COPY package.json package-lock.json .
 RUN npm install
 
 # prod specific
+# cache memory-server-binaries
 FROM base AS prod-base
-# pre-download memory-server-binaries
 COPY ./bin/download-memory-server-binaries.js .
 ENV MONGOMS_VERSION=7.0.11
 ENV RUNTIME_DOWNLOAD=true
