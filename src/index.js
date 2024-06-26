@@ -1,14 +1,17 @@
 const { initCache, connectCache, closeCache } = require('./lib/cache');
 const { initDB, connectDB, closeDB } = require('./lib/db');
 const app = require('./app');
-const { PORT } = require('./config');
+const { PORT, REDIS_URL, MONGO_URL } = require('./config');
 const logger = require('./lib/utils/logger');
 
+const REDIS_ENABLED = !!REDIS_URL;
+const MONGO_ENABLED = !!MONGO_URL;
+
 const shutdown = (server) => async () => {
-  await closeDB();
+  if (MONGO_ENABLED) await closeDB();
   logger.info('db connection closed');
 
-  await closeCache();
+  if (REDIS_ENABLED) await closeCache();
   logger.info('cache connection closed');
 
   server.close(() => {
@@ -18,14 +21,17 @@ const shutdown = (server) => async () => {
 };
 
 const start = async () => {
-  initDB();
+  if (MONGO_ENABLED) {
+    initDB();
+    await connectDB();
+    logger.info('DB Connected');
+  }
 
-  await connectDB();
-  logger.info('DB Connected');
-
-  await initCache();
-  await connectCache();
-  logger.info('Cache Connected');
+  if (REDIS_ENABLED) {
+    await initCache();
+    await connectCache();
+    logger.info('Cache Connected');
+  }
 
   const server = app.listen(PORT, () => {
     logger.info(`Running on port ${PORT}`);
