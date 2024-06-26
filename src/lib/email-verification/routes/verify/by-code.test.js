@@ -14,7 +14,7 @@ describe('by-code', () => {
 
     expect(user.emailVerified).toBe(false);
 
-    await api.patch('/email-verification/by-code')
+    await api.patch('/email-verification')
       .set({ Authorization: `bearer ${token}` })
       .send({ code: user.emailVerificationCode });
 
@@ -28,7 +28,7 @@ describe('by-code', () => {
     const wrongCode = 2000;
     expect(wrongCode).not.toBe(user.emailVerificationCode);
 
-    await api.patch('/email-verification/by-code')
+    await api.patch('/email-verification')
       .set({ Authorization: `bearer ${token}` })
       .send({ code: wrongCode });
 

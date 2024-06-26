@@ -35,7 +35,7 @@ describe('by-link', () => {
     await request(user, { byLink });
     const { token } = sendEmailVerificationMail.mock.calls[0][0];
 
-    await api.get(`/email-verification/by-link?token=${token}`);
+    await api.get(`/email-verification?token=${token}`);
 
     const updatedUser = await findUser({ id: user.id });
     expect(updatedUser.emailVerified).toBe(true);
@@ -51,7 +51,7 @@ describe('by-link', () => {
     await request(user, { byLink });
     const { token } = sendEmailVerificationMail.mock.calls[0][0];
 
-    await api.get(`/email-verification/by-link?token=${token}`)
+    await api.get(`/email-verification?token=${token}`)
       .expect('Location', onSuccess);
   });
 
@@ -68,7 +68,7 @@ describe('by-link', () => {
     // refresh code
     await setEmailStatus({ userId: user.id, verified: false });
 
-    await api.get(`/email-verification/by-link?token=${token}`)
+    await api.get(`/email-verification?token=${token}`)
       .expect('Location', onFail);
   });
 });

@@ -8,11 +8,11 @@ const verifyByCode = require('./routes/verify/by-code');
 
 const router = express.Router();
 
-router.get('/by-link', verifyByLink);
+router.get('/', verifyByLink);
 
-router.post('/request', requestVerification);
+router.post('/', requestVerification);
 
-router.patch('/by-code', requireUser, verifyByCode);
+router.patch('/', requireUser, verifyByCode);
 
 router.use(errorHandler(errors, { defaultTo500: false }));
 

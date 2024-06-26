@@ -21,7 +21,7 @@ describe('request verification', () => {
     const onFail = 'http://example.com/something-went-wrong';
     const byLink = { onFail, onSuccess };
 
-    await api.post('/email-verification/request')
+    await api.post('/email-verification')
       .send({ byCode, byLink, email: user.email });
 
     expect(sendEmailVerificationMail).toHaveBeenCalledWith(expect.objectContaining({
