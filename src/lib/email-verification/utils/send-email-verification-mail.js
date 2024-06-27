@@ -1,4 +1,8 @@
+const { lookup } = require('node:dns/promises');
+const os = require('node:os');
+
 const logger = require('../../utils/logger');
+const { PORT } = require('../../../config');
 
 const sendEmailVerificationMail = async ({
   to,
@@ -10,8 +14,10 @@ const sendEmailVerificationMail = async ({
   if (byCode) {
     logger.info(`${byCode}, with ${code}`);
   }
+
   if (token) {
-    logger.info(`http://localhost:3000/email/verify/by-link?token=${token}`);
+    const { address } = await lookup(os.hostname(), { family: 4 });
+    logger.info(`http://${address}:${PORT}/email-verification?token=${token}`);
   }
 };
 
