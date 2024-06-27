@@ -12,7 +12,9 @@ const { NODE_ENV } = require('./config');
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+  origin: ['http://localhost:3000'],
+}));
 app.use(express.json());
 
 if (NODE_ENV !== 'test') {
