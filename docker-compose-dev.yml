@@ -5,3 +5,6 @@ services:
 
     volumes:
       - ./src:/app/src
+
+  mongo:
+    command: --logpath /dev/null
