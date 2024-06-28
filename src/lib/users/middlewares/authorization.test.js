@@ -1,6 +1,4 @@
-const { authenticate: login, create: signup } = require('../controllers');
-
-const { deleteUsers } = require('../../jest/test-helpers');
+const { deleteUsers, getToken } = require('../../jest/test-helpers');
 
 const errors = require('../../errors');
 
@@ -12,9 +10,8 @@ describe('authorization', () => {
   it('should add user to request', async () => {
     const email = 'foo@example.bar';
     const password = 'foo';
-    await signup({ email, password });
 
-    const token = await login({ email, password });
+    const { token } = await getToken({ email, password });
 
     const req = { get: (/* authorization */) => `bearer ${token}` };
     const res = {};

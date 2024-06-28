@@ -1,6 +1,6 @@
 const supertest = require('supertest');
 
-const { deleteUsers } = require('../../jest/test-helpers');
+const { deleteUsers, setEmailStatus } = require('../../jest/test-helpers');
 
 const { create: signup, authorize: userFromToken } = require('../controllers');
 
@@ -25,6 +25,22 @@ describe('/login', () => {
     expect(response.body.message).toBe('OK');
     expect(await userFromToken(response.body.token))
       .toEqual(expect.objectContaining({ email }));
+  });
+
+  it('should return 200 OK with emailVerified', async () => {
+    const email = 'foo@example.com';
+    const credentials = { email, password: '123' };
+    await signup(credentials);
+
+    const response = await api.post('/login').send(credentials);
+
+    expect(response.status).toBe(200);
+    expect(response.body.emailVerified).toBe(false);
+
+    const { id: userId } = await userFromToken(response.body.token);
+    await setEmailStatus({ userId, verified: true });
+    const responseUpdated = await api.post('/login').send(credentials);
+    expect(responseUpdated.body.emailVerified).toBe(true);
   });
 
   it('should throw userNotFoundError, if user doesn exist', async () => {

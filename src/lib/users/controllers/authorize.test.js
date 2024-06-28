@@ -1,8 +1,9 @@
-const { deleteUsers, findUser, updateUser } = require('../../jest/test-helpers');
-
-const { create: signup } = require('.');
-
-const { authenticate: login } = require('.');
+const {
+  deleteUsers,
+  findUser,
+  updateUser,
+  getToken,
+} = require('../../jest/test-helpers');
 
 const userErrors = require('../errors');
 const errors = require('../../errors');
@@ -15,9 +16,8 @@ describe('authorize', () => {
   it('should return a user', async () => {
     const email = 'foo@example.com';
     const password = '123';
-    await signup({ email, password });
 
-    const token = await login({ email, password });
+    const { token } = await getToken({ email, password });
     const user = await authorize(token);
 
     expect(user).toEqual(expect.objectContaining({ email }));
@@ -26,9 +26,8 @@ describe('authorize', () => {
   it('should not return passwordHash', async () => {
     const email = 'foo@example.com';
     const password = '123';
-    await signup({ email, password });
 
-    const token = await login({ email, password });
+    const { token } = await getToken({ email, password });
     const user = await authorize(token);
 
     expect(user).toEqual(expect.objectContaining({ email }));
@@ -61,8 +60,8 @@ describe('authorize', () => {
     const { sessionExipred } = userErrors;
     const email = 'foo@example.com';
     const password = '123';
-    await signup({ email, password });
-    const token = await login({ email, password });
+
+    const { token } = await getToken({ email, password });
 
     await updateUser({ email }, { passwordHash: 'a new hash' });
 
@@ -78,8 +77,8 @@ describe('authorize', () => {
     const { sessionExipred } = userErrors;
     const email = 'foo@example.com';
     const password = '123';
-    await signup({ email, password });
-    const token = await login({ email, password });
+
+    const { token } = await getToken({ email, password });
 
     await updateUser({ email }, { email: 'bar@example.com' });
 

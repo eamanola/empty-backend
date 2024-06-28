@@ -23,7 +23,8 @@ const setEmailStatus = ({ userId, verified }) => (verified === true
 
 const getToken = async ({ email = 'foo@example.com', password = '123' } = {}) => {
   const user = await createUser({ email, password });
-  return { token: await userControllers.authenticate({ email, password }), user };
+  const { token } = await userControllers.authenticate({ email, password });
+  return { token, user };
 };
 
 module.exports = {

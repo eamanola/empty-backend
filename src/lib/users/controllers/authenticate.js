@@ -32,7 +32,7 @@ const login = async ({ email, password }, { REQUIRE_VERIFIED_EMAIL = false } = {
 
   const token = encodeToken({ session: getSession(user), userId: user.id });
 
-  return token;
+  return { emailVerified: user.emailVerified, token };
 };
 
 module.exports = login;

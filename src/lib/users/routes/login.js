@@ -6,8 +6,8 @@ const login = async (req, res, next) => {
   const { body } = req;
 
   try {
-    const token = await controller(body);
-    res.status(200).json({ message: 'OK', token });
+    const { emailVerified, token } = await controller(body);
+    res.status(200).json({ emailVerified, message: 'OK', token });
   } catch (err) {
     error = err;
   } finally {

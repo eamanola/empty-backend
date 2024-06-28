@@ -1,4 +1,4 @@
-const { countUsers, deleteUsers } = require('../../jest/test-helpers');
+const { countUsers, deleteUsers, setEmailStatus } = require('../../jest/test-helpers');
 
 const { create: signup, authorize: userFromToken } = require('.');
 
@@ -12,11 +12,25 @@ describe('authenticate', () => {
     const password = '123';
     await signup({ email, password });
 
-    const token = await authenticate({ email, password });
+    const { token } = await authenticate({ email, password });
 
     expect(token).toBeTruthy();
     expect(token).not.toEqual(expect.objectContaining({ email }));
     expect(await userFromToken(token)).toEqual(expect.objectContaining({ email }));
+  });
+
+  it('should return emailVerified', async () => {
+    const email = 'foo@example.com';
+    const password = '123';
+    await signup({ email, password });
+
+    const { emailVerified, token } = await authenticate({ email, password });
+    expect(emailVerified).toBe(false);
+
+    const { id: userId } = await userFromToken(token);
+    await setEmailStatus({ userId, verified: true });
+    const { emailVerified: emailVerifiedUpdated } = await authenticate({ email, password });
+    expect(emailVerifiedUpdated).toBe(true);
   });
 
   it('should require existing user', async () => {
@@ -50,7 +64,7 @@ describe('authenticate', () => {
     const email = 'foo@example.com';
     const password = '123';
     await signup({ email, password });
-    const token = await authenticate({ email, password }, { REQUIRE_VERIFIED_EMAIL: false });
+    const { token } = await authenticate({ email, password }, { REQUIRE_VERIFIED_EMAIL: false });
 
     const user = await userFromToken(token);
     expect(user.emailVerified).toBe(false);
