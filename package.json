@@ -1,6 +1,6 @@
 {
   "name": "empty-backend",
-  "version": "0.0.55",
+  "version": "0.0.57",
   "description": "repo for backend development",
   "main": "index.js",
   "scripts": {
@@ -10,7 +10,7 @@
     "build": "webpack",
     "bump-patch": "bump-pkg-json PATCH && npm install --package-lock-only --ignore-scripts",
     "dev": "nodemon src/index.js",
-    "prepare": "husky"
+    "prepare": "husky || node -e 'process.env.HUSKY === \"0\"'"
   },
   "author": "",
   "license": "ISC",

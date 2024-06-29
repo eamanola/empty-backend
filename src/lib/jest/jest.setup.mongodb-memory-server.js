@@ -1,6 +1,6 @@
 const { MONGO_URL } = require('../../config');
 
-if (MONGO_URL === 'use-memory-server') {
+if (MONGO_URL === 'use-mongodb-memory-server') {
   jest.mock('../db/mongo', () => {
     const { MongoMemoryServer } = jest.requireActual('mongodb-memory-server');
     const mongo = jest.requireActual('../db/mongo');

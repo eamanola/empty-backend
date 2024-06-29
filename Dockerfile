@@ -3,7 +3,7 @@
 FROM node:22 AS base
 WORKDIR /app
 COPY package.json package-lock.json .
-RUN npm install
+RUN HUSKY=0 npm install
 
 # prod specific
 # cache memory-server-binaries
@@ -35,7 +35,7 @@ RUN npm run build
 FROM node:22-alpine AS prod
 WORKDIR /app
 COPY package.json package-lock.json .
-RUN npm install --omit=dev
+RUN HUSKY=0 npm install --omit=dev
 COPY --from=build /app/dist/index.bundle.js dist/index.bundle.js
 USER node
 CMD npm start

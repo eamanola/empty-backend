@@ -8,40 +8,20 @@ services:
       - "${PORT:-3000}:3000"
 
     depends_on:
-      mongo:
+      db:
         condition: service_healthy
       redis:
         condition: service_healthy
 
     environment:
-      MONGO_URL: mongodb://${DB_USERNAME:-dbuser}:${DB_PASSWORD:-dbpassword}@mongo/${DB_NAME:-dbname}
+      MONGO_URL: mongodb://${DB_USERNAME:-dbuser}:${DB_PASSWORD:-dbpassword}@db/${DB_NAME:-dbname}
       REDIS_URL: redis://:${REDIS_PASSWORD:-supersecure}@redis
       SECRET: ${SECRET:-supersecure}
       PORT: 3000
 
-  mongo:
-    image: mongodb/mongodb-community-server:latest # freeze for prod
-
-    # restart: unless-stopped
-
-    environment:
-      MONGODB_INITDB_ROOT_USERNAME: ${MONGODB_INITDB_ROOT_USERNAME:-root}
-      MONGODB_INITDB_ROOT_PASSWORD: ${MONGODB_INITDB_ROOT_PASSWORD:-rootme}
-      DB_USERNAME: ${DB_USERNAME:-dbuser}
-      DB_PASSWORD: ${DB_PASSWORD:-dbpassword}
-      DB_NAME: ${DB_NAME:-dbname}
-
-    volumes:
-      - "./mongo-init:/docker-entrypoint-initdb.d:ro"
-
+  db:
     healthcheck:
-      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/${DB_NAME:-dbname} --quiet
-      interval: 5s
-      timeout: 5s
-      retries: 10
-      start_period: 15s
-
-    # command: --quiet
+      test: exit 0
 
   redis:
     image: redis/redis-stack-server:latest # freeze for prod

@@ -1,0 +1,24 @@
+services:
+  db:
+    image: mongodb/mongodb-community-server:latest # freeze for prod
+
+    # restart: unless-stopped
+
+    environment:
+      MONGODB_INITDB_ROOT_USERNAME: ${MONGODB_INITDB_ROOT_USERNAME:-root}
+      MONGODB_INITDB_ROOT_PASSWORD: ${MONGODB_INITDB_ROOT_PASSWORD:-rootme}
+      DB_USERNAME: ${DB_USERNAME:-dbuser}
+      DB_PASSWORD: ${DB_PASSWORD:-dbpassword}
+      DB_NAME: ${DB_NAME:-dbname}
+
+    volumes:
+      - "./mongo-init:/docker-entrypoint-initdb.d:ro"
+
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/${DB_NAME:-dbname} --quiet
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
+
+    # command: --quiet

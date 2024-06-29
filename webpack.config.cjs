@@ -28,6 +28,8 @@ const plugins = [
   new webpack.NormalModuleReplacementPlugin(/^node:/u, (resource) => {
     switch (resource.request) {
       case 'node:crypto':
+      case 'node:dns/promises':
+      case 'node:os':
         // eslint-disable-next-line no-param-reassign
         resource.request = resource.request.replace(/^node:/u, '');
         break;
@@ -45,6 +47,8 @@ const optimization = {
 const resolve = {
   fallback: {
     'crypto': false,
+    'dns/promises': false,
+    'os': false,
   },
 };
 
