@@ -26,57 +26,57 @@ const initDB = (url = MONGO_URL) => {
   client = new MongoClient(url);
 };
 
-const findOne = async (collection, where) => fromMongoId(
+const findOne = async (collection, filter) => fromMongoId(
   await client
     .db()
     .collection(collection)
-    .findOne(toMongoId(where)),
+    .findOne(toMongoId(filter)),
 );
 
 const insertOne = async (collection, doc) => {
   const { insertedId } = await client
     .db()
     .collection(collection)
-    .insertOne(doc);
+    .insertOne(toMongoId(doc));
 
   return fromMongoId({ _id: insertedId });
 };
 
-const replaceOne = (collection, where, replacement) => client
+const replaceOne = (collection, filter, replacement) => client
   .db()
   .collection(collection)
-  .replaceOne(toMongoId(where), toMongoId(replacement));
+  .replaceOne(toMongoId(filter), toMongoId(replacement));
 
-const deleteOne = (collection, where) => client
+const deleteOne = (collection, filter) => client
   .db()
   .collection(collection)
-  .deleteOne(toMongoId(where));
+  .deleteOne(toMongoId(filter));
 
-const find = (collection, where, { limit, offset }) => client
+const find = (collection, filter, { limit, offset }) => client
   .db()
   .collection(collection)
-  .find(where, { limit, skip: offset })
+  .find(filter, { limit, skip: offset })
   .map((doc) => fromMongoId(doc))
   .toArray();
 
-const updateOne = (collection, where, updates, options = {}) => client
+const updateOne = (collection, filter, updates, options = {}) => client
   .db()
   .collection(collection)
-  .updateOne(toMongoId(where), { $set: updates }, options);
+  .updateOne(toMongoId(filter), { $set: updates }, options);
 
-// const upsert = (collection, where, updates) => (
-//  updateOne(collection, where, updates, { upsert: true })
+// const upsert = (collection, filter, updates) => (
+//  updateOne(collection, filter, updates, { upsert: true })
 // );
 
-const deleteAll = (collection, where) => client
+const deleteAll = (collection, filter) => client
   .db()
   .collection(collection)
-  .deleteMany(where);
+  .deleteMany(filter);
 
-const count = (collection, where) => client
+const count = (collection, filter) => client
   .db()
   .collection(collection)
-  .countDocuments(where);
+  .countDocuments(filter);
 
 module.exports = {
   closeDB: () => client.close(),

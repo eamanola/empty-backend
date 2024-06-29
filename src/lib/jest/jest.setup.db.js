@@ -1,7 +1,7 @@
 const { initDB, connectDB, closeDB } = require('../db');
 
 const SKIP_PATHS = [
-  'src/lib/db',
+  'src/lib/db/mongo.test.js',
   'src/validators',
   'src/lib/validators',
 ];
