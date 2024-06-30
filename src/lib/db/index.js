@@ -3,6 +3,7 @@ const { NODE_ENV } = require('../../config');
 const {
   initDB,
   connectDB,
+  createTable,
   closeDB,
   findOne,
   insertOne,
@@ -18,6 +19,7 @@ const {
 module.exports = {
   closeDB,
   connectDB,
+  createTable,
   deleteOne,
   find: (table, where, options = {}) => find(table, where, options),
   findOne,

@@ -5,6 +5,7 @@ const {
   deleteOne,
   find,
   updateOne,
+  createTable,
 
   deleteAll,
   count,
@@ -13,6 +14,17 @@ const {
 const table = 'test';
 
 describe('db test', () => {
+  beforeAll(() => {
+    createTable(
+      table,
+      [
+        { name: 'id', type: 'string' },
+        { name: 'foo', type: 'number' },
+        { name: 'bar', type: 'number' },
+        { name: 'baz', type: 'number' },
+      ]
+    )},
+  );
   afterEach(() => deleteAll(table));
 
   describe('insertOne', () => {

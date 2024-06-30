@@ -78,10 +78,13 @@ const count = (collection, filter) => client
   .collection(collection)
   .countDocuments(filter);
 
+const createTable = () => null;
+
 module.exports = {
   closeDB: () => client.close(),
   connectDB: () => client.connect(),
   count,
+  createTable,
   deleteAll,
   deleteOne,
   find,
