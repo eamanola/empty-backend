@@ -1,15 +1,19 @@
 const bcrypt = require('bcrypt');
+
 const { userNotFoundError, invalidPasswordError, emailNotVerifiedError } = require('../errors');
 const { createParamError } = require('../../errors');
-
 const logger = require('../../utils/logger');
-const { encode: encodeToken } = require('../utils/token');
+const { SECRET } = require('../../../config');
+const { encode: encodeToken } = require('../../utils/token');
 const { findOne } = require('../model');
 const { getSession } = require('./session');
 
 const loginSchema = require('../validators/login');
 
-const login = async ({ email, password }, { REQUIRE_VERIFIED_EMAIL = false } = {}) => {
+const login = async (
+  { email, password },
+  { REQUIRE_VERIFIED_EMAIL = false } = {},
+) => {
   try {
     await loginSchema.validate({ email, password });
   } catch (err) {
@@ -30,7 +34,7 @@ const login = async ({ email, password }, { REQUIRE_VERIFIED_EMAIL = false } = {
     throw emailNotVerifiedError;
   }
 
-  const token = encodeToken({ session: getSession(user), userId: user.id });
+  const token = encodeToken({ session: getSession(user), userId: user.id }, SECRET);
 
   return { emailVerified: user.emailVerified, token };
 };

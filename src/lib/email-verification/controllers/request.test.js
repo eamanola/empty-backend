@@ -8,7 +8,9 @@ const {
 const userErrors = require('../../users/errors');
 const emailVerificationErrors = require('../errors');
 
-const { decode: decodeEmailVerificationToken } = require('../../users/utils/token');
+const { decode: decodeEmailVerificationToken } = require('../../utils/token');
+const { SECRET } = require('../../../config');
+
 const sendEmailVerificationMail = require('../utils/send-email-verification-mail');
 
 const request = require('./request');
@@ -105,7 +107,7 @@ describe('email verification', () => {
         const { token } = sendEmailVerificationMail.mock.calls[0][0];
         expect(token).toBeTruthy();
 
-        const decodedToken = decodeEmailVerificationToken(token);
+        const decodedToken = decodeEmailVerificationToken(token, SECRET);
         expect(decodedToken.userId).toBeTruthy();
         expect(decodedToken.userId).toBe(user.id);
 

@@ -3,7 +3,8 @@ const { encode, decode } = require('./token');
 describe('token', () => {
   it('should hash object', () => {
     const data = 'foo';
-    const token = encode(data);
+    const secret = 'super-hush-hush';
+    const token = encode(data, secret);
 
     expect(token).toBeTruthy();
     expect(token).not.toBe(data);
@@ -11,8 +12,10 @@ describe('token', () => {
 
   it('should revert hash', () => {
     const data = 'foo';
-    const token = encode(data);
+    const secret = 'super-hush-hush';
 
-    expect(decode(token)).toBe(data);
+    const token = encode(data, secret);
+
+    expect(decode(token, secret)).toBe(data);
   });
 });
