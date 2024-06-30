@@ -1,6 +1,7 @@
 require('dotenv').config();
 
 const {
+  MONGO_TEST_URL = 'use-mongodb-memory-server',
   MONGO_URL,
   NODE_ENV,
   PORT = 3000,
@@ -10,7 +11,7 @@ const {
 
 module.exports = {
   CACHE_ENABLED: !!REDIS_URL,
-  MONGO_URL,
+  MONGO_URL: NODE_ENV === 'test' ? MONGO_TEST_URL : MONGO_URL,
   NODE_ENV,
   PORT,
   REDIS_URL,

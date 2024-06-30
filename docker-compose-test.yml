@@ -3,4 +3,7 @@ services:
     build:
       target: test
 
+    environment:
+      MONGO_TEST_URL: mongodb://${DB_USERNAME:-dbuser}:${DB_PASSWORD:-dbpassword}@db/${DB_NAME:-dbname}
+
     command: npm test -- --runInBand
