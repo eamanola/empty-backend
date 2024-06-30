@@ -5,6 +5,7 @@ const {
   MONGO_URL,
   NODE_ENV,
   PORT = 3000,
+  REDIS_TEST_URL = 'use-mock',
   REDIS_URL,
   SECRET,
 } = process.env;
@@ -14,6 +15,6 @@ module.exports = {
   MONGO_URL: NODE_ENV === 'test' ? MONGO_TEST_URL : MONGO_URL,
   NODE_ENV,
   PORT,
-  REDIS_URL,
+  REDIS_URL: NODE_ENV === 'test' ? REDIS_TEST_URL : REDIS_URL,
   SECRET,
 };
