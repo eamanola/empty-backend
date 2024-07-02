@@ -32,8 +32,6 @@ const mapType = (type) => {
 // https://www.sqlitetutorial.net/sqlite-primary-key/
 // https://www.sqlitetutorial.net/sqlite-index/
 const createSql = (table, schema) => {
-  if (!table || !schema?.length) throw new Error('ValidationError');
-
   const sql = `
   CREATE TABLE IF NOT EXISTS "${table}" (
   ${schema.map(({
@@ -48,7 +46,7 @@ const createSql = (table, schema) => {
       ${mapType(type)}
       ${required === true ? 'NOT NULL' : ''}
       ${(defaultValue !== null) ? `DEFAULT ${defaultValue}` : ''}
-      ${unique ? 'UNIQUE' : ''}
+      ${unique === true ? 'UNIQUE' : ''}
       `
   )).join(',')}
   )`;
@@ -142,14 +140,6 @@ const count = async (table, where = {}) => {
 
   return cc;
 };
-
-// schema, ordered list : [{
-//   name: string,
-//   type: 'string'|'number'|'bool',
-//   required?: bool,
-//   default?: value,
-//   unique?: bool,
-// }]
 
 const createTable = async (table, schema) => run(createSql(table, schema));
 

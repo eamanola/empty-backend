@@ -1,5 +1,7 @@
 const { NODE_ENV } = require('../../config');
 
+const { tableSchema } = require('./validators');
+
 const {
   closeDB,
   connectDB,
@@ -15,7 +17,7 @@ const {
   hasClient,
   replaceOne,
   updateOne,
-} = require('./mongo');
+} = require('./sqlite');
 
 const callbacks = [];
 
@@ -24,8 +26,12 @@ module.exports = {
   connectDB: async () => {
     await connectDB();
     await Promise.all(callbacks.map((callback) => callback()));
+
+    callbacks.length = 0;
   },
   createTable: async (table, schema) => {
+    await tableSchema.validate({ schema, table });
+
     if (hasClient()) {
       await createTable(table, schema);
     } else {

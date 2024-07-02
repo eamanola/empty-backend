@@ -21,14 +21,14 @@ const restModel = (schema, table, validator, { userRequired = true } = {}) => {
     if (schema.some(({ name }) => reserved.includes(name))) {
       throw Error(`${reserved.join(', ')} are reserved column names`);
     }
-    const modelSchema = [
+    const tableSchema = [
       ...schema,
       { name: 'id', required: true, type: 'string' },
       { name: 'modified', required: true, type: 'string' },
     ];
-    if (userRequired) modelSchema.push({ name: 'owner', required: true, type: 'string' });
+    if (userRequired) tableSchema.push({ name: 'owner', required: true, type: 'string' });
 
-    await dbCreateTable(table, modelSchema);
+    await dbCreateTable(table, tableSchema);
   };
 
   createTable();
