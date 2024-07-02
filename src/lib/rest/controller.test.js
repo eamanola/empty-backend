@@ -2,11 +2,14 @@ const { string, object } = require('yup');
 
 const { createUser, deleteUsers } = require('../jest/test-helpers');
 
-const { deleteAll, count } = require('../db');
+const { count, deleteAll, dropTable } = require('../db');
 
 const restController = require('./controller');
+const restModel = require('./model');
 
 const table = 'test';
+
+const schema = [{ name: 'foo', required: true, type: 'string' }];
 
 const validator = object({ foo: string().required() }).noUnknown().strict();
 
@@ -16,7 +19,7 @@ const {
   byOwner,
   update,
   remove,
-} = restController(null, { table, validator });
+} = restController(null, { schema, table, validator });
 
 const createResource = async (user) => {
   const resource = { foo: 'bar' };
@@ -24,7 +27,9 @@ const createResource = async (user) => {
 };
 
 describe('rest controller', () => {
-  beforeEach(async () => {
+  afterAll(() => dropTable(table));
+
+  afterEach(async () => {
     await deleteAll(table);
     await deleteUsers();
   });
@@ -228,12 +233,24 @@ describe('rest controller', () => {
 
   describe('require user', () => {
     it('should support un auth access', async () => {
+      dropTable(table);
+      const model = restModel(schema, table, validator, { userRequired: false });
+      await model.createTable();
+
       const {
         create: createUnAuth,
         byId: byIdAuth,
         update: updateUnAuth,
         remove: removeUnAuth,
-      } = restController(null, { table, userRequired: false, validator });
+      } = restController(
+        null,
+        {
+          schema,
+          table,
+          userRequired: false,
+          validator,
+        },
+      );
 
       const resource = { foo: 'bar' };
       const user = null;

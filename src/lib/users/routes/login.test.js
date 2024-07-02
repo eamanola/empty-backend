@@ -12,7 +12,7 @@ const app = require('../../../app');
 const api = supertest(app);
 
 describe('/login', () => {
-  beforeEach(deleteUsers);
+  afterEach(deleteUsers);
 
   it('should return 200 OK with a token', async () => {
     const email = 'foo@example.com';

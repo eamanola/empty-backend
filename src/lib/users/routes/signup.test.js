@@ -10,7 +10,7 @@ const app = require('../../../app');
 const api = supertest(app);
 
 describe('/signup', () => {
-  beforeEach(deleteUsers);
+  afterEach(deleteUsers);
 
   it('should return 201 OK', async () => {
     const credentials = { email: 'foo@example.com', password: '123' };

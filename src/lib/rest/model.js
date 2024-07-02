@@ -1,39 +1,67 @@
+const { randomUUID } = require('node:crypto');
+
+const { NODE_ENV } = require('../../config');
 const {
   findOne: dbFindOne,
   insertOne: dbInsertOne,
   replaceOne: dbReplaceOne,
   deleteOne: dbDeleteOne,
   find: dbFind,
+  createTable: dbCreateTable,
 } = require('../db');
 
-const userResourece = require('./user-resource');
+const { resourceSchema, userResourceSchema } = require('./validators');
 
-const restModel = (table, validator, { userRequired = true } = {}) => {
-  const shape = userRequired ? validator.concat(userResourece) : validator;
+const restModel = (schema, table, validator, { userRequired = true } = {}) => {
+  const shape = (userRequired ? validator.concat(userResourceSchema) : validator)
+    .concat(resourceSchema);
 
-  const insertOne = async (row) => {
+  const createTable = async () => {
+    const reserved = ['id', 'owner', 'modified'];
+    if (schema.some(({ name }) => reserved.includes(name))) {
+      throw Error(`${reserved.join(', ')} are reserved column names`);
+    }
+    const modelSchema = [
+      ...schema,
+      { name: 'id', required: true, type: 'string' },
+      { name: 'modified', required: true, type: 'string' },
+    ];
+    if (userRequired) modelSchema.push({ name: 'owner', required: true, type: 'string' });
+
+    await dbCreateTable(table, modelSchema);
+  };
+
+  createTable();
+
+  const insertOne = async (newRow) => {
+    const row = { ...newRow, id: randomUUID(), modified: new Date() };
+
     await shape.validate(row);
 
-    return dbInsertOne(table, { ...row, modified: new Date() });
+    await dbInsertOne(table, row);
+
+    return { id: row.id };
   };
 
   const findOne = (where) => dbFindOne(table, where);
 
   const find = (where, options) => dbFind(table, where, options);
 
-  const replaceOne = async (where, { modified, id, ...replacement }) => {
-    if (!id) {
+  const replaceOne = async (where, replacement) => {
+    if (!where.id) {
       throw new Error('id is required');
     }
 
-    await shape.validate(replacement);
+    const newRow = { ...replacement, modified: new Date() };
+    await shape.validate(newRow);
 
-    return dbReplaceOne(table, where, { ...replacement, modified: new Date() });
+    return dbReplaceOne(table, where, newRow);
   };
 
-  const deleteOne = (where) => !!where.id && dbDeleteOne(table, where);
+  const deleteOne = ({ id, ...where }) => !!id && dbDeleteOne(table, { ...where, id });
 
   return {
+    createTable: NODE_ENV === 'test' ? createTable : undefined,
     deleteOne,
     find,
     findOne,

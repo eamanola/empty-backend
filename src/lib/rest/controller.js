@@ -4,14 +4,27 @@ const logger = require('../utils/logger');
 
 const restModel = require('./model');
 
-const restController = (model, { table, validator, userRequired = true } = {}) => {
+const restController = (
+  model,
+  {
+    schema,
+    table,
+    validator,
+    userRequired = true,
+  } = {},
+) => {
   const {
     insertOne,
     findOne,
     find,
     replaceOne,
     deleteOne,
-  } = model || restModel(table, validator, { userRequired });
+  } = model || restModel(
+    schema,
+    table,
+    validator,
+    { userRequired },
+  );
 
   const addOwner = (user, obj) => (userRequired ? { ...obj, owner: user.id } : { ...obj });
 

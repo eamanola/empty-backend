@@ -7,7 +7,7 @@ const { authenticate: login } = require('.');
 const create = require('./create');
 
 describe('signup', () => {
-  beforeEach(deleteUsers);
+  afterEach(deleteUsers);
 
   it('should create a user', async () => {
     const email = 'foo@example.com';

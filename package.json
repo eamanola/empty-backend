@@ -1,6 +1,6 @@
 {
   "name": "empty-backend",
-  "version": "0.0.64",
+  "version": "0.1.1",
   "description": "repo for backend development",
   "main": "index.js",
   "scripts": {
@@ -23,6 +23,7 @@
     "mongodb": "^6.7.0",
     "morgan": "^1.10.0",
     "redis": "^4.6.14",
+    "sqlite3": "^5.1.7",
     "supertest": "^7.0.0",
     "yup": "^1.4.0"
   },

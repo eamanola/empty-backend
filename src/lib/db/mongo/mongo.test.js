@@ -7,9 +7,9 @@ const {
   deleteAll,
   count,
   insertOne,
-} = require('./mongo');
+} = require('.');
 
-describe('connection', () => {
+describe('API', () => {
   it('MongoClient should have used API', async () => {
     const client = new MongoClient('mongodb://foo');
     expect(typeof client.connect).toBe('function');
@@ -25,7 +25,9 @@ describe('connection', () => {
     expect(typeof client.db().collection('collection').find).toBe('function');
     expect(typeof client.db().collection('collection').updateOne).toBe('function');
   });
+});
 
+describe('connection', () => {
   describe('connectDB', () => {
     it('should connect', async () => {
       await initDB();

@@ -3,7 +3,7 @@ const supertest = require('supertest');
 
 const { getToken, deleteUsers } = require('../jest/test-helpers');
 
-const { deleteAll } = require('../db');
+const { deleteAll, dropTable } = require('../db');
 
 const errors = require('../errors');
 
@@ -15,7 +15,9 @@ const table = 'test';
 
 const validator = object({ foo: string().required() }).noUnknown().strict();
 
-const router = restRouter(null, { table, validator });
+const schema = [{ name: 'foo', required: true, type: 'string' }];
+
+const router = restRouter(null, { schema, table, validator });
 
 const baseUrl = '/test';
 
@@ -45,6 +47,8 @@ const create = async ({ token, resource = { foo: 'bar' } }) => {
 };
 
 describe('rest router', () => {
+  afterAll(() => dropTable(table));
+
   beforeEach(async () => {
     await deleteAll(table);
     await deleteUsers();
@@ -167,6 +171,7 @@ describe('rest router', () => {
       expect(response.status).toBe(paramError.status);
 
       const updated = await getById(inserted.id, token);
+
       expect(updated).toEqual(inserted);
     });
 

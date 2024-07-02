@@ -5,7 +5,7 @@ const errors = require('../../errors');
 const authorization = require('./authorization');
 
 describe('authorization', () => {
-  beforeAll(deleteUsers);
+  afterEach(deleteUsers);
 
   it('should add user to request', async () => {
     const email = 'foo@example.bar';

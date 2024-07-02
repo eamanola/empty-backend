@@ -8,6 +8,7 @@ const userSchema = object({
     .min(100 * 1000)
     .max(1 * 1000 * 1000)
     .nullable(),
+  id: string().required(),
   passwordHash: string().required(),
 }).noUnknown().strict();
 

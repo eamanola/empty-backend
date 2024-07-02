@@ -1,6 +1,6 @@
 const { string, object } = require('yup');
 
-const { deleteAll, count } = require('../db');
+const { count, deleteAll, dropTable } = require('../db');
 
 const restModel = require('./model');
 
@@ -8,13 +8,15 @@ const table = 'test';
 
 const validator = object({ foo: string().required() }).noUnknown().strict();
 
+const schema = [{ name: 'foo', required: true, type: 'string' }];
+
 const {
   insertOne,
   replaceOne,
   deleteOne,
   find,
   findOne,
-} = restModel(table, validator, { userRequired: false });
+} = restModel(schema, table, validator, { userRequired: false });
 
 const createResource = async () => {
   const newResource = { foo: 'bar' };
@@ -23,7 +25,9 @@ const createResource = async () => {
 };
 
 describe('rest-model', () => {
-  beforeEach(() => deleteAll(table));
+  afterAll(() => dropTable(table));
+
+  afterEach(() => deleteAll(table));
 
   describe('insert', () => {
     it('should create one', async () => {
@@ -79,7 +83,7 @@ describe('rest-model', () => {
         expect(err).toBeTruthy();
       } finally {
         expect(await findOne(inserted)).toBeTruthy();
-        expect(await findOne(modified)).toBeFalsy();
+        expect(await count(table)).toBe(1);
       }
     });
   });
@@ -176,43 +180,45 @@ describe('rest-model', () => {
   });
 
   describe('userRequired', () => {
+    beforeEach(async () => dropTable(table));
+
     it('insert should require owner property', async () => {
-      const { insertOne: insertRequireUser } = restModel(table, validator, { userRequired: true });
+      const model = restModel(schema, table, validator, { userRequired: true });
+      await model.createTable();
 
       const newResource = { foo: 'bar' };
 
       try {
-        await insertRequireUser(newResource);
+        await model.insertOne(newResource);
       } catch (err) {
         expect(err).toBeTruthy();
       } finally {
         expect(await count(table)).toBe(0);
       }
 
-      await insertRequireUser({ ...newResource, owner: 'owner' });
+      await model.insertOne({ ...newResource, owner: 'owner' });
       expect(await count(table)).toBe(1);
     });
 
     it('replace should require owner property', async () => {
-      const {
-        replaceOne: replaceRequireUser,
-      } = restModel(table, validator, { userRequired: true });
+      const model = restModel(schema, table, validator, { userRequired: true });
+      await model.createTable();
 
-      const inserted = await createResource();
-      const { id } = inserted;
-      const modified = { ...inserted, foo: 'baz' };
+      const { id } = await model.insertOne({ foo: 'bar', owner: 'baz' });
+      const inserted = await model.findOne({ id });
+      const modified = { foo: 'baz', id };
       expect(inserted.foo).not.toBe(modified.foo);
 
       try {
-        await replaceRequireUser(inserted, modified);
+        await model.replaceOne(inserted, modified);
       } catch (err) {
         expect(err).toBeTruthy();
       } finally {
-        expect((await findOne({ id })).foo).toBe(inserted.foo);
+        expect((await model.findOne({ id })).foo).toBe(inserted.foo);
       }
 
-      await replaceRequireUser(inserted, { ...modified, owner: 'owner' });
-      expect((await findOne({ id })).foo).toBe(modified.foo);
+      await model.replaceOne(inserted, { ...modified, owner: 'owner' });
+      expect((await model.findOne({ id })).foo).toBe(modified.foo);
     });
   });
 });

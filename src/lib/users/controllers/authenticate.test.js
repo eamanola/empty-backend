@@ -5,7 +5,7 @@ const { create: signup, authorize: userFromToken } = require('.');
 const authenticate = require('./authenticate');
 
 describe('authenticate', () => {
-  beforeEach(deleteUsers);
+  afterEach(deleteUsers);
 
   it('should return a token', async () => {
     const email = 'foo@example.com';
