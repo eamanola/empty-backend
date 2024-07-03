@@ -16,8 +16,15 @@ const columnSchema = object().shape({
   unique: bool(),
 }).noUnknown().strict();
 
+const indexSchema = object().shape({
+  columns: array().of(string()).required(),
+  name: string().required(),
+  unique: bool(),
+}).noUnknown().strict();
+
 const tableSchema = object().shape({
   columns: array().min(1).of(columnSchema).required(),
+  indexes: array().of(indexSchema),
   name: string().required(),
 }).noUnknown().strict();
 

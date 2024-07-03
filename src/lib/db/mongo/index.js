@@ -69,9 +69,11 @@ const count = (collection, filter) => client
   .collection(collection)
   .countDocuments(copyDoc(filter));
 
+// https://mongodb.github.io/node-mongodb-native/6.8/classes/Db.html#createCollection
+// https://mongodb.github.io/node-mongodb-native/6.8/classes/Collection.html#createIndexes
 const createTable = () => null;
+// https://mongodb.github.io/node-mongodb-native/6.8/classes/Db.html#dropCollection
 const dropTable = () => null;
-
 module.exports = {
   closeDB: () => client.close(),
   connectDB: () => client.connect(),

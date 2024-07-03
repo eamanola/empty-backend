@@ -1,6 +1,6 @@
 {
   "name": "empty-backend",
-  "version": "0.1.9",
+  "version": "0.1.10",
   "description": "repo for backend development",
   "main": "index.js",
   "scripts": {

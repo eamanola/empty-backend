@@ -18,7 +18,7 @@ const {
 const { resourceSchema, userResourceSchema } = require('./validators');
 
 const restModel = (
-  { columns: extraColumns, name: tableName },
+  { columns: extraColumns, indexes: extraIndexes = [], name: tableName },
   { userRequired = true, validator: customValidator = null } = {},
 ) => {
   const reserved = ['id', 'owner', 'modified'];
@@ -33,7 +33,16 @@ const restModel = (
   ];
   if (userRequired) columns.push({ name: 'owner', required: true, type: 'string' });
 
-  const table = { columns, name: tableName };
+  const indexes = [
+    ...extraIndexes,
+    { columns: ['id'], name: 'id', unique: true },
+  ];
+  if (userRequired) {
+    indexes.push({ columns: ['owner'], name: 'owner' });
+    indexes.push({ columns: ['id', 'owner'], name: 'id_owner', unique: true });
+  }
+
+  const table = { columns, indexes, name: tableName };
 
   const createTable = async () => dbCreateTable(table);
 

@@ -46,17 +46,21 @@ const createSql = ({ columns, name: tableName }) => {
     unique = false,
   }) => (
     `
-      ${name}
-      ${mapType(type)}
-      ${required === true ? 'NOT NULL' : ''}
-      ${(defaultValue !== null) ? `DEFAULT ${defaultValue}` : ''}
-      ${unique === true ? 'UNIQUE' : ''}
-      `
+    ${name}
+    ${mapType(type)}
+    ${required === true ? 'NOT NULL' : ''}
+    ${(defaultValue !== null) ? `DEFAULT ${defaultValue}` : ''}
+    ${unique === true ? 'UNIQUE' : ''}`
   )).join(',')}
   )`;
 
   return sql;
 };
+
+const createIndexesSql = (tableName, { columns, name, unique }) => (
+  `CREATE ${unique ? 'UNIQUE' : ''} INDEX IF NOT EXISTS "${name}"
+  ON ${tableName} (${columns.join(', ')});`
+);
 
 const whereSql = (where) => {
   const params = Object.values(where);
@@ -145,7 +149,17 @@ const count = async (tableName, where = {}) => {
   return cc;
 };
 
-const createTable = async (table) => run(createSql(table));
+const createIndexes = ({ indexes = [], name: tableName }) => Promise.all(
+  indexes.map((index) => run(createIndexesSql(tableName, index))),
+);
+
+const createTable = async (table) => {
+  await run(createSql(table));
+  await createIndexes(table);
+
+  // const indexes = await all('SELECT name, tbl_name FROM sqlite_master WHERE type = "index";');
+  // console.log(indexes);
+};
 
 const deleteAll = async (tableName, where = {}) => {
   const { sql: wheresql, params } = whereSql(where);

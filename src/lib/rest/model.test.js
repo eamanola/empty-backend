@@ -178,6 +178,7 @@ describe('rest-model', () => {
 
   describe('optional params', () => {
     beforeEach(async () => dropTable(table.name));
+
     describe('userRequired', () => {
       it('insert should require owner property', async () => {
         const model = restModel(table, { userRequired: true });
@@ -254,7 +255,8 @@ describe('rest-model', () => {
 
   describe('type conversion', () => {
     it('should return right types', async () => {
-      dropTable(table.name);
+      await dropTable(table.name);
+
       const model = restModel(
         {
           ...table,

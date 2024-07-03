@@ -29,13 +29,13 @@ module.exports = {
 
     callbacks.length = 0;
   },
-  createTable: async ({ columns, name }) => {
-    await tableSchema.validate({ columns, name });
+  createTable: async (table) => {
+    await tableSchema.validate(table);
 
     if (hasClient()) {
-      await createTable({ columns, name });
+      await createTable(table);
     } else {
-      callbacks.push(() => createTable({ columns, name }));
+      callbacks.push(() => createTable(table));
     }
   },
   deleteOne: async (tableName, where = {}) => deleteOne(tableName, where),
