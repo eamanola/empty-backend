@@ -1,5 +1,7 @@
 const sqlite3 = require('sqlite3');
 
+const { tableSchema } = require('../validators');
+
 const {
   initDB,
   connectDB,
@@ -8,7 +10,15 @@ const {
   insertOne,
   deleteAll,
   count,
+  dropTable,
 } = require('.');
+
+const table = { columns: [{ name: 'foo', type: 'string' }], name: 'test-table' };
+
+it('is valid table', async () => {
+  await tableSchema.validate(table);
+  expect(true).toBe(true);
+});
 
 describe('API', () => {
   it('sqlite3 should have used API', async () => {
@@ -28,7 +38,8 @@ describe('connection', () => {
       await initDB(':memory:');
       await connectDB();
 
-      await createTable('test-table', [{ name: 'foo', type: 'string' }]);
+      await createTable(table);
+      await dropTable(table.name);
 
       await closeDB();
     });
@@ -39,12 +50,13 @@ describe('connection', () => {
       await initDB(':memory:');
       await connectDB();
 
-      await createTable('test-table', [{ name: 'foo', type: 'string' }]);
+      await createTable(table);
+      await dropTable(table.name);
 
       await closeDB();
 
       try {
-        await createTable('test-table', [{ name: 'foo', type: 'string' }]);
+        await createTable(table);
       } catch ({ message }) {
         expect(/SQLITE_MISUSE: Database is closed/u.test(message)).toBe(true);
       }
@@ -54,22 +66,23 @@ describe('connection', () => {
 
 describe('lastID', () => {
   it('is not unique', async () => {
-    const table = 'test-table';
     await initDB(':memory:');
     await connectDB();
-    await createTable(table, [{ name: 'foo', type: 'number' }]);
+    await createTable(table);
 
-    await deleteAll(table);
-    expect(await count(table)).toBe(0);
-    const { lastID: firstId } = await insertOne(table, { foo: 1 });
+    await deleteAll(table.name);
+    expect(await count(table.name)).toBe(0);
+    const { lastID: firstId } = await insertOne(table.name, { foo: 1 });
 
-    await deleteAll(table);
-    expect(await count(table)).toBe(0);
-    const { lastID: secondId } = await insertOne(table, { foo: 1 });
+    await deleteAll(table.name);
+    expect(await count(table.name)).toBe(0);
+    const { lastID: secondId } = await insertOne(table.name, { foo: 1 });
 
     expect(firstId).toBeTruthy();
     expect(secondId).toBeTruthy();
     expect(firstId).toBe(secondId);
+
+    await dropTable(table.name);
 
     await closeDB();
   });

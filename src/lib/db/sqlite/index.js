@@ -31,10 +31,10 @@ const mapType = (type) => {
 // https://www.sqlitetutorial.net/sqlite-check-constraint/
 // https://www.sqlitetutorial.net/sqlite-primary-key/
 // https://www.sqlitetutorial.net/sqlite-index/
-const createSql = (table, schema) => {
+const createSql = ({ columns, name: tableName }) => {
   const sql = `
-  CREATE TABLE IF NOT EXISTS "${table}" (
-  ${schema.map(({
+  CREATE TABLE IF NOT EXISTS "${tableName}" (
+  ${columns.map(({
     name,
     type,
     required = false,
@@ -131,49 +131,49 @@ const connectDB = async () => {
   );
 };
 
-const count = async (table, where = {}) => {
+const count = async (tableName, where = {}) => {
   const { sql: wheresql, params } = whereSql(where);
 
-  const sql = `SELECT count(*) AS count FROM "${table}" ${wheresql}`;
+  const sql = `SELECT count(*) AS count FROM "${tableName}" ${wheresql}`;
 
   const { count: cc } = await get(sql, params);
 
   return cc;
 };
 
-const createTable = async (table, schema) => run(createSql(table, schema));
+const createTable = async (table) => run(createSql(table));
 
-const deleteAll = async (table, where = {}) => {
+const deleteAll = async (tableName, where = {}) => {
   const { sql: wheresql, params } = whereSql(where);
 
-  const sql = `DELETE FROM "${table}" ${wheresql}`;
+  const sql = `DELETE FROM "${tableName}" ${wheresql}`;
 
   return run(sql, params);
 };
 
-const deleteOne = async (table, where) => {
+const deleteOne = async (tableName, where) => {
   const { sql: wheresql, params } = whereSql(where);
 
   const sql = `
-  DELETE FROM "${table}" WHERE rowid = (
-    SELECT rowid FROM "${table}" ${wheresql} LIMIT 1
+  DELETE FROM "${tableName}" WHERE rowid = (
+    SELECT rowid FROM "${tableName}" ${wheresql} LIMIT 1
   )`;
 
   return run(sql, params);
 };
 
-const find = async (table, where, { limit = -1, offset = -1 }) => {
+const find = async (tableName, where, { limit = -1, offset = -1 }) => {
   const { params, sql: wheresql } = whereSql(where);
 
-  const sql = `SELECT * FROM ${table} ${wheresql} LIMIT ${limit} OFFSET ${offset}`;
+  const sql = `SELECT * FROM "${tableName}" ${wheresql} LIMIT ${limit} OFFSET ${offset}`;
 
   return all(sql, params);
 };
 
-const findOne = async (table, where) => {
+const findOne = async (tableName, where) => {
   const { params, sql: wheresql } = whereSql(where);
 
-  const sql = `SELECT * FROM ${table} ${wheresql}`;
+  const sql = `SELECT * FROM "${tableName}" ${wheresql}`;
 
   return get(sql, params);
 };
@@ -182,36 +182,36 @@ const initDB = async (initFilename = ':memory:') => {
   filename = initFilename;
 };
 
-const insertOne = async (table, row) => {
+const insertOne = async (tableName, row) => {
   const { sql: valuessql, params } = valuesSql(row);
 
-  const sql = `INSERT INTO "${table}" ${valuessql}`;
+  const sql = `INSERT INTO "${tableName}" ${valuessql}`;
 
   return run(sql, params);
 };
 
-const updateOne = async (table, where, updates) => {
+const updateOne = async (tableName, where, updates) => {
   const { sql: wheresql, params: whereParams } = whereSql(where);
   const { sql: setsql, params: setParams } = setSql(updates);
 
   const sql = `
-  UPDATE "${table}" ${setsql} WHERE rowid = (
-    SELECT rowid FROM "${table}" ${wheresql} LIMIT 1
+  UPDATE "${tableName}" ${setsql} WHERE rowid = (
+    SELECT rowid FROM "${tableName}" ${wheresql} LIMIT 1
   )`;
 
   return run(sql, [...setParams, ...whereParams]);
 };
 
 // TODO: deprecate
-const replaceOne = async (table, where, newRow) => {
-  const allColums = await all(`SELECT name FROM PRAGMA_TABLE_INFO("${table}")`);
+const replaceOne = async (tableName, where, newRow) => {
+  const allColums = await all(`SELECT name FROM PRAGMA_TABLE_INFO("${tableName}")`);
   const defaults = allColums.reduce((acc, { name }) => ({ ...acc, [name]: null }), {});
   const updates = { ...defaults, ...newRow };
 
-  return updateOne(table, where, updates);
+  return updateOne(tableName, where, updates);
 };
 
-const dropTable = async (table) => run(`DROP TABLE "${table}"`);
+const dropTable = async (tableName) => run(`DROP TABLE "${tableName}"`);
 
 module.exports = {
   closeDB,

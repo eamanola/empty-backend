@@ -1,4 +1,3 @@
-const { object, string } = require('yup');
 const supertest = require('supertest');
 
 const { getToken, deleteUsers } = require('../jest/test-helpers');
@@ -11,13 +10,11 @@ const restRouter = require('./router');
 
 const app = require('../../app');
 
-const table = 'test';
+const columns = [{ name: 'foo', required: true, type: 'string' }];
 
-const validator = object({ foo: string().required() }).noUnknown().strict();
+const table = { columns, name: 'test' };
 
-const schema = [{ name: 'foo', required: true, type: 'string' }];
-
-const router = restRouter(null, { schema, table, validator });
+const router = restRouter(null, { table });
 
 const baseUrl = '/test';
 
@@ -47,10 +44,10 @@ const create = async ({ token, resource = { foo: 'bar' } }) => {
 };
 
 describe('rest router', () => {
-  afterAll(() => dropTable(table));
+  afterAll(() => dropTable(table.name));
 
   beforeEach(async () => {
-    await deleteAll(table);
+    await deleteAll(table.name);
     await deleteUsers();
   });
 

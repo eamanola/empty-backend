@@ -12,7 +12,6 @@ const restRouter = (controller, {
   resultKey = 'result',
   resultsKey = 'results',
 
-  schema = null,
   table = null,
   validator = null,
 } = {}) => {
@@ -24,7 +23,6 @@ const restRouter = (controller, {
     remove,
   } = controller
     || restController(null, {
-      schema,
       table,
       userRequired,
       validator,

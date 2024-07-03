@@ -9,15 +9,15 @@ const {
 
 const userSchema = require('../validators/user');
 
-const { table, schema } = require('./schema');
+const table = require('./table-schema');
 
 // name to avoid dublicates
-const createUsersTable = async () => createTable(table, schema);
+const createUsersTable = async () => createTable(table);
 createUsersTable();
 
 module.exports = {
   findOne: async (where) => {
-    const result = await findOne(table, where);
+    const result = await findOne(table.name, where);
     if (result) {
       return { ...result, emailVerified: !result.emailVerificationCode };
     }
@@ -28,14 +28,14 @@ module.exports = {
     const user = { ...newUser, id: randomUUID() };
     await userSchema.validate(user);
 
-    await insertOne(table, user);
+    await insertOne(table.name, user);
 
     return { id: user.id };
   },
-  table,
-  updateOne: async (where, updates) => updateOne(table, where, updates),
+  updateOne: async (where, updates) => updateOne(table.name, where, updates),
 };
 
 if (NODE_ENV === 'test') {
   module.exports.createTable = createUsersTable;
+  module.exports.tableName = table.name;
 }

@@ -29,31 +29,31 @@ module.exports = {
 
     callbacks.length = 0;
   },
-  createTable: async (table, schema) => {
-    await tableSchema.validate({ schema, table });
+  createTable: async ({ columns, name }) => {
+    await tableSchema.validate({ columns, name });
 
     if (hasClient()) {
-      await createTable(table, schema);
+      await createTable({ columns, name });
     } else {
-      callbacks.push(() => createTable(table, schema));
+      callbacks.push(() => createTable({ columns, name }));
     }
   },
-  deleteOne: async (table, where = {}) => deleteOne(table, where),
-  find: async (table, where = {}, { limit, offset } = {}) => (
-    find(table, where, { limit, offset })
+  deleteOne: async (tableName, where = {}) => deleteOne(tableName, where),
+  find: async (tableName, where = {}, { limit, offset } = {}) => (
+    find(tableName, where, { limit, offset })
   ),
-  findOne: async (table, where) => findOne(table, where),
+  findOne: async (tableName, where) => findOne(tableName, where),
   initDB: async (...args) => initDB(...args),
-  insertOne: async (table, row) => insertOne(table, row),
+  insertOne: async (tableName, row) => insertOne(tableName, row),
   // TODO deprecate, use update instead;
-  replaceOne: async (table, where, newRow) => replaceOne(table, where, newRow),
-  updateOne: async (table, where, updates, options = {}) => (
-    updateOne(table, where, updates, options)
+  replaceOne: async (tableName, where, newRow) => replaceOne(tableName, where, newRow),
+  updateOne: async (tableName, where, updates, options = {}) => (
+    updateOne(tableName, where, updates, options)
   ),
 };
 
 if (NODE_ENV === 'test') {
-  module.exports.count = (table, where = {}) => count(table, where);
-  module.exports.deleteAll = (table, where = {}) => deleteAll(table, where);
-  module.exports.dropTable = (table) => dropTable(table);
+  module.exports.count = (tableName, where = {}) => count(tableName, where);
+  module.exports.deleteAll = (tableName, where = {}) => deleteAll(tableName, where);
+  module.exports.dropTable = (tableName) => dropTable(tableName);
 }

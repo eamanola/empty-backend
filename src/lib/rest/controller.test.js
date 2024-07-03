@@ -1,5 +1,3 @@
-const { string, object } = require('yup');
-
 const { createUser, deleteUsers } = require('../jest/test-helpers');
 
 const { count, deleteAll, dropTable } = require('../db');
@@ -7,11 +5,9 @@ const { count, deleteAll, dropTable } = require('../db');
 const restController = require('./controller');
 const restModel = require('./model');
 
-const table = 'test';
+const columns = [{ name: 'foo', required: true, type: 'string' }];
 
-const schema = [{ name: 'foo', required: true, type: 'string' }];
-
-const validator = object({ foo: string().required() }).noUnknown().strict();
+const table = { columns, name: 'test' };
 
 const {
   create,
@@ -19,7 +15,7 @@ const {
   byOwner,
   update,
   remove,
-} = restController(null, { schema, table, validator });
+} = restController(null, { table });
 
 const createResource = async (user) => {
   const resource = { foo: 'bar' };
@@ -27,10 +23,10 @@ const createResource = async (user) => {
 };
 
 describe('rest controller', () => {
-  afterAll(() => dropTable(table));
+  afterAll(() => dropTable(table.name));
 
   afterEach(async () => {
-    await deleteAll(table);
+    await deleteAll(table.name);
     await deleteUsers();
   });
 
@@ -39,11 +35,11 @@ describe('rest controller', () => {
       const user = await createUser();
       const resource = { foo: 'bar' };
 
-      expect(await count(table)).toBe(0);
+      expect(await count(table.name)).toBe(0);
 
       const id = await create(user, resource);
 
-      expect(await count(table)).toBe(1);
+      expect(await count(table.name)).toBe(1);
       expect(await byId(user, { id })).toEqual(expect.objectContaining({ ...resource, id }));
     });
 
@@ -108,7 +104,7 @@ describe('rest controller', () => {
       const user2 = await createUser({ email: 'bar@example.com' });
       await createResource(user2);
 
-      expect(await count(table)).toBe(2);
+      expect(await count(table.name)).toBe(2);
 
       const results = await byOwner(user);
 
@@ -233,30 +229,22 @@ describe('rest controller', () => {
 
   describe('require user', () => {
     it('should support un auth access', async () => {
-      dropTable(table);
-      const model = restModel(schema, table, validator, { userRequired: false });
-      await model.createTable();
+      dropTable(table.name);
+      const model = restModel(table, { userRequired: false });
+      await model.init();
 
       const {
         create: createUnAuth,
         byId: byIdAuth,
         update: updateUnAuth,
         remove: removeUnAuth,
-      } = restController(
-        null,
-        {
-          schema,
-          table,
-          userRequired: false,
-          validator,
-        },
-      );
+      } = restController(model, { userRequired: false });
 
       const resource = { foo: 'bar' };
       const user = null;
 
       const id = await createUnAuth(user, resource);
-      expect(await count(table)).toBe(1);
+      expect(await count(table.name)).toBe(1);
 
       const created = await byIdAuth(user, { id });
       expect(created).toEqual(expect.objectContaining(resource));
@@ -268,7 +256,7 @@ describe('rest controller', () => {
       expect(updated.foo).toBe(modified.foo);
 
       await removeUnAuth(user, { id });
-      expect(await count(table)).toBe(0);
+      expect(await count(table.name)).toBe(0);
     });
   });
 });

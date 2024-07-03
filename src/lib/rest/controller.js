@@ -7,10 +7,9 @@ const restModel = require('./model');
 const restController = (
   model,
   {
-    schema,
     table,
-    validator,
     userRequired = true,
+    validator,
   } = {},
 ) => {
   const {
@@ -19,12 +18,7 @@ const restController = (
     find,
     replaceOne,
     deleteOne,
-  } = model || restModel(
-    schema,
-    table,
-    validator,
-    { userRequired },
-  );
+  } = model || restModel(table, { userRequired, validator });
 
   const addOwner = (user, obj) => (userRequired ? { ...obj, owner: user.id } : { ...obj });
 

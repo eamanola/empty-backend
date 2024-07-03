@@ -4,11 +4,9 @@ const { count, deleteAll, dropTable } = require('../db');
 
 const restModel = require('./model');
 
-const table = 'test';
+const columns = [{ name: 'foo', required: true, type: 'string' }];
 
-const validator = object({ foo: string().required() }).noUnknown().strict();
-
-const schema = [{ name: 'foo', required: true, type: 'string' }];
+const table = { columns, name: 'test' };
 
 const {
   insertOne,
@@ -16,7 +14,7 @@ const {
   deleteOne,
   find,
   findOne,
-} = restModel(schema, table, validator, { userRequired: false });
+} = restModel(table, { userRequired: false });
 
 const createResource = async () => {
   const newResource = { foo: 'bar' };
@@ -25,24 +23,24 @@ const createResource = async () => {
 };
 
 describe('rest-model', () => {
-  afterAll(() => dropTable(table));
+  afterAll(() => dropTable(table.name));
 
-  afterEach(() => deleteAll(table));
+  afterEach(() => deleteAll(table.name));
 
   describe('insert', () => {
     it('should create one', async () => {
-      expect(await count(table)).toBe(0);
+      expect(await count(table.name)).toBe(0);
 
       const newResource = { foo: 'bar' };
 
       await insertOne(newResource);
 
-      expect(await count(table)).toBe(1);
+      expect(await count(table.name)).toBe(1);
       expect(await findOne(newResource)).toBeTruthy();
     });
 
     it('should not create invalid', async () => {
-      expect(await count(table)).toBe(0);
+      expect(await count(table.name)).toBe(0);
 
       const newResource = { bar: 'bar' };
 
@@ -51,7 +49,7 @@ describe('rest-model', () => {
       } catch (err) {
         expect(err).toBeTruthy();
       } finally {
-        expect(await count(table)).toBe(0);
+        expect(await count(table.name)).toBe(0);
       }
     });
   });
@@ -62,11 +60,11 @@ describe('rest-model', () => {
       const modified = { ...inserted, foo: 'baz' };
 
       expect(inserted.foo).not.toBe(modified.foo);
-      expect(await count(table)).toBe(1);
+      expect(await count(table.name)).toBe(1);
 
       await replaceOne(inserted, modified);
 
-      expect(await count(table)).toBe(1);
+      expect(await count(table.name)).toBe(1);
 
       const replaced = await findOne({ id: inserted.id });
       expect(replaced.foo).toBe(modified.foo);
@@ -83,7 +81,7 @@ describe('rest-model', () => {
         expect(err).toBeTruthy();
       } finally {
         expect(await findOne(inserted)).toBeTruthy();
-        expect(await count(table)).toBe(1);
+        expect(await count(table.name)).toBe(1);
       }
     });
   });
@@ -92,11 +90,11 @@ describe('rest-model', () => {
     it('should delete one', async () => {
       const existing = await createResource();
 
-      expect(await count(table)).toBe(1);
+      expect(await count(table.name)).toBe(1);
 
       await deleteOne(existing);
 
-      expect(await count(table)).toBe(0);
+      expect(await count(table.name)).toBe(0);
     });
 
     it('should require id to delete', async () => {
@@ -111,7 +109,7 @@ describe('rest-model', () => {
 
     it('should not delete randomly', async () => {
       const { id } = await createResource();
-      expect(await count(table)).toBe(1);
+      expect(await count(table.name)).toBe(1);
 
       try {
         await deleteOne(null);
@@ -119,7 +117,7 @@ describe('rest-model', () => {
       } catch (err) {
         expect(err).toBeTruthy();
       } finally {
-        expect(await count(table)).toBe(1);
+        expect(await count(table.name)).toBe(1);
       }
 
       try {
@@ -128,7 +126,7 @@ describe('rest-model', () => {
       } catch (err) {
         expect(err).toBeTruthy();
       } finally {
-        expect(await count(table)).toBe(1);
+        expect(await count(table.name)).toBe(1);
       }
 
       try {
@@ -137,7 +135,7 @@ describe('rest-model', () => {
       } catch (err) {
         expect(err).toBeTruthy();
       } finally {
-        expect(await count(table)).toBe(1);
+        expect(await count(table.name)).toBe(1);
       }
 
       try {
@@ -146,7 +144,7 @@ describe('rest-model', () => {
       } catch (err) {
         expect(err).toBeTruthy();
       } finally {
-        expect(await count(table)).toBe(1);
+        expect(await count(table.name)).toBe(1);
       }
 
       expect(await findOne({ id })).toBeTruthy();
@@ -156,7 +154,7 @@ describe('rest-model', () => {
   it('should find many', async () => {
     const newResource = { foo: 'bar' };
 
-    expect(await count(table)).toBe(0);
+    expect(await count(table.name)).toBe(0);
     await insertOne(newResource);
     await insertOne(newResource);
     await insertOne(newResource);
@@ -169,7 +167,7 @@ describe('rest-model', () => {
   it('should find one', async () => {
     const newResource = { foo: 'bar' };
 
-    expect(await count(table)).toBe(0);
+    expect(await count(table.name)).toBe(0);
     await insertOne(newResource);
     await insertOne(newResource);
     await insertOne(newResource);
@@ -179,46 +177,79 @@ describe('rest-model', () => {
     expect(result).toEqual(expect.objectContaining(newResource));
   });
 
-  describe('userRequired', () => {
-    beforeEach(async () => dropTable(table));
+  describe('optional params', () => {
+    beforeEach(async () => dropTable(table.name));
+    describe('userRequired', () => {
+      it('insert should require owner property', async () => {
+        const model = restModel(table, { userRequired: true });
+        await model.init();
 
-    it('insert should require owner property', async () => {
-      const model = restModel(schema, table, validator, { userRequired: true });
-      await model.createTable();
+        const newResource = { foo: 'bar' };
 
-      const newResource = { foo: 'bar' };
+        try {
+          await model.insertOne(newResource);
+        } catch (err) {
+          expect(err).toBeTruthy();
+        } finally {
+          expect(await count(table.name)).toBe(0);
+        }
 
-      try {
-        await model.insertOne(newResource);
-      } catch (err) {
-        expect(err).toBeTruthy();
-      } finally {
-        expect(await count(table)).toBe(0);
-      }
+        await model.insertOne({ ...newResource, owner: 'owner' });
+        expect(await count(table.name)).toBe(1);
+      });
 
-      await model.insertOne({ ...newResource, owner: 'owner' });
-      expect(await count(table)).toBe(1);
+      it('replace should require owner property', async () => {
+        const model = restModel(table, { userRequired: true });
+        await model.init();
+
+        const { id } = await model.insertOne({ foo: 'bar', owner: 'baz' });
+        const inserted = await model.findOne({ id });
+        const modified = { foo: 'baz', id };
+        expect(inserted.foo).not.toBe(modified.foo);
+
+        try {
+          await model.replaceOne(inserted, modified);
+        } catch (err) {
+          expect(err).toBeTruthy();
+        } finally {
+          expect((await model.findOne({ id })).foo).toBe(inserted.foo);
+        }
+
+        await model.replaceOne(inserted, { ...modified, owner: 'owner' });
+        expect((await model.findOne({ id })).foo).toBe(modified.foo);
+      });
     });
 
-    it('replace should require owner property', async () => {
-      const model = restModel(schema, table, validator, { userRequired: true });
-      await model.createTable();
+    describe('validator', () => {
+      it('should accept a custom validator', async () => {
+        const validator = object({ foo: string().email().required() }).noUnknown().strict();
+        const model = restModel(table, { userRequired: false, validator });
+        await model.init();
 
-      const { id } = await model.insertOne({ foo: 'bar', owner: 'baz' });
-      const inserted = await model.findOne({ id });
-      const modified = { foo: 'baz', id };
-      expect(inserted.foo).not.toBe(modified.foo);
+        try {
+          await model.insertOne({ foo: 'not-email' });
+          expect(false).toBe(true);
+        } catch (err) {
+          expect(true).toBe(true);
+        }
 
-      try {
-        await model.replaceOne(inserted, modified);
-      } catch (err) {
-        expect(err).toBeTruthy();
-      } finally {
-        expect((await model.findOne({ id })).foo).toBe(inserted.foo);
-      }
+        const email = 'foo@example.com';
+        const { id } = await model.insertOne({ foo: email });
+        expect((await model.findOne({ id })).foo).toBe(email);
+      });
+    });
+  });
 
-      await model.replaceOne(inserted, { ...modified, owner: 'owner' });
-      expect((await model.findOne({ id })).foo).toBe(modified.foo);
+  describe('reserved fields', () => {
+    it('insert should throw, if reserved field used', () => {
+      ['id', 'modified', 'owner'].forEach((reserved) => {
+        try {
+          restModel({ ...table, columns: [{ name: reserved, type: 'string' }] });
+          expect('unreachable').toBe(true);
+        } catch (err) {
+          expect(true).toBe(true);
+        }
+      });
     });
   });
 });

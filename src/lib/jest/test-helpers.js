@@ -3,7 +3,7 @@ const userModel = require('../users/model');
 const userControllers = require('../users/controllers');
 const emailVerification = require('../email-verification/controllers');
 
-const countUsers = (where) => count(userModel.table, where);
+const countUsers = (where) => count(userModel.tableName, where);
 
 const findUser = async (where) => userModel.findOne(where);
 
@@ -13,7 +13,7 @@ const createUser = async ({ email = 'foo@example.com', password = '123' } = {}) 
   return findUser({ id });
 };
 
-const deleteUsers = () => deleteAll(userModel.table);
+const deleteUsers = () => deleteAll(userModel.tableName);
 
 const updateUser = async (where, updates) => userModel.updateOne(where, updates);
 
@@ -27,6 +27,16 @@ const getToken = async ({ email = 'foo@example.com', password = '123' } = {}) =>
   return { token, user };
 };
 
+const validTableSchema = () => ({
+  columns: [
+    { name: 'number', type: 'number' },
+    { name: 'string', type: 'string' },
+    { name: 'bool', type: 'bool' },
+    { name: 'required', required: true, type: 'string' },
+  ],
+  name: 'table-name',
+});
+
 module.exports = {
   countUsers,
   createUser,
@@ -35,4 +45,5 @@ module.exports = {
   getToken,
   setEmailStatus,
   updateUser,
+  validTableSchema,
 };

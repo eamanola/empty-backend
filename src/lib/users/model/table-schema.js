@@ -6,8 +6,8 @@
 //   unique?: bool,
 // }]
 
-const table = 'Users';
-const schema = [
+const name = 'Users';
+const columns = [
   {
     name: 'email',
     required: true,
@@ -25,6 +25,6 @@ const schema = [
 ];
 
 module.exports = {
-  schema,
-  table,
+  columns,
+  name,
 };

@@ -6,19 +6,22 @@ const {
   string,
 } = require('yup');
 
+const supportedTypes = ['string', 'number', 'bool'];
+
 const columnSchema = object().shape({
   default: mixed(),
   name: string().required(),
   required: bool(),
-  type: mixed().oneOf(['string', 'number', 'bool']).required(),
+  type: mixed().oneOf(supportedTypes).required(),
   unique: bool(),
 }).noUnknown().strict();
 
 const tableSchema = object().shape({
-  schema: array().min(1).of(columnSchema),
-  table: string().required(),
+  columns: array().min(1).of(columnSchema).required(),
+  name: string().required(),
 }).noUnknown().strict();
 
 module.exports = {
+  supportedTypes,
   tableSchema,
 };
