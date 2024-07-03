@@ -3,6 +3,7 @@ const {
   number,
   object,
   string,
+  date,
 } = require('yup');
 
 const { tableSchema } = require('../validators');
@@ -34,6 +35,10 @@ const yupFromTable = async ({ columns, name: tableName }) => {
 
         case 'bool':
           validator = bool();
+          break;
+
+        case 'date':
+          validator = date();
           break;
 
         default:

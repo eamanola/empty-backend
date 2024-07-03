@@ -4,6 +4,8 @@ const { NODE_ENV } = require('../../config');
 
 const yupFromTable = require('../db/utils/yup-from-table');
 
+const { toDB, fromDB } = require('../db/sqlite/utils/type-conversion');
+
 const {
   findOne: dbFindOne,
   insertOne: dbInsertOne,
@@ -27,7 +29,7 @@ const restModel = (
   const columns = [
     ...extraColumns,
     { name: 'id', required: true, type: 'string' },
-    { name: 'modified', required: true, type: 'string' },
+    { name: 'modified', required: true, type: 'date' },
   ];
   if (userRequired) columns.push({ name: 'owner', required: true, type: 'string' });
 
@@ -54,14 +56,15 @@ const restModel = (
 
     await shape.validate(row);
 
-    await dbInsertOne(tableName, row);
+    await dbInsertOne(tableName, toDB(row));
 
     return { id: row.id };
   };
 
-  const findOne = (where) => dbFindOne(tableName, where);
+  const findOne = async (where) => fromDB(await dbFindOne(tableName, toDB(where)), columns);
 
-  const find = (where, options) => dbFind(tableName, where, options);
+  const find = async (where, options) => (await dbFind(tableName, toDB(where), options) || [])
+    .map((row) => fromDB(row, columns));
 
   const replaceOne = async (where, replacement) => {
     if (!where.id) {
@@ -71,10 +74,10 @@ const restModel = (
     const newRow = { ...replacement, modified: new Date() };
     await shape.validate(newRow);
 
-    return dbReplaceOne(tableName, where, newRow);
+    return dbReplaceOne(tableName, toDB(where), toDB(newRow));
   };
 
-  const deleteOne = ({ id, ...where }) => !!id && dbDeleteOne(tableName, { ...where, id });
+  const deleteOne = ({ id, ...where }) => !!id && dbDeleteOne(tableName, toDB({ ...where, id }));
 
   return {
     deleteOne,

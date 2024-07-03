@@ -29,10 +29,11 @@ const getToken = async ({ email = 'foo@example.com', password = '123' } = {}) =>
 
 const validTableSchema = () => ({
   columns: [
-    { name: 'number', type: 'number' },
-    { name: 'string', type: 'string' },
     { name: 'bool', type: 'bool' },
+    { name: 'date', type: 'date' },
+    { name: 'number', type: 'number' },
     { name: 'required', required: true, type: 'string' },
+    { name: 'string', type: 'string' },
   ],
   name: 'table-name',
 });

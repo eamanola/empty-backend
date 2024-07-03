@@ -6,7 +6,7 @@ const {
   string,
 } = require('yup');
 
-const supportedTypes = ['string', 'number', 'bool'];
+const { supportedTypes } = require('./sqlite/utils/type-conversion');
 
 const columnSchema = object().shape({
   default: mixed(),

@@ -4,6 +4,7 @@ const yupFromTable = require('./yup-from-table');
 
 const valid = {
   bool: true,
+  date: new Date(),
   number: 1,
   required: 'required',
   string: 'string',
@@ -43,6 +44,15 @@ describe('yup from table', () => {
     it('should validate bool', async () => {
       try {
         await validator.validate({ ...valid, bool: 'true' });
+        expect(true).toBe(false);
+      } catch (err) {
+        expect(true).toBe(true);
+      }
+    });
+
+    it('should validate date', async () => {
+      try {
+        await validator.validate({ ...valid, date: 'ddsa' });
         expect(true).toBe(false);
       } catch (err) {
         expect(true).toBe(true);

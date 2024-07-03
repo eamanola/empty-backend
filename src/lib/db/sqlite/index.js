@@ -18,6 +18,10 @@ const mapType = (type) => {
       mapped = 'INTEGER';
       break;
 
+    case 'date':
+      mapped = 'TEXT';
+      break;
+
     default:
       throw new Error('Unmapped type');
   }

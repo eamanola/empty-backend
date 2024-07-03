@@ -72,7 +72,6 @@ describe('rest-model', () => {
 
     it('should not replace invalid', async () => {
       const inserted = await createResource();
-
       const modified = { bar: 'baz' };
 
       try {
@@ -250,6 +249,42 @@ describe('rest-model', () => {
           expect(true).toBe(true);
         }
       });
+    });
+  });
+
+  describe('type conversion', () => {
+    it('should return right types', async () => {
+      dropTable(table.name);
+      const model = restModel(
+        {
+          ...table,
+          columns: [
+            { name: 'bool', type: 'bool' },
+            { name: 'date', type: 'date' },
+            { name: 'number', type: 'number' },
+            { name: 'string', type: 'string' },
+          ],
+        },
+        { userRequired: false },
+      );
+      await model.init();
+
+      const obj = {
+        bool: true,
+        date: new Date(),
+        number: 1,
+        string: 'str',
+      };
+
+      await model.insertOne(obj);
+
+      const saved = await model.findOne({ number: 1 });
+
+      expect(saved).toEqual(expect.objectContaining(obj));
+      expect(typeof saved.bool).toBe('boolean');
+      expect(saved.date instanceof Date).toBe(true);
+      expect(typeof saved.number).toBe('number');
+      expect(typeof saved.string).toBe('string');
     });
   });
 });
