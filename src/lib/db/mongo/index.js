@@ -3,7 +3,6 @@ const { MongoClient } = require('mongodb');
 const { MONGO_URL } = require('../../../config');
 
 let client;
-// https://www.mongodb.com/docs/manual/core/indexes/create-index/specify-index-name/#std-label-specify-index-name
 const copyDoc = (doc) => {
   if (!doc) return doc;
 
@@ -84,10 +83,12 @@ module.exports = {
   dropTable,
   find,
   findOne,
+  fromDB: (row) => row,
   hasClient: () => !!client,
   initDB,
   insertOne,
   replaceOne,
+  toDB: (obj) => obj,
   updateOne,
   // upsert,
 };

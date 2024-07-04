@@ -45,15 +45,6 @@ describe('db test', () => {
 
       expect(await count(tableName, entry)).toBe(2);
     });
-
-    it('should filter according to where', async () => {
-      const entry = { foo: 1 };
-      await insertOne(tableName, entry);
-      await insertOne(tableName, entry);
-      await insertOne(tableName, { bar: 1 });
-
-      expect(await count(tableName, { bar: 1 })).toBe(1);
-    });
   });
 
   describe('deleteAll', () => {
@@ -65,9 +56,7 @@ describe('db test', () => {
 
       await deleteAll(tableName);
 
-      const entries = await find(tableName);
-
-      expect(entries.length).toBe(0);
+      expect(await count(tableName)).toBe(0);
     });
 
     it('should filter according to where', async () => {
@@ -78,10 +67,8 @@ describe('db test', () => {
 
       await deleteAll(tableName, entry);
 
-      const entries = await find(tableName);
-
-      expect(entries.length).toBe(1);
-      expect(entries[0]).toEqual(expect.objectContaining({ bar: 1 }));
+      expect(await count(tableName, entry)).toBe(0);
+      expect(await count(tableName, { bar: 1 })).toBe(1);
     });
   });
 
@@ -91,9 +78,21 @@ describe('db test', () => {
       await insertOne(tableName, entry);
       await insertOne(tableName, entry);
 
-      await deleteOne(tableName, entry);
+      await deleteOne(tableName);
 
       expect(await count(tableName, entry)).toBe(1);
+    });
+
+    it('should filter according to where', async () => {
+      const entry = { foo: 1 };
+      await insertOne(tableName, entry);
+      await insertOne(tableName, entry);
+      await insertOne(tableName, { bar: 1 });
+
+      await deleteOne(tableName, { bar: 1 });
+
+      expect(await count(tableName, entry)).toBe(2);
+      expect(await count(tableName, { bar: 1 })).toBe(0);
     });
 
     it('should not delete multiple items', async () => {

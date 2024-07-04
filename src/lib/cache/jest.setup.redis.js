@@ -14,7 +14,7 @@ if (REDIS_URL === 'use-mock') {
       if (typeof key === 'string') {
         delete cache[key];
       } else if (Array.isArray(key)) {
-        key.forEach((k) => delete cache[k]);
+        key.forEach((k) => removeItem(k));
       }
     };
 

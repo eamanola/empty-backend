@@ -5,10 +5,7 @@ const validate = (newNote) => signupSchema.validate(newNote);
 describe('signup validation', () => {
   describe('email', () => {
     it('should be required', async () => {
-      const signup = {
-        email: '',
-        password: 'bar',
-      };
+      const signup = { email: '', password: 'bar' };
 
       validate(signup)
         .then(() => expect('Should not reach').toBe(true))
@@ -16,30 +13,20 @@ describe('signup validation', () => {
     });
 
     it('should be a url email', async () => {
-      const signup = {
-        email: 'foo',
-        password: 'bar',
-      };
+      const signup = { email: 'foo', password: 'bar' };
 
       validate(signup)
         .then(() => expect('Should not reach').toBe(true))
         .catch(({ name }) => expect(name).toMatch('ValidationError'));
 
-      const signup2 = {
-        ...signup,
-        email: 'foo@example.com',
-      };
-
+      const signup2 = { ...signup, email: 'foo@example.com' };
       expect(await validate(signup2)).toEqual(signup2);
     });
   });
 
   describe('password', () => {
     it('should be required', async () => {
-      const signup = {
-        email: 'foo@example.com',
-        password: '',
-      };
+      const signup = { email: 'foo@example.com', password: '' };
 
       validate(signup)
         .then(() => expect('Should not reach').toBe(true))

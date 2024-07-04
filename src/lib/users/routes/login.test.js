@@ -58,10 +58,7 @@ describe('/login', () => {
     const credentials = { email: 'foo@example.com', password: '123' };
     await signup(credentials);
 
-    const response = await api.post('/login').send({
-      ...credentials,
-      password: 'foo',
-    });
+    const response = await api.post('/login').send({ ...credentials, password: 'foo' });
 
     expect(response.status).toBe(invalidPasswordError.status);
     expect(response.body.message).toBe(invalidPasswordError.message);

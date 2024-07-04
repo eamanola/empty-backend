@@ -1,6 +1,8 @@
 const { validTableSchema } = require('../jest/test-helpers');
 
-const { tableSchema, supportedTypes } = require('./validators');
+const { supportedTypes: supportedSqliteTypes } = require('./sqlite/utils/type-conversion');
+
+const { tableSchema } = require('./validators');
 
 describe('table schema', () => {
   it('should pass valid', async () => {
@@ -44,7 +46,7 @@ describe('table schema', () => {
     }
 
     try {
-      await tableSchema.validate({ ...rest });
+      await tableSchema.validate({ ...rest, columns: null });
       expect(true).toBe(false);
     } catch (err) {
       expect(true).toBe(true);
@@ -70,7 +72,9 @@ describe('table schema', () => {
       const { type, ...restOfColumn } = columns[0];
 
       const unsupported = 'foo';
-      expect(supportedTypes.some((supportedType) => supportedType === unsupported)).toBe(false);
+      expect(
+        supportedSqliteTypes.some((supportedType) => supportedType === unsupported),
+      ).toBe(false);
 
       try {
         await tableSchema.validate({ ...rest, columns: [{ ...restOfColumn, type: unsupported }] });

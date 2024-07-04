@@ -7,7 +7,7 @@ const app = require('../../../../app');
 const api = supertest(app);
 
 describe('by-code', () => {
-  beforeEach(deleteUsers);
+  afterEach(deleteUsers);
 
   it('should verify email', async () => {
     const { token, user } = await getToken();

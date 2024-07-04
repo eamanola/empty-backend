@@ -1,26 +1,20 @@
 const { string, object } = require('yup');
 
-const { count, deleteAll, dropTable } = require('../db');
+const { count, deleteAll, dropTable } = require('../../db');
 
-const restModel = require('./model');
+const restModel = require('.');
 
 const columns = [{ name: 'foo', required: true, type: 'string' }];
 
 const table = { columns, name: 'test' };
 
 const {
-  insertOne,
-  replaceOne,
   deleteOne,
   find,
   findOne,
+  insertOne,
+  replaceOne,
 } = restModel(table, { userRequired: false });
-
-const createResource = async () => {
-  const newResource = { foo: 'bar' };
-  const { id } = await insertOne(newResource);
-  return findOne({ id });
-};
 
 describe('rest-model', () => {
   afterAll(() => dropTable(table.name));
@@ -29,9 +23,8 @@ describe('rest-model', () => {
 
   describe('insert', () => {
     it('should create one', async () => {
-      expect(await count(table.name)).toBe(0);
-
       const newResource = { foo: 'bar' };
+      expect(await count(table.name)).toBe(0);
 
       await insertOne(newResource);
 
@@ -56,38 +49,35 @@ describe('rest-model', () => {
 
   describe('replace', () => {
     it('should replace one', async () => {
-      const inserted = await createResource();
+      const inserted = await insertOne({ foo: 'bar' });
       const modified = { ...inserted, foo: 'baz' };
 
       expect(inserted.foo).not.toBe(modified.foo);
-      expect(await count(table.name)).toBe(1);
 
       await replaceOne(inserted, modified);
 
       expect(await count(table.name)).toBe(1);
-
       const replaced = await findOne({ id: inserted.id });
       expect(replaced.foo).toBe(modified.foo);
     });
 
     it('should not replace invalid', async () => {
-      const inserted = await createResource();
+      const inserted = await insertOne({ foo: 'bar' });
       const modified = { bar: 'baz' };
 
       try {
         await replaceOne(inserted, modified);
       } catch (err) {
         expect(err).toBeTruthy();
-      } finally {
-        expect(await findOne(inserted)).toBeTruthy();
-        expect(await count(table.name)).toBe(1);
       }
+
+      expect(await findOne(inserted)).toBeTruthy();
     });
   });
 
   describe('delete', () => {
     it('should delete one', async () => {
-      const existing = await createResource();
+      const existing = await insertOne({ foo: 'bar' });
 
       expect(await count(table.name)).toBe(1);
 
@@ -97,17 +87,18 @@ describe('rest-model', () => {
     });
 
     it('should require id to delete', async () => {
-      const resource = { foo: 'bar' };
-      await insertOne(resource);
+      const { id, ...resource } = await insertOne({ foo: 'bar' });
       expect(await findOne(resource)).toBeTruthy();
+      expect(await count(table.name)).toBe(1);
 
       await deleteOne(resource);
 
       expect(await findOne(resource)).toBeTruthy();
+      expect(await count(table.name)).toBe(1);
     });
 
     it('should not delete randomly', async () => {
-      const { id } = await createResource();
+      const { id } = await insertOne({ foo: 'bar' });
       expect(await count(table.name)).toBe(1);
 
       try {
@@ -150,30 +141,40 @@ describe('rest-model', () => {
     });
   });
 
-  it('should find many', async () => {
-    const newResource = { foo: 'bar' };
+  describe('find', () => {
+    it('should find many', async () => {
+      const resource = { foo: 'bar' };
+      await insertOne(resource);
+      await insertOne(resource);
+      await insertOne(resource);
 
-    expect(await count(table.name)).toBe(0);
-    await insertOne(newResource);
-    await insertOne(newResource);
-    await insertOne(newResource);
+      const results = await find(resource);
 
-    const results = await find(newResource);
+      expect(results.length).toBe(3);
+    });
 
-    expect(results.length).toBe(3);
+    it('should limit results', async () => {
+      const resource = { foo: 'bar' };
+      await insertOne({ foo: 'baz' });
+      await insertOne(resource);
+      await insertOne(resource);
+
+      const results = await find(resource);
+
+      expect(results.length).toBe(2);
+    });
   });
 
-  it('should find one', async () => {
-    const newResource = { foo: 'bar' };
+  describe('findOne', () => {
+    it('should find one', async () => {
+      await insertOne({ foo: '1' });
+      await insertOne({ foo: '2' });
+      await insertOne({ foo: '3' });
 
-    expect(await count(table.name)).toBe(0);
-    await insertOne(newResource);
-    await insertOne(newResource);
-    await insertOne(newResource);
+      const result = await findOne({ foo: '2' });
 
-    const result = await findOne(newResource);
-
-    expect(result).toEqual(expect.objectContaining(newResource));
+      expect(result).toEqual(expect.objectContaining({ foo: '2' }));
+    });
   });
 
   describe('optional params', () => {
@@ -184,33 +185,34 @@ describe('rest-model', () => {
         const model = restModel(table, { userRequired: true });
         await model.init();
 
-        const newResource = { foo: 'bar' };
+        const resource = { foo: 'bar' };
 
         try {
-          await model.insertOne(newResource);
-        } catch (err) {
-          expect(err).toBeTruthy();
-        } finally {
-          expect(await count(table.name)).toBe(0);
+          await model.insertOne(resource);
+          expect('unreachable').toBe(true);
+        } catch ({ message }) {
+          expect(/owner is a required field/u.test(message)).toBe(true);
         }
 
-        await model.insertOne({ ...newResource, owner: 'owner' });
-        expect(await count(table.name)).toBe(1);
+        const inserted = await model.insertOne({ ...resource, owner: 'owner' });
+        expect(inserted).toEqual(expect.objectContaining(resource));
       });
 
       it('replace should require owner property', async () => {
         const model = restModel(table, { userRequired: true });
         await model.init();
 
-        const { id } = await model.insertOne({ foo: 'bar', owner: 'baz' });
-        const inserted = await model.findOne({ id });
+        const inserted = await model.insertOne({ foo: 'bar', owner: 'baz' });
+        const { id } = inserted;
+
         const modified = { foo: 'baz', id };
         expect(inserted.foo).not.toBe(modified.foo);
 
         try {
           await model.replaceOne(inserted, modified);
-        } catch (err) {
-          expect(err).toBeTruthy();
+          expect('unreachable').toBe(true);
+        } catch ({ message }) {
+          expect(/owner is a required field/u.test(message)).toBe(true);
         } finally {
           expect((await model.findOne({ id })).foo).toBe(inserted.foo);
         }
@@ -228,26 +230,26 @@ describe('rest-model', () => {
 
         try {
           await model.insertOne({ foo: 'not-email' });
-          expect(false).toBe(true);
-        } catch (err) {
-          expect(true).toBe(true);
+          expect('unreachable').toBe(true);
+        } catch ({ message }) {
+          expect(/foo must be a valid email/u.test(message)).toBe(true);
         }
 
         const email = 'foo@example.com';
-        const { id } = await model.insertOne({ foo: email });
-        expect((await model.findOne({ id })).foo).toBe(email);
+        const inserted = await model.insertOne({ foo: email });
+        expect(inserted.foo).toBe(email);
       });
     });
   });
 
   describe('reserved fields', () => {
-    it('insert should throw, if reserved field used', () => {
+    it('insert should throw, if reserved field used as columns', () => {
       ['id', 'modified', 'owner'].forEach((reserved) => {
         try {
           restModel({ ...table, columns: [{ name: reserved, type: 'string' }] });
           expect('unreachable').toBe(true);
-        } catch (err) {
-          expect(true).toBe(true);
+        } catch ({ message }) {
+          expect(/reserved/u.test(message)).toBe(true);
         }
       });
     });
@@ -263,7 +265,9 @@ describe('rest-model', () => {
           columns: [
             { name: 'bool', type: 'bool' },
             { name: 'date', type: 'date' },
+            { name: 'nullVal', type: 'string' },
             { name: 'number', type: 'number' },
+            { name: 'object', type: 'object' },
             { name: 'string', type: 'string' },
           ],
         },
@@ -274,18 +278,21 @@ describe('rest-model', () => {
       const obj = {
         bool: true,
         date: new Date(),
+        nullVal: null,
         number: 1,
+        object: { foo: 12 },
         string: 'str',
       };
 
-      await model.insertOne(obj);
+      const { id } = await model.insertOne(obj);
 
-      const saved = await model.findOne({ number: 1 });
-
+      const saved = await model.findOne({ id });
       expect(saved).toEqual(expect.objectContaining(obj));
       expect(typeof saved.bool).toBe('boolean');
       expect(saved.date instanceof Date).toBe(true);
+      expect(saved.nullVal).toBe(null);
       expect(typeof saved.number).toBe('number');
+      expect(typeof saved.object).toBe('object');
       expect(typeof saved.string).toBe('string');
     });
   });

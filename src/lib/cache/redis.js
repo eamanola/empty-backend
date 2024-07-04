@@ -5,7 +5,7 @@ const { REDIS_URL } = require('../../config');
 let client;
 
 const initCache = async (url = REDIS_URL) => {
-  client = await createClient({ url });
+  client = createClient({ url });
 };
 
 const connectCache = async () => client.connect();

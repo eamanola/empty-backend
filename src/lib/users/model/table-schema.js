@@ -1,12 +1,3 @@
-// schema, ordered list : [{
-//   name: string,
-//   type: 'string'|'number'|'bool',
-//   required?: bool,
-//   default?: value,
-//   unique?: bool,
-// }]
-
-const name = 'Users';
 const columns = [
   {
     name: 'email',
@@ -24,7 +15,15 @@ const columns = [
   { name: 'passwordHash', required: true, type: 'string' },
 ];
 
+const indexes = [
+  { columns: ['id'], name: 'idx-Users-id', unique: true },
+  { columns: ['email'], name: 'idx-Users-email', unique: true },
+];
+
+const name = 'Users';
+
 module.exports = {
   columns,
+  indexes,
   name,
 };

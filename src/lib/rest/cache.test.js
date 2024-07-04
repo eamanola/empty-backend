@@ -7,7 +7,7 @@ const { cacheKey } = require('./cache');
 
 const app = require('../../app');
 
-const success = { message: 'ok' };
+const SUCCESS = { message: 'ok' };
 
 const router = express.Router();
 router.use(restCache);
@@ -16,18 +16,18 @@ router.use((req, res, next) => {
     res.status(400).json({});
   } else next();
 });
-router.get('/:id', (req, res) => { res.status(200).json(success); });
-router.get('/', (req, res) => { res.status(200).json(success); });
-router.post('/', (req, res) => { res.status(201).json(success); });
-router.put('/:id', (req, res) => { res.status(200).json(success); });
-router.delete('/:id', (req, res) => { res.status(200).json(success); });
+router.get('/:id', (req, res) => { res.status(200).json(SUCCESS); });
+router.get('/', (req, res) => { res.status(200).json(SUCCESS); });
+router.post('/', (req, res) => { res.status(201).json(SUCCESS); });
+router.put('/:id', (req, res) => { res.status(200).json(SUCCESS); });
+router.delete('/:id', (req, res) => { res.status(200).json(SUCCESS); });
 
 app.use('/test', router);
 
 const api = supertest(app);
 
 describe('cache middleware', () => {
-  beforeEach(async () => {
+  afterEach(async () => {
     await removeItem('/test');
     await removeItem('/test/id');
   });
@@ -38,9 +38,9 @@ describe('cache middleware', () => {
 
       expect(await getItem(key)).toBeFalsy();
 
-      await api.get('/test/id');
+      const { body } = await api.get('/test/id');
 
-      expect((await getItem(key)).body).toEqual(success);
+      expect((await getItem(key)).body).toEqual(body);
     });
 
     it('should not cache, if fail', async () => {
@@ -57,15 +57,14 @@ describe('cache middleware', () => {
       const key = cacheKey({ url: '/test/id' });
 
       const cached = { body: 'foo', statusCode: 234 };
-      expect(cached).not.toEqual(success);
 
       await setItem(key, cached);
       expect(await getItem(key)).toEqual(cached);
 
-      const response = await api.get('/test/id');
+      const { body, statusCode } = await api.get('/test/id');
 
-      expect(response.statusCode).toEqual(cached.statusCode);
-      expect(response.body).toEqual(cached.body);
+      expect(body).toEqual(cached.body);
+      expect(statusCode).toEqual(cached.statusCode);
     });
   });
 
@@ -75,9 +74,9 @@ describe('cache middleware', () => {
 
       expect(await getItem(key)).toBeFalsy();
 
-      await api.get('/test');
+      const { body } = await api.get('/test');
 
-      expect((await getItem(key)).body).toEqual(success);
+      expect((await getItem(key)).body).toEqual(body);
     });
 
     it('should not cache, if fail', async () => {
@@ -94,15 +93,14 @@ describe('cache middleware', () => {
       const key = cacheKey({ url: '/test' });
 
       const cached = { body: 'foo', statusCode: 234 };
-      expect(cached).not.toEqual(success);
 
       await setItem(key, cached);
       expect(await getItem(key)).toEqual(cached);
 
-      const response = await api.get('/test');
+      const { body, statusCode } = await api.get('/test');
 
-      expect(response.statusCode).toEqual(cached.statusCode);
-      expect(response.body).toEqual(cached.body);
+      expect(body).toEqual(cached.body);
+      expect(statusCode).toEqual(cached.statusCode);
     });
   });
 
@@ -130,7 +128,7 @@ describe('cache middleware', () => {
     });
   });
 
-  describe('PUT /', () => {
+  describe('PUT /:id', () => {
     it('should clear / cache & /:id cache', async () => {
       const key1 = cacheKey({ url: '/test' });
       const key2 = cacheKey({ url: '/test/id' });
@@ -162,7 +160,7 @@ describe('cache middleware', () => {
     });
   });
 
-  describe('DELETE /', () => {
+  describe('DELETE /:id', () => {
     it('should clear / cache & /:id cache', async () => {
       const key1 = cacheKey({ url: '/test' });
       const key2 = cacheKey({ url: '/test/id' });

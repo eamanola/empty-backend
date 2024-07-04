@@ -26,12 +26,12 @@ const login = async (
     throw userNotFoundError;
   }
 
-  if (!await bcrypt.compare(password, user.passwordHash)) {
-    throw invalidPasswordError;
-  }
-
   if (REQUIRE_VERIFIED_EMAIL && user.emailVerified !== true) {
     throw emailNotVerifiedError;
+  }
+
+  if (!await bcrypt.compare(password, user.passwordHash)) {
+    throw invalidPasswordError;
   }
 
   const token = encodeToken({ session: getSession(user), userId: user.id }, SECRET);

@@ -42,8 +42,8 @@ describe('authenticate', () => {
     try {
       await authenticate({ email, password });
       expect('Should not reach').toBe(true);
-    } catch (err) {
-      expect(err).toBeTruthy();
+    } catch ({ message }) {
+      expect(/not found/u.test(message)).toBe(true);
     }
   });
 
@@ -55,8 +55,8 @@ describe('authenticate', () => {
     try {
       await authenticate({ email, password: 'foobar' });
       expect('Should not reach').toBe(true);
-    } catch (err) {
-      expect(err).toBeTruthy();
+    } catch ({ message }) {
+      expect(/Login failed/u.test(message)).toBe(true);
     }
   });
 
@@ -72,8 +72,8 @@ describe('authenticate', () => {
     try {
       await authenticate({ email, password }, { REQUIRE_VERIFIED_EMAIL: true });
       expect('Should not reach').toBe(true);
-    } catch (err) {
-      expect(err).toBeTruthy();
+    } catch ({ message }) {
+      expect(/Email Not Verified/u.test(message)).toBe(true);
     }
   });
 });

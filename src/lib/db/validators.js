@@ -6,13 +6,13 @@ const {
   string,
 } = require('yup');
 
-const { supportedTypes } = require('./sqlite/utils/type-conversion');
+const { supportedTypes: supportedSqliteTypes } = require('./sqlite/utils/type-conversion');
 
 const columnSchema = object().shape({
   default: mixed(),
   name: string().required(),
   required: bool(),
-  type: mixed().oneOf(supportedTypes).required(),
+  type: mixed().oneOf(supportedSqliteTypes).required(),
   unique: bool(),
 }).noUnknown().strict();
 
@@ -29,6 +29,5 @@ const tableSchema = object().shape({
 }).noUnknown().strict();
 
 module.exports = {
-  supportedTypes,
   tableSchema,
 };

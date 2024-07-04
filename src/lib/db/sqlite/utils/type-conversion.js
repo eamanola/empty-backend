@@ -1,39 +1,44 @@
 const supportedTypes = [
-  'string',
-  'number',
   'bool',
   'date',
+  'number',
+  'object',
+  'string',
 ];
 
-const skip = (obj) => [null, undefined].includes(obj) || (typeof obj !== 'object');
+const skip = (obj) => [null/* , undefined */].includes(obj) || (typeof obj !== 'object');
 
-const fromDB = (dbObj, columns) => {
-  if (skip(dbObj)) {
-    return dbObj;
+const fromDB = (row, columns) => {
+  if (skip(row)) {
+    return row;
   }
 
-  const obj = Object.keys(dbObj).reduce((acc, key) => {
+  const obj = Object.keys(row).reduce((acc, key) => {
     let value;
 
-    if (dbObj[key] === null) {
+    if (row[key] === null) {
       value = null;
     } else {
       const { type } = columns.find(({ name }) => name === key);
       switch (type) {
         case 'string':
-          value = String(dbObj[key]);
+          value = String(row[key]);
           break;
 
         case 'number':
-          value = Number(dbObj[key]);
+          value = Number(row[key]);
           break;
 
         case 'bool':
-          value = Number(dbObj[key]) === 1;
+          value = Number(row[key]) === 1;
           break;
 
         case 'date':
-          value = new Date(dbObj[key]);
+          value = new Date(row[key]);
+          break;
+
+        case 'object':
+          value = JSON.parse(row[key]);
           break;
 
         default:
@@ -52,7 +57,7 @@ const toDB = (obj) => {
     return obj;
   }
 
-  const dbObj = Object.keys(obj).reduce((acc, key) => {
+  const row = Object.keys(obj).reduce((acc, key) => {
     let value;
 
     if (obj[key] === null) {
@@ -73,7 +78,7 @@ const toDB = (obj) => {
           if (obj[key] instanceof Date) {
             value = obj[key].toISOString();
           } else {
-            throw new Error('Unsupported type');
+            value = JSON.stringify(obj[key]);
           }
           break;
 
@@ -85,7 +90,7 @@ const toDB = (obj) => {
     return { ...acc, [key]: value };
   }, {});
 
-  return dbObj;
+  return row;
 };
 
 module.exports = {

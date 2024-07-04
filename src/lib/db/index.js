@@ -12,12 +12,14 @@ const {
   dropTable,
   find,
   findOne,
+  fromDB,
   initDB,
   insertOne,
   hasClient,
   replaceOne,
+  toDB,
   updateOne,
-} = require('./sqlite');
+} = require('./mongo');
 
 const callbacks = [];
 
@@ -43,10 +45,12 @@ module.exports = {
     find(tableName, where, { limit, offset })
   ),
   findOne: async (tableName, where) => findOne(tableName, where),
+  fromDB: (row, columns) => fromDB(row, columns),
   initDB: async (...args) => initDB(...args),
   insertOne: async (tableName, row) => insertOne(tableName, row),
   // TODO deprecate, use update instead;
   replaceOne: async (tableName, where, newRow) => replaceOne(tableName, where, newRow),
+  toDB: (obj) => toDB(obj),
   updateOne: async (tableName, where, updates, options = {}) => (
     updateOne(tableName, where, updates, options)
   ),

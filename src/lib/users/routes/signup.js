@@ -10,9 +10,9 @@ const signup = async (req, res, next) => {
     res.status(201).json({ message: 'OK' });
   } catch (err) {
     error = err;
-  } finally {
-    next(error);
   }
+
+  next(error);
 };
 
 module.exports = signup;

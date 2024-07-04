@@ -12,8 +12,8 @@ const restRouter = (controller, {
   resultKey = 'result',
   resultsKey = 'results',
 
-  table = null,
-  validator = null,
+  table,
+  validator,
 } = {}) => {
   const {
     create,
@@ -21,22 +21,16 @@ const restRouter = (controller, {
     byOwner,
     update,
     remove,
-  } = controller
-    || restController(null, {
-      table,
-      userRequired,
-      validator,
-    });
+  } = controller || restController(null, { table, userRequired, validator });
 
   const post = async (req, res, next) => {
     let error = null;
 
     try {
       const { body, user } = req;
-      const id = await create(user, body);
-      const result = await byId(user, { id });
+      const created = await create(user, body);
 
-      res.status(201).json({ message: 'CREATED', [resultKey]: result });
+      res.status(201).json({ message: 'CREATED', [resultKey]: created });
     } catch (err) {
       error = err;
     } finally {

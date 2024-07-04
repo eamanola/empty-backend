@@ -14,7 +14,7 @@ const verifyByLink = require('./by-link');
 jest.mock('../../utils/send-email-verification-mail');
 
 describe('email verification', () => {
-  beforeEach(async () => {
+  afterEach(async () => {
     sendEmailVerificationMail.mockClear();
 
     await deleteUsers();

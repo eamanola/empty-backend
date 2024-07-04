@@ -3,11 +3,5 @@ services:
     build:
       target: test
 
-    environment:
-      # both empty is the same as `npm test`
-      # empty to use memory server
-      MONGO_TEST_URL: mongodb://${DB_USERNAME:-dbuser}:${DB_PASSWORD:-dbpassword}@db/${DB_NAME:-dbname}
-      # empty to use mock cache
-      REDIS_TEST_URL: redis://:${REDIS_PASSWORD:-supersecure}@redis
-
+    # run in band with external mongo
     command: npm test -- --runInBand

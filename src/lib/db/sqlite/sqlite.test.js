@@ -83,7 +83,6 @@ describe('lastID', () => {
     expect(firstId).toBe(secondId);
 
     await dropTable(table.name);
-
     await closeDB();
   });
 });

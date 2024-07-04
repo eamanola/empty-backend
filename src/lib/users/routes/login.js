@@ -10,9 +10,9 @@ const login = async (req, res, next) => {
     res.status(200).json({ emailVerified, message: 'OK', token });
   } catch (err) {
     error = err;
-  } finally {
-    next(error);
   }
+
+  next(error);
 };
 
 module.exports = login;

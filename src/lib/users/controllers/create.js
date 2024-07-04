@@ -28,8 +28,6 @@ const signup = async ({ email, password }) => {
   const { id: userId } = await insertOne({ email, passwordHash });
 
   await setUnverified(userId);
-
-  return userId;
 };
 
 module.exports = signup;

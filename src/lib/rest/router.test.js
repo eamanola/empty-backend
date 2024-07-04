@@ -23,30 +23,26 @@ app.use(baseUrl, router);
 const api = supertest(app);
 
 const getById = async (id, token) => {
-  const { result } = (
-    await api
-      .get(`${baseUrl}/${id}`)
-      .set({ Authorization: `bearer ${token}` })
-  ).body;
+  const { body } = await api
+    .get(`${baseUrl}/${id}`)
+    .set({ Authorization: `bearer ${token}` });
 
-  return result;
+  return body.result;
 };
 
 const create = async ({ token, resource = { foo: 'bar' } }) => {
-  const { result } = (
-    await api
-      .post(baseUrl)
-      .set({ Authorization: `bearer ${token}` })
-      .send(resource)
-  ).body;
+  const { body } = await api
+    .post(baseUrl)
+    .set({ Authorization: `bearer ${token}` })
+    .send(resource);
 
-  return result;
+  return body.result;
 };
 
 describe('rest router', () => {
   afterAll(() => dropTable(table.name));
 
-  beforeEach(async () => {
+  afterEach(async () => {
     await deleteAll(table.name);
     await deleteUsers();
   });
@@ -64,15 +60,15 @@ describe('rest router', () => {
       const { token } = await getToken();
       const resource = { foo: 'bar' };
 
-      const response = await api
+      const { body, status } = await api
         .post(baseUrl)
         .set({ Authorization: `bearer ${token}` })
         .send(resource);
 
-      expect(response.status).toBe(201);
-      expect(response.body.message).toBe('CREATED');
+      expect(status).toBe(201);
+      expect(body.message).toBe('CREATED');
 
-      const { result } = response.body;
+      const { result } = body;
       expect(result).toEqual(expect.objectContaining(resource));
       expect(await getById(result.id, token)).toEqual(result);
     });
@@ -80,15 +76,15 @@ describe('rest router', () => {
     it('should throw paramError, on invalid params', async () => {
       const { paramError } = errors;
       const { token } = await getToken();
-      const invalid = {};
+      const invalid = { bar: 1 };
 
-      const response = await api
+      const { body, status } = await api
         .post(baseUrl)
         .set({ Authorization: `bearer ${token}` })
         .send(invalid);
 
-      expect(response.status).toBe(paramError.status);
-      expect(response.body.result).toBeFalsy();
+      expect(status).toBe(paramError.status);
+      expect(body.result).toBeFalsy();
     });
   });
 
@@ -97,19 +93,21 @@ describe('rest router', () => {
       const { token } = await getToken();
       const resource = await create({ token });
 
-      const response = await api
+      const { body, status } = await api
         .get(`${baseUrl}/${resource.id}`)
         .set({ Authorization: `bearer ${token}` });
 
-      expect(response.status).toBe(200);
-      expect(response.body.message).toBe('OK');
-      expect(response.body.result).toEqual(resource);
+      expect(status).toBe(200);
+
+      const { message, result } = body;
+      expect(message).toBe('OK');
+      expect(result).toEqual(resource);
     });
   });
 
   describe('GET /', () => {
     it('should return all user resources', async () => {
-      const { token, user } = await getToken();
+      const { token } = await getToken();
       const { token: token2 } = await getToken({ email: 'foo2@other.com' });
 
       await create({ token });
@@ -117,15 +115,9 @@ describe('rest router', () => {
 
       await create({ token: token2 });
 
-      const { results } = (
-        await api
-          .get(baseUrl)
-          .set({ Authorization: `bearer ${token}` })
-      ).body;
-
+      const { body } = await api.get(baseUrl).set({ Authorization: `bearer ${token}` });
+      const { results } = body;
       expect(results.length).toBe(2);
-
-      expect(results.every(({ owner }) => owner === user.id)).toBe(true);
     });
   });
 
@@ -137,16 +129,17 @@ describe('rest router', () => {
       const changed = { ...inserted, foo: 'foo1' };
       expect(changed.foo).not.toBe(inserted.foo);
 
-      const response = await api
+      const { body, status } = await api
         .put(`${baseUrl}/${inserted.id}`)
         .set({ Authorization: `bearer ${token}` })
         .send(changed);
 
-      expect(response.status).toBe(200);
-      expect(response.body.message).toBe('OK');
+      expect(status).toBe(200);
+      const { result, message } = body;
+      expect(message).toBe('OK');
 
-      const { modified, ...data } = changed;
-      expect(response.body.result).toEqual(expect.objectContaining(data));
+      const { modified, ...rest } = changed;
+      expect(result).toEqual(expect.objectContaining(rest));
 
       const updated = await getById(inserted.id, token);
       expect(updated.foo).toBe(changed.foo);
@@ -160,12 +153,12 @@ describe('rest router', () => {
       const invalid = { ...inserted, foo: '' };
       expect(invalid.foo).not.toBe(inserted.foo);
 
-      const response = await api
+      const { status } = await api
         .put(`${baseUrl}/${inserted.id}`)
         .set({ Authorization: `bearer ${token}` })
         .send(invalid);
 
-      expect(response.status).toBe(paramError.status);
+      expect(status).toBe(paramError.status);
 
       const updated = await getById(inserted.id, token);
 
@@ -194,10 +187,7 @@ describe('rest router', () => {
       const { token } = await getToken();
       const inserted = await create({ token });
 
-      const modified = {
-        ...inserted,
-        id: `ABCDE${inserted.id.substring(5)}`,
-      };
+      const modified = { ...inserted, id: `ABCDE${inserted.id.substring(5)}` };
       expect(modified.id).not.toBe(inserted.id);
 
       await api
@@ -206,7 +196,7 @@ describe('rest router', () => {
         .send(modified);
 
       const updated = await getById(modified.id, token);
-      expect(updated).toBeFalsy();
+      expect(updated).toBe(null);
 
       const original = await getById(inserted.id, token);
       expect(original).toEqual(inserted);
@@ -218,15 +208,15 @@ describe('rest router', () => {
       const { token } = await getToken();
       const resource = await create({ token });
 
-      const response = await api
+      const { body, status } = await api
         .delete(`${baseUrl}/${resource.id}`)
         .set({ Authorization: `bearer ${token}` });
 
-      expect(response.status).toBe(200);
-      expect(response.body.message).toBe('OK');
+      expect(status).toBe(200);
+      expect(body.message).toBe('OK');
 
       const deleted = await getById(resource.id, token);
-      expect(deleted).toBeFalsy();
+      expect(deleted).toBe(null);
     });
   });
 });

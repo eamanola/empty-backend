@@ -49,23 +49,29 @@ const invalidateCache = async ( // req, res
   }
 };
 
+const fromCache = async ({ user, originalUrl }) => { // req
+  const key = cacheKey({ url: originalUrl, user });
+  const cached = await getItem(key);
+
+  return cached;
+};
+
 const cache = async (req, res, next) => {
   let error = null;
 
   try {
     const method = req.method.toUpperCase();
+
     if (method === 'GET') {
-      const { user, originalUrl } = req;
-      const key = cacheKey({ url: originalUrl, user });
-      const cached = await getItem(key);
+      const cached = await fromCache(req);
+
       if (cached) {
         res.status(cached.statusCode).json(cached.body);
+
         logger.info('from cache');
-        // TODO:
-        return;
-      } // else {
-      onFinish(req, res, cacheResult);
-      // }
+      } else {
+        onFinish(req, res, cacheResult);
+      }
     } else if (['POST', 'PUT', 'DELETE'].includes(method)) {
       onFinish(req, res, invalidateCache);
     }

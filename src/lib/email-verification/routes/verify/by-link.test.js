@@ -18,7 +18,7 @@ jest.mock('../../utils/send-email-verification-mail');
 const api = supertest(app);
 
 describe('by-link', () => {
-  beforeEach(async () => {
+  afterEach(async () => {
     sendEmailVerificationMail.mockClear();
 
     await deleteUsers();

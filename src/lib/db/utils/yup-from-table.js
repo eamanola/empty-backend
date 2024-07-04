@@ -14,13 +14,7 @@ const yupFromTable = async ({ columns, name: tableName }) => {
   return object().shape(
     columns.reduce((
       acc,
-      {
-        // default,
-        name,
-        required,
-        type,
-        // unique,
-      },
+      { name, required, type },
     ) => {
       let validator;
 
@@ -39,6 +33,10 @@ const yupFromTable = async ({ columns, name: tableName }) => {
 
         case 'date':
           validator = date();
+          break;
+
+        case 'object':
+          validator = object();
           break;
 
         default:

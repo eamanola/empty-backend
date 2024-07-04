@@ -1,4 +1,4 @@
-const { initCache, connectCache, closeCache } = require('../cache');
+const { initCache, connectCache, closeCache } = require('.');
 
 beforeAll(async () => {
   await initCache();

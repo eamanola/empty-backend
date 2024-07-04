@@ -7,7 +7,7 @@ const resourceSchema = object({
 
 const userResourceSchema = object({
   owner: string().required(),
-}).noUnknown().strict();
+}).noUnknown().strict().concat(resourceSchema);
 
 module.exports = {
   resourceSchema,

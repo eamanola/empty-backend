@@ -19,7 +19,7 @@ const request = async ({ email }, { byCode = null, byLink = null }) => {
 
   let code;
   try {
-    code = await setUnverified(user.id, code);
+    code = await setUnverified(user.id);
   } catch (err) {
     logger.info(err);
     throw err;

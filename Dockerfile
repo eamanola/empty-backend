@@ -5,8 +5,8 @@ WORKDIR /app
 COPY package.json package-lock.json .
 RUN HUSKY=0 npm install
 
-# prod specific
-# cache memory-server-binaries
+# test specific
+# cache memory-server-binaries before src/
 FROM base AS prod-base
 COPY ./bin/download-memory-server-binaries.js .
 ENV MONGOMS_VERSION=7.0.11

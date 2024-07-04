@@ -21,14 +21,20 @@ const restController = (
   } = model || restModel(table, { userRequired, validator });
 
   const addOwner = (user, obj) => (userRequired ? { ...obj, owner: user.id } : { ...obj });
+  const removeOwner = (obj) => {
+    if (!obj) return obj;
 
-  const byId = async (user, { id }) => findOne(addOwner(user, { id }));
+    const { owner, ...rest } = obj;
+    return rest;
+  };
+
+  const byId = async (user, { id }) => removeOwner(await findOne(addOwner(user, { id })));
 
   const create = async (user, newResource) => {
     try {
-      const { id } = await insertOne(addOwner(user, newResource));
+      const row = await insertOne(addOwner(user, newResource));
 
-      return id;
+      return removeOwner(row);
     } catch (err) {
       if (err.name === 'ValidationError') {
         logger.info(err.message);
@@ -39,7 +45,7 @@ const restController = (
     }
   };
 
-  const byOwner = async (user) => find({ owner: user.id });
+  const byOwner = async (user) => (await find({ owner: user.id }) || []).map(removeOwner);
 
   const update = async (user, resource) => {
     try {

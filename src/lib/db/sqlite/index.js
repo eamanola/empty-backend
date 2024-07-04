@@ -1,5 +1,7 @@
 const sqlite3 = require('sqlite3');
 
+const { fromDB, toDB } = require('./utils/type-conversion');
+
 let client;
 let filename = '';
 
@@ -19,6 +21,7 @@ const mapType = (type) => {
       break;
 
     case 'date':
+    case 'object':
       mapped = 'TEXT';
       break;
 
@@ -57,9 +60,9 @@ const createSql = ({ columns, name: tableName }) => {
   return sql;
 };
 
-const createIndexesSql = (tableName, { columns, name, unique }) => (
+const createIndexSql = (tableName, { columns, name, unique }) => (
   `CREATE ${unique ? 'UNIQUE' : ''} INDEX IF NOT EXISTS "${name}"
-  ON ${tableName} (${columns.join(', ')});`
+  ON "${tableName}" (${columns.join(', ')});`
 );
 
 const whereSql = (where) => {
@@ -112,6 +115,7 @@ const get = async (sql, params = []) => (
 
 const run = async (sql, params = []) => (
   new Promise((resolve, reject) => {
+    // function to receive this
     client.run(sql, params, function callback(err) {
       if (err) reject(err);
       resolve(this);
@@ -150,7 +154,7 @@ const count = async (tableName, where = {}) => {
 };
 
 const createIndexes = ({ indexes = [], name: tableName }) => Promise.all(
-  indexes.map((index) => run(createIndexesSql(tableName, index))),
+  indexes.map((index) => run(createIndexSql(tableName, index))),
 );
 
 const createTable = async (table) => {
@@ -241,9 +245,11 @@ module.exports = {
   dropTable,
   find,
   findOne,
+  fromDB,
   hasClient: () => !!client,
   initDB,
   insertOne,
   replaceOne,
+  toDB,
   updateOne,
 };

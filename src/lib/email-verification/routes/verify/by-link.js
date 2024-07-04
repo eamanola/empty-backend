@@ -5,6 +5,7 @@ const verifyByLink = async (req, res, next) => {
     const { token } = req.query;
 
     const redirectTo = await controller(token);
+
     res.redirect(301, redirectTo);
   } catch (err) {
     next(err);

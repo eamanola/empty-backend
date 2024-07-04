@@ -18,7 +18,7 @@ const request = require('./request');
 jest.mock('../utils/send-email-verification-mail');
 
 describe('email verification', () => {
-  beforeEach(async () => {
+  afterEach(async () => {
     sendEmailVerificationMail.mockClear();
 
     await deleteUsers();
@@ -50,12 +50,14 @@ describe('email verification', () => {
 
     it('should update emailVerificationCode', async () => {
       const user = await createUser();
+      expect(user.emailVerificationCode).toBeTruthy();
 
       await request(user, { });
 
       const updatedUser = await findUser({ id: user.id });
-      expect(user.emailVerificationCode).not.toBe(updatedUser.emailVerificationCode);
       expect(updatedUser.emailVerificationCode).toBeTruthy();
+
+      expect(user.emailVerificationCode).not.toBe(updatedUser.emailVerificationCode);
     });
 
     it('should send verification mail', async () => {
@@ -68,7 +70,7 @@ describe('email verification', () => {
     });
 
     describe('byCode', () => {
-      it('should include code and byLink, if byCode provided', async () => {
+      it('should include byCode and code, if byCode provided', async () => {
         const user = await createUser();
         const byCode = 'http://example.com/form-to-enter-your-code';
 
@@ -76,25 +78,25 @@ describe('email verification', () => {
 
         const updatedUser = await findUser({ id: user.id });
 
-        expect(sendEmailVerificationMail).toHaveBeenCalledWith(expect.objectContaining({
-          byCode,
-          code: updatedUser.emailVerificationCode,
-        }));
+        const { byCode: sentByCode, code } = sendEmailVerificationMail.mock.calls[0][0];
+        expect(sentByCode).toBe(byCode);
+        expect(code).toBe(updatedUser.emailVerificationCode);
       });
 
-      it('code and byLink should be falsy, if byCode not provided', async () => {
+      it('byCode and code should be falsy, if byCode not provided', async () => {
         const user = await createUser();
+        const byCode = null;
 
-        await request(user, { byCode: null });
+        await request(user, { byCode });
 
-        const { code, byCode } = sendEmailVerificationMail.mock.calls[0][0];
+        const { byCode: sentByCode, code } = sendEmailVerificationMail.mock.calls[0][0];
+        expect(sentByCode).toBe(null);
         expect(code).toBe(null);
-        expect(byCode).toBe(null);
       });
     });
 
     describe('byLink', () => {
-      it('should include token, if byLink provided', async () => {
+      it('should include token, if byLink is provided', async () => {
         const user = await createUser();
         const onSuccess = 'http://example.com/your-email-has-been-verified';
         const onFail = 'http://example.com/something-went-wrong';

@@ -2,10 +2,7 @@ const cache = require('.');
 
 describe('cache test', () => {
   const TEST_KEY = 'foo';
-  afterEach(async () => {
-    await cache.removeItem(TEST_KEY);
-    expect(await cache.getItem(TEST_KEY)).toBeFalsy();
-  });
+  afterEach(() => cache.removeItem(TEST_KEY));
 
   it('should set and get item', async () => {
     const obj = { bar: 1 };
@@ -39,15 +36,15 @@ describe('cache test', () => {
 
   it('should remove list of items', async () => {
     const keys = ['foo', 'bar'];
-    await cache.setItem(keys[0], 'foo');
-    await cache.setItem(keys[1], 'bar');
+    const value = 'val';
 
-    expect(await cache.getItem(keys[0])).toBe('foo');
-    expect(await cache.getItem(keys[1])).toBe('bar');
+    await Promise.all(keys.map((key) => cache.setItem(key, value)));
+    (await Promise.all(keys.map((key) => cache.getItem(key))))
+      .forEach((val) => expect(val).toBe(value));
 
     await cache.removeItem(keys);
 
-    expect(await cache.getItem(keys[0])).toBeFalsy();
-    expect(await cache.getItem(keys[1])).toBeFalsy();
+    (await Promise.all(keys.map((key) => cache.getItem(key))))
+      .forEach((val) => expect(val).toBeFalsy());
   });
 });

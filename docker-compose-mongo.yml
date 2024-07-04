@@ -1,5 +1,16 @@
 services:
-  db:
+  app:
+    depends_on:
+      mongo:
+        condition: service_healthy
+
+    environment:
+      MONGO_URL: mongodb://${DB_USERNAME:-dbuser}:${DB_PASSWORD:-dbpassword}@mongo/${DB_NAME:-dbname}
+
+      # empty to use memory server for testing
+      MONGO_TEST_URL: mongodb://${DB_USERNAME:-dbuser}:${DB_PASSWORD:-dbpassword}@mongo/${DB_NAME:-dbname}
+
+  mongo:
     image: mongodb/mongodb-community-server:latest # freeze for prod
 
     # restart: unless-stopped
@@ -19,6 +30,6 @@ services:
       interval: 5s
       timeout: 5s
       retries: 10
-      start_period: 15s
+      start_period: 0s
 
     # command: --quiet

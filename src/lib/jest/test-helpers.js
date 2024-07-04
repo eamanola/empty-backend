@@ -8,9 +8,9 @@ const countUsers = (where) => count(userModel.tableName, where);
 const findUser = async (where) => userModel.findOne(where);
 
 const createUser = async ({ email = 'foo@example.com', password = '123' } = {}) => {
-  const id = await userControllers.create({ email, password });
+  await userControllers.create({ email, password });
 
-  return findUser({ id });
+  return findUser({ email });
 };
 
 const deleteUsers = () => deleteAll(userModel.tableName);
@@ -31,6 +31,7 @@ const validTableSchema = () => ({
   columns: [
     { name: 'bool', type: 'bool' },
     { name: 'date', type: 'date' },
+    { name: 'object', type: 'object' },
     { name: 'number', type: 'number' },
     { name: 'required', required: true, type: 'string' },
     { name: 'string', type: 'string' },

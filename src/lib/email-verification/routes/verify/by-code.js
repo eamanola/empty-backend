@@ -6,6 +6,7 @@ const verifyByCode = async (req, res, next) => {
     const { code } = req.body;
 
     await controller(user, Number(code));
+
     res.status(200).json({ message: 'OK' });
   } catch (err) {
     next(err);
