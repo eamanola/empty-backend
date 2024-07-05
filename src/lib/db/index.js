@@ -1,4 +1,11 @@
+const { DB_ENGINE } = require('../../config');
 const { tableSchema } = require('./validators');
+
+// for production: hardcode to reduce build size & deps
+const mongo = require('./mongo');
+const sqlite = require('./sqlite');
+
+const USE_MONGO = DB_ENGINE === 'mongo';
 
 const {
   closeDB,
@@ -17,7 +24,7 @@ const {
   replaceOne,
   toDB,
   updateOne,
-} = require('./sqlite');
+} = USE_MONGO ? mongo : sqlite;
 
 const callbacks = [];
 
@@ -44,8 +51,8 @@ module.exports = {
   dropTable: (tableName) => dropTable(tableName),
   find: async (tableName, where = {}, { limit, offset } = {}) => (
     find(tableName, where, {
-      limit: /^-?\d+$/u.test(limit) ? limit : undefined,
-      offset: /^-?\d+$/u.test(offset) ? offset : undefined,
+      limit: /^\d+$/u.test(limit) ? limit : undefined,
+      offset: /^\d+$/u.test(offset) ? offset : undefined,
     })
   ),
   findOne: async (tableName, where) => findOne(tableName, where),
