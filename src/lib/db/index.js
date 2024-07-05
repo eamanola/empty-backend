@@ -1,5 +1,3 @@
-const { NODE_ENV } = require('../../config');
-
 const { tableSchema } = require('./validators');
 
 const {
@@ -19,7 +17,7 @@ const {
   replaceOne,
   toDB,
   updateOne,
-} = require('./mongo');
+} = require('./sqlite');
 
 const callbacks = [];
 
@@ -31,6 +29,7 @@ module.exports = {
 
     callbacks.length = 0;
   },
+  count: (tableName, where = {}) => count(tableName, where),
   createTable: async (table) => {
     await tableSchema.validate(table);
 
@@ -40,9 +39,14 @@ module.exports = {
       callbacks.push(() => createTable(table));
     }
   },
+  deleteAll: (tableName, where = {}) => deleteAll(tableName, where),
   deleteOne: async (tableName, where = {}) => deleteOne(tableName, where),
+  dropTable: (tableName) => dropTable(tableName),
   find: async (tableName, where = {}, { limit, offset } = {}) => (
-    find(tableName, where, { limit, offset })
+    find(tableName, where, {
+      limit: /^-?\d+$/u.test(limit) ? limit : undefined,
+      offset: /^-?\d+$/u.test(offset) ? offset : undefined,
+    })
   ),
   findOne: async (tableName, where) => findOne(tableName, where),
   fromDB: (row, columns) => fromDB(row, columns),
@@ -55,9 +59,3 @@ module.exports = {
     updateOne(tableName, where, updates, options)
   ),
 };
-
-if (NODE_ENV === 'test') {
-  module.exports.count = (tableName, where = {}) => count(tableName, where);
-  module.exports.deleteAll = (tableName, where = {}) => deleteAll(tableName, where);
-  module.exports.dropTable = (tableName) => dropTable(tableName);
-}

@@ -1,5 +1,4 @@
 const TerserPlugin = require('terser-webpack-plugin');
-const webpack = require('webpack');
 const nodeExternals = require('webpack-node-externals');
 
 const entry = {
@@ -25,38 +24,22 @@ const aModule = {
   ],
 };
 
-const plugins = [
-  new webpack.NormalModuleReplacementPlugin(/^node:/u, (resource) => {
-    switch (resource.request) {
-      case 'node:crypto':
-      case 'node:dns/promises':
-      case 'node:os':
-        // eslint-disable-next-line no-param-reassign
-        resource.request = resource.request.replace(/^node:/u, '');
-        break;
-
-      default:
-        throw new Error(`${resource.request} not mapped in webpack.config`);
-    }
-  }),
-];
+const plugins = [];
 
 const optimization = {
   minimizer: [new TerserPlugin()],
+  minimize: true,
 };
 
-const resolve = {
-  fallback: {
-    'crypto': false,
-    'dns/promises': false,
-    'os': false,
-  },
-};
+const resolve = {};
 
+const experiments = {};
 
 module.exports = {
   entry,
+  experiments,
   externals: [nodeExternals()],
+  externalsPresets: { node: true },
   mode: 'production',
   module: aModule,
   optimization,

@@ -187,9 +187,9 @@ const deleteOne = async (tableName, where) => {
 const find = async (tableName, where, { limit = -1, offset = -1 }) => {
   const { params, sql: wheresql } = whereSql(where);
 
-  const sql = `SELECT * FROM "${tableName}" ${wheresql} LIMIT ${limit} OFFSET ${offset}`;
+  const sql = `SELECT * FROM "${tableName}" ${wheresql} LIMIT ? OFFSET ?`;
 
-  return all(sql, params);
+  return all(sql, [...params, limit, offset]);
 };
 
 const findOne = async (tableName, where) => {

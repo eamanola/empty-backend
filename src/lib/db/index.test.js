@@ -142,39 +142,57 @@ describe('db test', () => {
       });
     });
 
-    it('should accept optional limit', async () => {
-      const entry = { foo: 1 };
-      await insertOne(tableName, entry);
-      await insertOne(tableName, entry);
-      await insertOne(tableName, entry);
+    describe('optional params', () => {
+      it('should accept optional limit', async () => {
+        const entry = { foo: 1 };
+        await insertOne(tableName, entry);
+        await insertOne(tableName, entry);
+        await insertOne(tableName, entry);
 
-      const entries = await find(tableName, entry, { limit: 2 });
+        const entries = await find(tableName, entry, { limit: 2 });
 
-      expect(entries.length).toBe(2);
-    });
+        expect(entries.length).toBe(2);
+      });
 
-    it('should accept optional offset', async () => {
-      const entry = { foo: 1 };
-      await insertOne(tableName, { ...entry, bar: 1 });
-      await insertOne(tableName, { ...entry, bar: 2 });
-      await insertOne(tableName, { ...entry, bar: 3 });
+      it('should accept optional offset', async () => {
+        const entry = { foo: 1 };
+        await insertOne(tableName, { ...entry, bar: 1 });
+        await insertOne(tableName, { ...entry, bar: 2 });
+        await insertOne(tableName, { ...entry, bar: 3 });
 
-      const entries = await find(tableName, entry, { offset: 2 });
+        const entries = await find(tableName, entry, { offset: 2 });
 
-      expect(entries.length).toBe(1);
-      expect(entries[0]).toEqual(expect.objectContaining({ ...entry, bar: 3 }));
-    });
+        expect(entries.length).toBe(1);
+        expect(entries[0]).toEqual(expect.objectContaining({ ...entry, bar: 3 }));
+      });
 
-    it('and a combo of', async () => {
-      const entry = { foo: 1 };
-      await insertOne(tableName, { ...entry, bar: 1 });
-      await insertOne(tableName, { ...entry, bar: 2 });
-      await insertOne(tableName, { ...entry, bar: 3 });
+      it('and a combo of', async () => {
+        const entry = { foo: 1 };
+        await insertOne(tableName, { ...entry, bar: 1 });
+        await insertOne(tableName, { ...entry, bar: 2 });
+        await insertOne(tableName, { ...entry, bar: 3 });
 
-      const entries = await find(tableName, entry, { limit: 1, offset: 1 });
+        const entries = await find(tableName, entry, { limit: 1, offset: 1 });
 
-      expect(entries.length).toBe(1);
-      expect(entries[0]).toEqual(expect.objectContaining({ ...entry, bar: 2 }));
+        expect(entries.length).toBe(1);
+        expect(entries[0]).toEqual(expect.objectContaining({ ...entry, bar: 2 }));
+      });
+
+      it('should ignore limit and offset, if invalid', async () => {
+        const entry = { foo: 1 };
+        await insertOne(tableName, { ...entry, bar: 1 });
+        await insertOne(tableName, { ...entry, bar: 2 });
+        await insertOne(tableName, { ...entry, bar: 3 });
+
+        expect((await find(tableName, entry, { limit: 'foo' })).length).toBe(3);
+        expect((await find(tableName, entry, { offset: 'foo' })).length).toBe(3);
+        expect((await find(tableName, entry, { limit: null })).length).toBe(3);
+        expect((await find(tableName, entry, { offset: null })).length).toBe(3);
+        expect((await find(tableName, entry, { limit: undefined })).length).toBe(3);
+        expect((await find(tableName, entry, { offset: undefined })).length).toBe(3);
+        expect((await find(tableName, entry, { limit: -1 })).length).toBe(3);
+        expect((await find(tableName, entry, { offset: -1 })).length).toBe(3);
+      });
     });
   });
 
