@@ -13,7 +13,8 @@ ENV MONGOMS_VERSION=7.0.11
 ENV RUNTIME_DOWNLOAD=true
 RUN node ./download-memory-server-binaries.js
 # dev uses src as volumes
-COPY src src
+COPY src/config.js src/config.js
+COPY src/lib src/lib
 
 # lint
 FROM prod-base AS lint

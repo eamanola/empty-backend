@@ -1,20 +1,15 @@
-// const usersRouter = require('./users/router');
-// const emailVerificationRouter = require('./email-verification/router');
-
-// const errors = require('./errors');
-// const { errorHandler } = require('./middlewares');
-// const rest = require('./rest');
 const app = require('./app');
 const cache = require('./cache');
 const db = require('./db');
+const errorHandler = require('./middlewares/error-handler');
+const errors = require('./errors');
 
 module.exports = {
   app,
   cache,
   db,
-  // emailVerificationRouter,
-  // errorHandler,
-  // errors,
-  // rest,
-  // usersRouter,
+  errors,
+  middlewares: {
+    errorHandler,
+  },
 };

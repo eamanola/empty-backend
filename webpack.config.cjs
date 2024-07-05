@@ -3,11 +3,12 @@ const webpack = require('webpack');
 const nodeExternals = require('webpack-node-externals');
 
 const entry = {
-  index: ['./src/index.js'],
+  index: ['./src/lib/index.js'],
 };
 
 const output = {
   filename: 'index.bundle.js',
+  library: { type: 'commonjs2' },
   path: `${__dirname}/dist`,
 };
 
