@@ -2,13 +2,12 @@ const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
 
-const {
-  usersRouter,
-  emailVerificationRouter,
-  errorHandler,
-  errors,
-} = require('./lib');
-const { NODE_ENV } = require('./config');
+const usersRouter = require('./users/router');
+const emailVerificationRouter = require('./email-verification/router');
+const errorHandler = require('./middlewares/error-handler');
+const errors = require('./errors');
+
+const { NODE_ENV } = require('../config');
 
 const app = express();
 

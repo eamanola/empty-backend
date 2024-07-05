@@ -8,7 +8,7 @@ const errors = require('../errors');
 
 const restRouter = require('./router');
 
-const app = require('../../app');
+const { app } = require('..');
 
 const columns = [{ name: 'foo', required: true, type: 'string' }];
 

@@ -4,7 +4,7 @@ const { createUser, deleteUsers, findUser } = require('../../jest/test-helpers')
 
 const sendEmailVerificationMail = require('../utils/send-email-verification-mail');
 
-const app = require('../../../app');
+const { app } = require('../..');
 
 jest.mock('../utils/send-email-verification-mail');
 

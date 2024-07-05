@@ -1,6 +1,6 @@
 const { initCache, connectCache, closeCache } = require('./lib/cache');
 const { initDB, connectDB, closeDB } = require('./lib/db');
-const app = require('./app');
+const { app } = require('./lib');
 const { PORT, REDIS_URL, MONGO_URL } = require('./config');
 const logger = require('./lib/utils/logger');
 
