@@ -1,6 +1,6 @@
-const { userNotFoundError } = require('../../users/errors');
+// const { userNotFoundError } = require('../../users/errors');
 const { emailVerifiedError } = require('../errors');
-const { findOne } = require('../../users/model');
+const { findOne } = require('../model');
 const sendEmailVerificationMail = require('../utils/send-email-verification-mail');
 const { encode: encodeEmailVerificationToken } = require('../../utils/token');
 const { SECRET } = require('../../../config');
@@ -8,12 +8,13 @@ const logger = require('../../utils/logger');
 const { setUnverified } = require('./set-status');
 
 const request = async (email, { byCode = null, byLink = null }) => {
-  const user = await findOne({ email });
-  if (!user) {
-    throw userNotFoundError;
-  }
+  // if (!user) {
+  //   throw userNotFoundError;
+  // }
+  const oldRequest = await findOne(email);
 
-  if (user.emailVerified) {
+  const alreadyVerified = oldRequest !== null && oldRequest.code === null;
+  if (alreadyVerified) {
     throw emailVerifiedError;
   }
 
@@ -32,7 +33,7 @@ const request = async (email, { byCode = null, byLink = null }) => {
   sendEmailVerificationMail({
     byCode,
     code: byCode ? code : null,
-    to: user.email,
+    to: email,
     token,
   });
 };

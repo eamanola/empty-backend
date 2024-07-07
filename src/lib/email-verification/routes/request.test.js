@@ -1,10 +1,11 @@
 const supertest = require('supertest');
 
-const { createUser, deleteUsers, findUser } = require('../../jest/test-helpers');
+const { createUser, deleteUsers } = require('../../jest/test-helpers');
 
 const sendEmailVerificationMail = require('../utils/send-email-verification-mail');
 
 const { app } = require('../..');
+const { findOne } = require('../model');
 
 jest.mock('../utils/send-email-verification-mail');
 
@@ -24,11 +25,11 @@ describe('request verification', () => {
     await api.post('/email-verification')
       .send({ byCode, byLink, email: user.email });
 
-    const updatedUser = await findUser({ email: user.email });
+    const { code } = await findOne(user.email);
 
     expect(sendEmailVerificationMail).toHaveBeenCalledWith(expect.objectContaining({
       byCode,
-      code: updatedUser.emailVerificationCode,
+      code,
       to: user.email,
       token: expect.any(String),
     }));

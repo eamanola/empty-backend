@@ -5,7 +5,6 @@ const columns = [
     type: 'string',
     unique: true,
   },
-  { name: 'emailVerificationCode', type: 'number' },
   {
     name: 'id',
     required: true,

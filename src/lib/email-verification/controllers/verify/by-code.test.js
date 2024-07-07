@@ -1,10 +1,15 @@
-const { createUser, deleteUsers, findUser } = require('../../../jest/test-helpers');
+const {
+  createUser,
+  deleteUsers,
+  isEmailVerified,
+} = require('../../../jest/test-helpers');
 
 const { request } = require('..');
 
 const emailVerificationErrors = require('../../errors');
 
 const verifyByCode = require('./by-code');
+const { findOne } = require('../../model');
 
 jest.mock('../../utils/send-email-verification-mail');
 
@@ -16,14 +21,12 @@ describe('email verification', () => {
       const user = await createUser();
       await request(user.email, { });
 
-      const requestingUser = await findUser({ email: user.email });
-      expect(requestingUser.emailVerified).toBe(false);
-      const { emailVerificationCode: code } = requestingUser;
+      const { code } = await findOne(user.email);
+      expect(code).toEqual(expect.any(Number));
 
-      await verifyByCode(requestingUser, code);
+      await verifyByCode(user.email, code);
 
-      const verifiedUser = await findUser({ email: user.email });
-      expect(verifiedUser.emailVerified).toBe(true);
+      expect(await isEmailVerified(user.email)).toBe(true);
     });
 
     it('should throw invalidEmailVerificationCodeError, on mismatch', async () => {
@@ -32,11 +35,12 @@ describe('email verification', () => {
       await request(user.email, { });
 
       const fakeCode = 1000;
-      const requestingUser = await findUser({ email: user.email });
-      expect(fakeCode).not.toBe(requestingUser.emailVerificationCode);
+      const { code } = await findOne(user.email);
+      expect(code).toEqual(expect.any(Number));
+      expect(fakeCode).not.toBe(code);
 
       try {
-        await verifyByCode(requestingUser, fakeCode);
+        await verifyByCode(user.email, fakeCode);
         expect('unreachable').toBe(true);
       } catch ({ name }) {
         expect(name).toBe(invalidEmailVerificationCodeError.name);

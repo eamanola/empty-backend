@@ -1,17 +1,21 @@
+const { deleteAll } = require('automata-db');
+
 const {
   createUser,
   deleteUsers,
-  findUser,
   setEmailStatus,
 } = require('../../jest/test-helpers');
 
-const userErrors = require('../../users/errors');
+// const userErrors = require('../../users/errors');
 const emailVerificationErrors = require('../errors');
 
 const { decode: decodeEmailVerificationToken } = require('../../utils/token');
 const { SECRET } = require('../../../config');
 
 const sendEmailVerificationMail = require('../utils/send-email-verification-mail');
+
+const { findOne } = require('../model');
+const { name: tableName } = require('../model/table');
 
 const request = require('./request');
 
@@ -22,19 +26,22 @@ describe('email verification', () => {
     sendEmailVerificationMail.mockClear();
 
     await deleteUsers();
+    await deleteAll(tableName);
   });
 
   describe('request', () => {
-    it('should throw user not found', async () => {
-      const { userNotFoundError } = userErrors;
-      try {
-        const email = 'fake';
-        await request(email, { });
-        expect('unreachable').toBe(true);
-      } catch ({ name }) {
-        expect(name).toBe(userNotFoundError.name);
-      }
-    });
+    // /* not email-verifications responsibility anymore      */
+    // /* downside, might end up with a lot of fake emails :/ */
+    // it('should throw user not found', async () => {
+    //   const { userNotFoundError } = userErrors;
+    //   try {
+    //     const email = 'fake';
+    //     await request(email, { });
+    //     expect('unreachable').toBe(true);
+    //   } catch ({ name }) {
+    //     expect(name).toBe(userNotFoundError.name);
+    //   }
+    // });
 
     it('should throw already verified error', async () => {
       const { emailVerifiedError } = emailVerificationErrors;
@@ -49,16 +56,17 @@ describe('email verification', () => {
       }
     });
 
-    it('should update emailVerificationCode', async () => {
+    it('should update code', async () => {
       const user = await createUser();
-      expect(user.emailVerificationCode).toBeTruthy();
+      const { code: oldCode } = await findOne(user.email);
+      expect(oldCode).toEqual(expect.any(Number));
 
       await request(user.email, { });
 
-      const updatedUser = await findUser({ email: user.email });
-      expect(updatedUser.emailVerificationCode).toBeTruthy();
+      const { code: updatedCode } = await findOne(user.email);
+      expect(updatedCode).toEqual(expect.any(Number));
 
-      expect(user.emailVerificationCode).not.toBe(updatedUser.emailVerificationCode);
+      expect(oldCode).not.toBe(updatedCode);
     });
 
     it('should send verification mail', async () => {
@@ -77,11 +85,11 @@ describe('email verification', () => {
 
         await request(user.email, { byCode });
 
-        const updatedUser = await findUser({ email: user.email });
+        const { code: updatedCode } = await findOne(user.email);
 
         const { byCode: sentByCode, code } = sendEmailVerificationMail.mock.calls[0][0];
         expect(sentByCode).toBe(byCode);
-        expect(code).toBe(updatedUser.emailVerificationCode);
+        expect(code).toBe(updatedCode);
       });
 
       it('byCode and code should be falsy, if byCode not provided', async () => {
@@ -105,7 +113,7 @@ describe('email verification', () => {
 
         await request(user.email, { byLink });
 
-        const updatedUser = await findUser({ email: user.email });
+        const { code: updatedCode } = await findOne(user.email);
 
         const { token } = sendEmailVerificationMail.mock.calls[0][0];
         expect(token).toBeTruthy();
@@ -118,7 +126,7 @@ describe('email verification', () => {
         expect(decodedToken.byLink).toEqual(byLink);
 
         expect(decodedToken.code).toBeTruthy();
-        expect(decodedToken.code).toBe(updatedUser.emailVerificationCode);
+        expect(decodedToken.code).toBe(updatedCode);
       });
 
       it('token should be falsy, if byLink not provided', async () => {

@@ -1,8 +1,8 @@
 const {
   createUser,
   deleteUsers,
-  findUser,
   setEmailStatus,
+  isEmailVerified,
 } = require('../../../jest/test-helpers');
 
 const { request } = require('..');
@@ -33,8 +33,7 @@ describe('email verification', () => {
       const redirectUrl = await verifyByLink(token);
       expect(redirectUrl).toBe(byLink.onSuccess);
 
-      const verifiedUser = await findUser({ email: user.email });
-      expect(verifiedUser.emailVerified).toBe(true);
+      expect(await isEmailVerified(user.email)).toBe(true);
     });
 
     it('should redirect to onFail, if fail', async () => {
@@ -52,8 +51,7 @@ describe('email verification', () => {
       const redirectUrl = await verifyByLink(token);
       expect(redirectUrl).toBe(byLink.onFail);
 
-      const unVerifiedUser = await findUser({ email: user.email });
-      expect(unVerifiedUser.emailVerified).toBe(false);
+      expect(await isEmailVerified(user.email)).toBe(false);
     });
   });
 });

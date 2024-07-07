@@ -7,6 +7,7 @@ const { SECRET } = require('../../../config');
 const { encode: encodeToken } = require('../../utils/token');
 const { findOne } = require('../model');
 const { getSession } = require('./session');
+const { isVerified } = require('../../email-verification/controllers/set-status');
 
 const loginSchema = require('../validators/login');
 
@@ -26,7 +27,8 @@ const login = async (
     throw userNotFoundError;
   }
 
-  if (REQUIRE_VERIFIED_EMAIL && user.emailVerified !== true) {
+  const emailVerified = await isVerified(email);
+  if (REQUIRE_VERIFIED_EMAIL && emailVerified !== true) {
     throw emailNotVerifiedError;
   }
 
@@ -36,7 +38,7 @@ const login = async (
 
   const token = encodeToken({ session: getSession(user), userId: user.id }, SECRET);
 
-  return { emailVerified: user.emailVerified, token };
+  return { emailVerified, token };
 };
 
 module.exports = login;

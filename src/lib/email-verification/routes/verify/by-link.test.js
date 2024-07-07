@@ -2,9 +2,9 @@ const supertest = require('supertest');
 
 const {
   createUser,
-  findUser,
   deleteUsers,
   setEmailStatus,
+  isEmailVerified,
 } = require('../../../jest/test-helpers');
 
 const { request } = require('../../controllers');
@@ -26,7 +26,7 @@ describe('by-link', () => {
 
   it('should verify email', async () => {
     const user = await createUser();
-    expect(user.emailVerified).toBe(false);
+    expect(await isEmailVerified(user.email)).toBe(false);
 
     const onSuccess = 'http://example.com/your-email-has-been-verified';
     const onFail = 'http://example.com/something-went-wrong';
@@ -37,8 +37,7 @@ describe('by-link', () => {
 
     await api.get(`/email-verification?token=${token}`);
 
-    const updatedUser = await findUser({ email: user.email });
-    expect(updatedUser.emailVerified).toBe(true);
+    expect(await isEmailVerified(user.email)).toBe(true);
   });
 
   it('should redirect to onSuccess', async () => {

@@ -1,4 +1,9 @@
-const { countUsers, deleteUsers, setEmailStatus } = require('../../jest/test-helpers');
+const {
+  countUsers,
+  deleteUsers,
+  isEmailVerified,
+  setEmailStatus,
+} = require('../../jest/test-helpers');
 
 const { create: signup, authorize: userFromToken } = require('.');
 
@@ -64,10 +69,9 @@ describe('authenticate', () => {
     const email = 'foo@example.com';
     const password = '123';
     await signup({ email, password });
-    const { token } = await authenticate({ email, password }, { REQUIRE_VERIFIED_EMAIL: false });
 
-    const user = await userFromToken(token);
-    expect(user.emailVerified).toBe(false);
+    expect(await isEmailVerified(email)).toBe(false);
+    await authenticate({ email, password }, { REQUIRE_VERIFIED_EMAIL: false });
 
     try {
       await authenticate({ email, password }, { REQUIRE_VERIFIED_EMAIL: true });

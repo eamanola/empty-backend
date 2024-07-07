@@ -1,6 +1,11 @@
 const bcrypt = require('bcrypt');
 
-const { countUsers, deleteUsers, findUser } = require('../../jest/test-helpers');
+const {
+  countUsers,
+  deleteUsers,
+  findUser,
+  isEmailVerified,
+} = require('../../jest/test-helpers');
 
 const { authenticate: login } = require('.');
 
@@ -63,8 +68,6 @@ describe('signup', () => {
 
     await create({ email, password });
 
-    const user = await findUser({ email });
-
-    expect(user.emailVerified).toBe(false);
+    expect(await isEmailVerified(email)).toBe(false);
   });
 });

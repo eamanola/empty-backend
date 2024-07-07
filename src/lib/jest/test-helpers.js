@@ -21,6 +21,8 @@ const setEmailStatus = ({ email, verified }) => (verified === true
   ? emailVerification.setStatus.setVerified(email)
   : emailVerification.setStatus.setUnverified(email));
 
+const isEmailVerified = async (email) => emailVerification.setStatus.isVerified(email);
+
 const getToken = async ({ email = 'foo@example.com', password = '123' } = {}) => {
   const user = await createUser({ email, password });
   const { token } = await userControllers.authenticate({ email, password });
@@ -49,6 +51,7 @@ module.exports = {
   deleteUsers,
   findUser,
   getToken,
+  isEmailVerified,
   setEmailStatus,
   updateUser,
   validTableSchema,

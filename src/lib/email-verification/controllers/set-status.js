@@ -1,17 +1,30 @@
-const { updateOne } = require('../../users/model');
+const { findOne, insertOne, updateOne } = require('../model');
 const getCode = require('./get-code');
 
-const setVerified = async (email) => updateOne({ email }, { emailVerificationCode: null });
+const isVerified = async (email) => {
+  const { code } = await findOne(email);
+
+  return code === null;
+};
+
+const setVerified = async (email) => updateOne(email, null);
 
 const setUnverified = async (email) => {
-  const emailVerificationCode = getCode();
+  const code = getCode();
 
-  await updateOne({ email }, { emailVerificationCode });
+  const oldRequest = await findOne(email);
 
-  return emailVerificationCode;
+  if (oldRequest) {
+    await updateOne(email, code);
+  } else {
+    await insertOne(email, code);
+  }
+
+  return code;
 };
 
 module.exports = {
+  isVerified,
   setUnverified,
   setVerified,
 };

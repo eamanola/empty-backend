@@ -17,14 +17,7 @@ const createUsersTable = async () => createTable(table);
 createUsersTable();
 
 module.exports = {
-  findOne: async (where) => {
-    const result = await findOne(table.name, where);
-    if (result) {
-      return { ...result, emailVerified: !result.emailVerificationCode };
-    }
-
-    return result;
-  },
+  findOne: async (where) => findOne(table.name, where),
   insertOne: async (newUser) => {
     const user = { ...newUser, id: randomUUID() };
     await userSchema.validate(user);
