@@ -6,6 +6,7 @@ services:
 
     environment:
       AUTOMATA_DB_ENGINE: ${AUTOMATA_DB_ENGINE:-sqlite}
+      SQLITE_FILE: ${SQLITE_FILE:-:memory:}
 
     ports:
       - "${PORT:-3000}:3000"
