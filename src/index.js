@@ -1,13 +1,13 @@
+const { utils } = require('automata-utils');
 const { app, cache, db } = require('./lib');
 const { PORT, REDIS_URL, DB_URL } = require('./config');
-
-const logger = require('./lib/utils/logger');
 
 const REDIS_ENABLED = !!REDIS_URL;
 const DB_ENABLED = !!DB_URL;
 
 const { initCache, connectCache, closeCache } = cache;
 const { initDB, connectDB, closeDB } = db;
+const { logger } = utils;
 
 const shutdown = (server) => async () => {
   if (DB_ENABLED) await closeDB();

@@ -1,5 +1,8 @@
-const { extractToken } = require('../utils/authorization');
+const { utils } = require('automata-utils');
+
 const { authorize: userFromToken } = require('../controllers');
+
+const { extractToken } = utils;
 
 const authorization = async (req, res, next) => {
   let error = null;

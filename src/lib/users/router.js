@@ -1,8 +1,11 @@
 const express = require('express');
+const { middlewares } = require('automata-utils');
+
 const userErrors = require('./errors');
 const { login, signup } = require('./routes');
 const { authorization } = require('./middlewares');
-const { errorHandler } = require('../middlewares');
+
+const { errorHandler } = middlewares;
 
 const router = express.Router();
 

@@ -1,13 +1,9 @@
 const supertest = require('supertest');
-
 const { deleteAll, dropTable } = require('automata-db');
+const { errors } = require('automata-utils');
 
 const { getToken, deleteUsers } = require('../jest/test-helpers');
-
-const errors = require('../errors');
-
 const restRouter = require('./router');
-
 const { app } = require('..');
 
 const columns = [{ name: 'foo', required: true, type: 'string' }];

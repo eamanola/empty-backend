@@ -1,15 +1,17 @@
 const bcrypt = require('bcrypt');
+const { utils, errors } = require('automata-utils');
 
 const { userNotFoundError, invalidPasswordError, emailNotVerifiedError } = require('../errors');
-const { createParamError } = require('../../errors');
-const logger = require('../../utils/logger');
 const { SECRET } = require('../../../config');
-const { encode: encodeToken } = require('../../utils/token');
 const { findOne } = require('../model');
 const { getSession } = require('./session');
 const { isVerified } = require('../../email-verification/controllers/set-status');
-
 const loginSchema = require('../validators/login');
+
+const { logger, token: loginToken } = utils;
+const { encode } = loginToken;
+
+const { createParamError } = errors;
 
 const login = async (
   { email, password },
@@ -36,7 +38,7 @@ const login = async (
     throw invalidPasswordError;
   }
 
-  const token = encodeToken({ session: getSession(user), userId: user.id }, SECRET);
+  const token = encode({ session: getSession(user), userId: user.id }, SECRET);
 
   return { emailVerified, token };
 };

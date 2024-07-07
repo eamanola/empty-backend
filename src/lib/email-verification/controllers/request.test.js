@@ -1,9 +1,10 @@
+const { utils } = require('automata-utils');
+
 const { createUser, deleteAll, setVerified } = require('../jest/test-helpers');
 
 // const userErrors = require('../../users/errors');
 const emailVerificationErrors = require('../errors');
 
-const { decode: decodeEmailVerificationToken } = require('../../utils/token');
 const { EMAIL_VERIFICATION_SECRET } = require('../config');
 
 const sendEmailVerificationMail = require('../utils/send-email-verification-mail');
@@ -11,6 +12,9 @@ const sendEmailVerificationMail = require('../utils/send-email-verification-mail
 const { findOne } = require('../model');
 
 const request = require('./request');
+
+const { token: emailVerificationToken } = utils;
+const { decode } = emailVerificationToken;
 
 jest.mock('../utils/send-email-verification-mail');
 
@@ -110,7 +114,7 @@ describe('email verification', () => {
         const { token } = sendEmailVerificationMail.mock.calls[0][0];
         expect(token).toBeTruthy();
 
-        const decodedToken = decodeEmailVerificationToken(token, EMAIL_VERIFICATION_SECRET);
+        const decodedToken = decode(token, EMAIL_VERIFICATION_SECRET);
         expect(decodedToken.email).toBeTruthy();
         expect(decodedToken.email).toBe(email);
 

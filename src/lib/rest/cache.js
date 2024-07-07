@@ -1,7 +1,9 @@
 const { getItem, setItem, removeItem } = require('automata-cache');
+const { utils } = require('automata-utils');
 
 const { NODE_ENV } = require('../../config');
-const logger = require('../utils/logger');
+
+const { logger } = utils;
 
 const cacheKey = ({ user, url }) => `${user?.email || ''}${url}`;
 

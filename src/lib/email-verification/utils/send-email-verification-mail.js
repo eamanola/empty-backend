@@ -1,8 +1,10 @@
 const { lookup } = require('node:dns/promises');
 const os = require('node:os');
+const { utils } = require('automata-utils');
 
-const logger = require('../../utils/logger');
 const { PORT } = require('../config');
+
+const { logger } = utils;
 
 const sendEmailVerificationMail = async ({
   to,

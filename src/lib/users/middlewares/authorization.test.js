@@ -1,6 +1,5 @@
+const { errors } = require('automata-utils');
 const { deleteUsers, getToken } = require('../../jest/test-helpers');
-
-const errors = require('../../errors');
 
 const authorization = require('./authorization');
 

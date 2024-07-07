@@ -1,13 +1,14 @@
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
+const { middlewares, errors } = require('automata-utils');
 
 const usersRouter = require('./users/router');
 const emailVerificationRouter = require('./email-verification/router');
-const errorHandler = require('./middlewares/error-handler');
-const errors = require('./errors');
 
 const { NODE_ENV } = require('../config');
+
+const { errorHandler } = middlewares;
 
 const app = express();
 

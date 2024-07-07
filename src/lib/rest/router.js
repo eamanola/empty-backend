@@ -1,10 +1,11 @@
 const express = require('express');
-
-const { requireUser } = require('../middlewares');
+const { middlewares } = require('automata-utils');
 
 const restCache = require('./cache');
 
 const restController = require('./controller');
+
+const { requireUser } = middlewares;
 
 const restRouter = (controller, {
   useCache = true,

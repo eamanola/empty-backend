@@ -1,10 +1,12 @@
-const { decode: decodeEmailVerificationToken } = require('../../../utils/token');
+const { utils } = require('automata-utils');
 const { EMAIL_VERIFICATION_SECRET } = require('../../config');
-const logger = require('../../../utils/logger');
 const verifyByCode = require('./by-code');
 
+const { logger, token: emailVerificationToken } = utils;
+const { decode } = emailVerificationToken;
+
 const verifyByLink = async (token) => {
-  const { code, email, byLink } = decodeEmailVerificationToken(token, EMAIL_VERIFICATION_SECRET);
+  const { code, email, byLink } = decode(token, EMAIL_VERIFICATION_SECRET);
 
   try {
     await verifyByCode(email, code);

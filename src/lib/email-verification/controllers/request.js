@@ -1,11 +1,14 @@
 // const { userNotFoundError } = require('../../users/errors');
+const { utils } = require('automata-utils');
+
 const { emailVerifiedError } = require('../errors');
 const { findOne } = require('../model');
 const sendEmailVerificationMail = require('../utils/send-email-verification-mail');
-const { encode: encodeEmailVerificationToken } = require('../../utils/token');
 const { EMAIL_VERIFICATION_SECRET } = require('../config');
-const logger = require('../../utils/logger');
 const { setUnverified } = require('./set-status');
+
+const { logger, token: emailVerificationToken } = utils;
+const { encode } = emailVerificationToken;
 
 const request = async (email, { byCode = null, byLink = null }) => {
   // if (!user) {
@@ -27,7 +30,7 @@ const request = async (email, { byCode = null, byLink = null }) => {
   }
 
   const token = byLink
-    ? encodeEmailVerificationToken(
+    ? encode(
       { byLink, code, email },
       EMAIL_VERIFICATION_SECRET,
       { expiresIn: '1d' },

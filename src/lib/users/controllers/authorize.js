@@ -1,14 +1,19 @@
+const { utils, errors } = require('automata-utils');
+
 const { sessionExipred } = require('../errors');
-const { accessDenied } = require('../../errors');
-const { decode: decodeToken } = require('../../utils/token');
 const { SECRET } = require('../../../config');
 const { findOne } = require('../model');
 const { isValidSession } = require('./session');
 
+const { token: loginToken } = utils;
+const { decode } = loginToken;
+
+const { accessDenied } = errors;
+
 const fromToken = async (token) => {
   try {
     if (token) {
-      const { userId: id, session } = decodeToken(token, SECRET);
+      const { userId: id, session } = decode(token, SECRET);
       const user = await findOne({ id });
 
       if (!isValidSession(user, session)) {

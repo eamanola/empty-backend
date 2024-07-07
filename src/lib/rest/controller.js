@@ -1,6 +1,8 @@
-const { createParamError } = require('../errors');
+const { utils, errors } = require('automata-utils');
 
-const logger = require('../utils/logger');
+const { createParamError } = errors;
+
+const { logger } = utils;
 
 const restModel = require('./model');
 

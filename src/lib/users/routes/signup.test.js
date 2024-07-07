@@ -1,9 +1,9 @@
 const supertest = require('supertest');
+const { errors } = require('automata-utils');
 
 const { countUsers, deleteUsers, findUser } = require('../../jest/test-helpers');
 
 const userErrors = require('../errors');
-const errors = require('../../errors');
 
 const { app } = require('../..');
 
