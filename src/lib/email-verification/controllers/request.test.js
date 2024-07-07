@@ -1,10 +1,4 @@
-const { deleteAll } = require('automata-db');
-
-const {
-  createUser,
-  deleteUsers,
-  setEmailStatus,
-} = require('../../jest/test-helpers');
+const { createUser, deleteAll, setVerified } = require('../jest/test-helpers');
 
 // const userErrors = require('../../users/errors');
 const emailVerificationErrors = require('../errors');
@@ -15,7 +9,6 @@ const { SECRET } = require('../../../config');
 const sendEmailVerificationMail = require('../utils/send-email-verification-mail');
 
 const { findOne } = require('../model');
-const { name: tableName } = require('../model/table');
 
 const request = require('./request');
 
@@ -25,8 +18,7 @@ describe('email verification', () => {
   afterEach(async () => {
     sendEmailVerificationMail.mockClear();
 
-    await deleteUsers();
-    await deleteAll(tableName);
+    await deleteAll();
   });
 
   describe('request', () => {
@@ -45,11 +37,11 @@ describe('email verification', () => {
 
     it('should throw already verified error', async () => {
       const { emailVerifiedError } = emailVerificationErrors;
-      const user = await createUser();
-      await setEmailStatus({ email: user.email, verified: true });
+      const { email } = await createUser();
+      await setVerified(email);
 
       try {
-        await request(user.email, { });
+        await request(email, { });
         expect('unreachable').toBe(true);
       } catch ({ name }) {
         expect(name).toBe(emailVerifiedError.name);
@@ -57,35 +49,35 @@ describe('email verification', () => {
     });
 
     it('should update code', async () => {
-      const user = await createUser();
-      const { code: oldCode } = await findOne(user.email);
+      const { email } = await createUser();
+      const { code: oldCode } = await findOne(email);
       expect(oldCode).toEqual(expect.any(Number));
 
-      await request(user.email, { });
+      await request(email, { });
 
-      const { code: updatedCode } = await findOne(user.email);
+      const { code: updatedCode } = await findOne(email);
       expect(updatedCode).toEqual(expect.any(Number));
 
       expect(oldCode).not.toBe(updatedCode);
     });
 
     it('should send verification mail', async () => {
-      const user = await createUser();
+      const { email } = await createUser();
 
-      await request(user.email, { });
+      await request(email, { });
 
       expect(sendEmailVerificationMail)
-        .toHaveBeenCalledWith(expect.objectContaining({ to: user.email }));
+        .toHaveBeenCalledWith(expect.objectContaining({ to: email }));
     });
 
     describe('byCode', () => {
       it('should include byCode and code, if byCode provided', async () => {
-        const user = await createUser();
+        const { email } = await createUser();
         const byCode = 'http://example.com/form-to-enter-your-code';
 
-        await request(user.email, { byCode });
+        await request(email, { byCode });
 
-        const { code: updatedCode } = await findOne(user.email);
+        const { code: updatedCode } = await findOne(email);
 
         const { byCode: sentByCode, code } = sendEmailVerificationMail.mock.calls[0][0];
         expect(sentByCode).toBe(byCode);
@@ -93,10 +85,10 @@ describe('email verification', () => {
       });
 
       it('byCode and code should be falsy, if byCode not provided', async () => {
-        const user = await createUser();
+        const { email } = await createUser();
         const byCode = null;
 
-        await request(user.email, { byCode });
+        await request(email, { byCode });
 
         const { byCode: sentByCode, code } = sendEmailVerificationMail.mock.calls[0][0];
         expect(sentByCode).toBe(null);
@@ -106,21 +98,21 @@ describe('email verification', () => {
 
     describe('byLink', () => {
       it('should include token, if byLink is provided', async () => {
-        const user = await createUser();
+        const { email } = await createUser();
         const onSuccess = 'http://example.com/your-email-has-been-verified';
         const onFail = 'http://example.com/something-went-wrong';
         const byLink = { onFail, onSuccess };
 
-        await request(user.email, { byLink });
+        await request(email, { byLink });
 
-        const { code: updatedCode } = await findOne(user.email);
+        const { code: updatedCode } = await findOne(email);
 
         const { token } = sendEmailVerificationMail.mock.calls[0][0];
         expect(token).toBeTruthy();
 
         const decodedToken = decodeEmailVerificationToken(token, SECRET);
         expect(decodedToken.email).toBeTruthy();
-        expect(decodedToken.email).toBe(user.email);
+        expect(decodedToken.email).toBe(email);
 
         expect(decodedToken.byLink).toBeTruthy();
         expect(decodedToken.byLink).toEqual(byLink);
@@ -130,9 +122,9 @@ describe('email verification', () => {
       });
 
       it('token should be falsy, if byLink not provided', async () => {
-        const user = await createUser();
+        const { email } = await createUser();
 
-        await request(user.email, { byLink: null });
+        await request(email, { byLink: null });
 
         const { token } = sendEmailVerificationMail.mock.calls[0][0];
         expect(token).toBe(null);
