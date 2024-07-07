@@ -3,7 +3,7 @@ const { emailVerifiedError } = require('../errors');
 const { findOne } = require('../model');
 const sendEmailVerificationMail = require('../utils/send-email-verification-mail');
 const { encode: encodeEmailVerificationToken } = require('../../utils/token');
-const { SECRET } = require('../../../config');
+const { EMAIL_VERIFICATION_SECRET } = require('../config');
 const logger = require('../../utils/logger');
 const { setUnverified } = require('./set-status');
 
@@ -27,7 +27,11 @@ const request = async (email, { byCode = null, byLink = null }) => {
   }
 
   const token = byLink
-    ? encodeEmailVerificationToken({ byLink, code, email }, SECRET, { expiresIn: '1d' })
+    ? encodeEmailVerificationToken(
+      { byLink, code, email },
+      EMAIL_VERIFICATION_SECRET,
+      { expiresIn: '1d' },
+    )
     : null;
 
   sendEmailVerificationMail({

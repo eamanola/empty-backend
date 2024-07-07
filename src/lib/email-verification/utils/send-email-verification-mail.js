@@ -2,7 +2,7 @@ const { lookup } = require('node:dns/promises');
 const os = require('node:os');
 
 const logger = require('../../utils/logger');
-const { PORT } = require('../../../config');
+const { PORT } = require('../config');
 
 const sendEmailVerificationMail = async ({
   to,
