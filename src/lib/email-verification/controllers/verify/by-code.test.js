@@ -14,25 +14,25 @@ describe('email verification', () => {
   describe('verify by code', () => {
     it('should set email verified', async () => {
       const user = await createUser();
-      await request(user, { });
+      await request(user.email, { });
 
-      const requestingUser = await findUser({ id: user.id });
+      const requestingUser = await findUser({ email: user.email });
       expect(requestingUser.emailVerified).toBe(false);
       const { emailVerificationCode: code } = requestingUser;
 
       await verifyByCode(requestingUser, code);
 
-      const verifiedUser = await findUser({ id: user.id });
+      const verifiedUser = await findUser({ email: user.email });
       expect(verifiedUser.emailVerified).toBe(true);
     });
 
     it('should throw invalidEmailVerificationCodeError, on mismatch', async () => {
       const { invalidEmailVerificationCodeError } = emailVerificationErrors;
       const user = await createUser();
-      await request(user, { });
+      await request(user.email, { });
 
       const fakeCode = 1000;
-      const requestingUser = await findUser({ id: user.id });
+      const requestingUser = await findUser({ email: user.email });
       expect(fakeCode).not.toBe(requestingUser.emailVerificationCode);
 
       try {

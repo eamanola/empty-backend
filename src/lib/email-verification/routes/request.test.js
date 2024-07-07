@@ -24,7 +24,7 @@ describe('request verification', () => {
     await api.post('/email-verification')
       .send({ byCode, byLink, email: user.email });
 
-    const updatedUser = await findUser({ id: user.id });
+    const updatedUser = await findUser({ email: user.email });
 
     expect(sendEmailVerificationMail).toHaveBeenCalledWith(expect.objectContaining({
       byCode,

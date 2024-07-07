@@ -6,7 +6,7 @@ const verifyByCode = async (user, code) => {
     throw invalidEmailVerificationCodeError;
   }
 
-  return setVerified(user.id);
+  return setVerified(user.email);
 };
 
 module.exports = verifyByCode;

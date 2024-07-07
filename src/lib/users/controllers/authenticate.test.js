@@ -27,8 +27,8 @@ describe('authenticate', () => {
     const { emailVerified, token } = await authenticate({ email, password });
     expect(emailVerified).toBe(false);
 
-    const { id: userId } = await userFromToken(token);
-    await setEmailStatus({ userId, verified: true });
+    await userFromToken(token);
+    await setEmailStatus({ email, verified: true });
     const { emailVerified: emailVerifiedUpdated } = await authenticate({ email, password });
     expect(emailVerifiedUpdated).toBe(true);
   });

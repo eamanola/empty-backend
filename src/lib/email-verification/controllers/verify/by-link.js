@@ -5,10 +5,10 @@ const logger = require('../../../utils/logger');
 const verifyByCode = require('./by-code');
 
 const verifyByLink = async (token) => {
-  const { code, userId, byLink } = decodeEmailVerificationToken(token, SECRET);
+  const { code, email, byLink } = decodeEmailVerificationToken(token, SECRET);
 
   try {
-    const user = await findOne({ id: userId });
+    const user = await findOne({ email });
     await verifyByCode(user, code);
 
     return byLink.onSuccess;

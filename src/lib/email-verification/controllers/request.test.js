@@ -28,7 +28,8 @@ describe('email verification', () => {
     it('should throw user not found', async () => {
       const { userNotFoundError } = userErrors;
       try {
-        await request({ email: 'fake' }, {});
+        const email = 'fake';
+        await request(email, { });
         expect('unreachable').toBe(true);
       } catch ({ name }) {
         expect(name).toBe(userNotFoundError.name);
@@ -38,10 +39,10 @@ describe('email verification', () => {
     it('should throw already verified error', async () => {
       const { emailVerifiedError } = emailVerificationErrors;
       const user = await createUser();
-      await setEmailStatus({ userId: user.id, verified: true });
+      await setEmailStatus({ email: user.email, verified: true });
 
       try {
-        await request(user, {});
+        await request(user.email, { });
         expect('unreachable').toBe(true);
       } catch ({ name }) {
         expect(name).toBe(emailVerifiedError.name);
@@ -52,9 +53,9 @@ describe('email verification', () => {
       const user = await createUser();
       expect(user.emailVerificationCode).toBeTruthy();
 
-      await request(user, { });
+      await request(user.email, { });
 
-      const updatedUser = await findUser({ id: user.id });
+      const updatedUser = await findUser({ email: user.email });
       expect(updatedUser.emailVerificationCode).toBeTruthy();
 
       expect(user.emailVerificationCode).not.toBe(updatedUser.emailVerificationCode);
@@ -63,7 +64,7 @@ describe('email verification', () => {
     it('should send verification mail', async () => {
       const user = await createUser();
 
-      await request(user, { });
+      await request(user.email, { });
 
       expect(sendEmailVerificationMail)
         .toHaveBeenCalledWith(expect.objectContaining({ to: user.email }));
@@ -74,9 +75,9 @@ describe('email verification', () => {
         const user = await createUser();
         const byCode = 'http://example.com/form-to-enter-your-code';
 
-        await request(user, { byCode });
+        await request(user.email, { byCode });
 
-        const updatedUser = await findUser({ id: user.id });
+        const updatedUser = await findUser({ email: user.email });
 
         const { byCode: sentByCode, code } = sendEmailVerificationMail.mock.calls[0][0];
         expect(sentByCode).toBe(byCode);
@@ -87,7 +88,7 @@ describe('email verification', () => {
         const user = await createUser();
         const byCode = null;
 
-        await request(user, { byCode });
+        await request(user.email, { byCode });
 
         const { byCode: sentByCode, code } = sendEmailVerificationMail.mock.calls[0][0];
         expect(sentByCode).toBe(null);
@@ -102,16 +103,16 @@ describe('email verification', () => {
         const onFail = 'http://example.com/something-went-wrong';
         const byLink = { onFail, onSuccess };
 
-        await request(user, { byLink });
+        await request(user.email, { byLink });
 
-        const updatedUser = await findUser({ id: user.id });
+        const updatedUser = await findUser({ email: user.email });
 
         const { token } = sendEmailVerificationMail.mock.calls[0][0];
         expect(token).toBeTruthy();
 
         const decodedToken = decodeEmailVerificationToken(token, SECRET);
-        expect(decodedToken.userId).toBeTruthy();
-        expect(decodedToken.userId).toBe(user.id);
+        expect(decodedToken.email).toBeTruthy();
+        expect(decodedToken.email).toBe(user.email);
 
         expect(decodedToken.byLink).toBeTruthy();
         expect(decodedToken.byLink).toEqual(byLink);
@@ -123,7 +124,7 @@ describe('email verification', () => {
       it('token should be falsy, if byLink not provided', async () => {
         const user = await createUser();
 
-        await request(user, { byLink: null });
+        await request(user.email, { byLink: null });
 
         const { token } = sendEmailVerificationMail.mock.calls[0][0];
         expect(token).toBe(null);

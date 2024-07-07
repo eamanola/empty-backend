@@ -18,7 +18,7 @@ describe('by-code', () => {
       .set({ Authorization: `bearer ${token}` })
       .send({ code: user.emailVerificationCode });
 
-    const updatedUser = await findUser({ id: user.id });
+    const updatedUser = await findUser({ email: user.email });
     expect(updatedUser.emailVerified).toBe(true);
   });
 
@@ -32,7 +32,7 @@ describe('by-code', () => {
       .set({ Authorization: `bearer ${token}` })
       .send({ code: wrongCode });
 
-    const updatedUser = await findUser({ id: user.id });
+    const updatedUser = await findUser({ email: user.email });
     expect(updatedUser.emailVerified).toBe(false);
   });
 });

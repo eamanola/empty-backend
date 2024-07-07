@@ -25,9 +25,9 @@ const signup = async ({ email, password }) => {
 
   const passwordHash = await bcrypt.hash(password, saltRounds);
 
-  const { id: userId } = await insertOne({ email, passwordHash });
+  await insertOne({ email, passwordHash });
 
-  await setUnverified(userId);
+  await setUnverified(email);
 };
 
 module.exports = signup;

@@ -37,8 +37,8 @@ describe('/login', () => {
     expect(response.status).toBe(200);
     expect(response.body.emailVerified).toBe(false);
 
-    const { id: userId } = await userFromToken(response.body.token);
-    await setEmailStatus({ userId, verified: true });
+    await userFromToken(response.body.token);
+    await setEmailStatus({ email, verified: true });
     const responseUpdated = await api.post('/login').send(credentials);
     expect(responseUpdated.body.emailVerified).toBe(true);
   });

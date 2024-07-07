@@ -32,12 +32,12 @@ describe('by-link', () => {
     const onFail = 'http://example.com/something-went-wrong';
     const byLink = { onFail, onSuccess };
 
-    await request(user, { byLink });
+    await request(user.email, { byLink });
     const { token } = sendEmailVerificationMail.mock.calls[0][0];
 
     await api.get(`/email-verification?token=${token}`);
 
-    const updatedUser = await findUser({ id: user.id });
+    const updatedUser = await findUser({ email: user.email });
     expect(updatedUser.emailVerified).toBe(true);
   });
 
@@ -48,7 +48,7 @@ describe('by-link', () => {
     const onFail = 'http://example.com/something-went-wrong';
     const byLink = { onFail, onSuccess };
 
-    await request(user, { byLink });
+    await request(user.email, { byLink });
     const { token } = sendEmailVerificationMail.mock.calls[0][0];
 
     await api.get(`/email-verification?token=${token}`)
@@ -62,11 +62,11 @@ describe('by-link', () => {
     const onFail = 'http://example.com/something-went-wrong';
     const byLink = { onFail, onSuccess };
 
-    await request(user, { byLink });
+    await request(user.email, { byLink });
     const { token } = sendEmailVerificationMail.mock.calls[0][0];
 
     // refresh code
-    await setEmailStatus({ userId: user.id, verified: false });
+    await setEmailStatus({ email: user.email, verified: false });
 
     await api.get(`/email-verification?token=${token}`)
       .expect('Location', onFail);

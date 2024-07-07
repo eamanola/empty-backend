@@ -27,13 +27,13 @@ describe('email verification', () => {
       const onFail = 'http://example.com/something-went-wrong';
       const byLink = { onFail, onSuccess };
 
-      await request(user, { byLink });
+      await request(user.email, { byLink });
       const { token } = sendEmailVerificationMail.mock.calls[0][0];
 
       const redirectUrl = await verifyByLink(token);
       expect(redirectUrl).toBe(byLink.onSuccess);
 
-      const verifiedUser = await findUser({ id: user.id });
+      const verifiedUser = await findUser({ email: user.email });
       expect(verifiedUser.emailVerified).toBe(true);
     });
 
@@ -43,16 +43,16 @@ describe('email verification', () => {
       const onFail = 'http://example.com/something-went-wrong';
       const byLink = { onFail, onSuccess };
 
-      await request(user, { byLink });
+      await request(user.email, { byLink });
       const { token } = sendEmailVerificationMail.mock.calls[0][0];
 
       // refresh code
-      await setEmailStatus({ userId: user.id, verified: false });
+      await setEmailStatus({ email: user.email, verified: false });
 
       const redirectUrl = await verifyByLink(token);
       expect(redirectUrl).toBe(byLink.onFail);
 
-      const unVerifiedUser = await findUser({ id: user.id });
+      const unVerifiedUser = await findUser({ email: user.email });
       expect(unVerifiedUser.emailVerified).toBe(false);
     });
   });

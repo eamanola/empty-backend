@@ -1,12 +1,12 @@
 const { updateOne } = require('../../users/model');
 const getCode = require('./get-code');
 
-const setVerified = async (userId) => updateOne({ id: userId }, { emailVerificationCode: null });
+const setVerified = async (email) => updateOne({ email }, { emailVerificationCode: null });
 
-const setUnverified = async (userId) => {
+const setUnverified = async (email) => {
   const emailVerificationCode = getCode();
 
-  await updateOne({ id: userId }, { emailVerificationCode });
+  await updateOne({ email }, { emailVerificationCode });
 
   return emailVerificationCode;
 };

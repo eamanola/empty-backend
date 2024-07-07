@@ -17,9 +17,9 @@ const deleteUsers = () => deleteAll(userModel.tableName);
 
 const updateUser = async (where, updates) => userModel.updateOne(where, updates);
 
-const setEmailStatus = ({ userId, verified }) => (verified === true
-  ? emailVerification.setStatus.setVerified(userId)
-  : emailVerification.setStatus.setUnverified(userId));
+const setEmailStatus = ({ email, verified }) => (verified === true
+  ? emailVerification.setStatus.setVerified(email)
+  : emailVerification.setStatus.setUnverified(email));
 
 const getToken = async ({ email = 'foo@example.com', password = '123' } = {}) => {
   const user = await createUser({ email, password });

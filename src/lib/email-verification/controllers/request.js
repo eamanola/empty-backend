@@ -7,7 +7,7 @@ const { SECRET } = require('../../../config');
 const logger = require('../../utils/logger');
 const { setUnverified } = require('./set-status');
 
-const request = async ({ email }, { byCode = null, byLink = null }) => {
+const request = async (email, { byCode = null, byLink = null }) => {
   const user = await findOne({ email });
   if (!user) {
     throw userNotFoundError;
@@ -19,14 +19,14 @@ const request = async ({ email }, { byCode = null, byLink = null }) => {
 
   let code;
   try {
-    code = await setUnverified(user.id);
+    code = await setUnverified(email);
   } catch (err) {
     logger.info(err);
     throw err;
   }
 
   const token = byLink
-    ? encodeEmailVerificationToken({ byLink, code, userId: user.id }, SECRET)
+    ? encodeEmailVerificationToken({ byLink, code, email }, SECRET, { expiresIn: '1d' })
     : null;
 
   sendEmailVerificationMail({

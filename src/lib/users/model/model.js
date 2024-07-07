@@ -10,7 +10,7 @@ const { NODE_ENV } = require('../../../config');
 
 const userSchema = require('../validators/user');
 
-const table = require('./table-schema');
+const table = require('./table');
 
 // name to avoid dublicates
 const createUsersTable = async () => createTable(table);
