@@ -18,7 +18,6 @@ if (!['mongo', 'sqlite'].includes((AUTOMATA_DB_ENGINE || '').toLowerCase())) {
   throw new Error('DB_ENGINE should be one of: mongo, sqlite (default)');
 }
 module.exports = {
-  CACHE_ENABLED: !!REDIS_URL,
   DB_ENGINE: AUTOMATA_DB_ENGINE.toLowerCase(),
   MONGO_URL: NODE_ENV === 'test' ? MONGO_TEST_URL : MONGO_URL,
   NODE_ENV,

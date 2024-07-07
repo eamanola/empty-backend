@@ -4,21 +4,21 @@ if (DB_ENGINE === 'mongo') {
   if (MONGO_URL === 'use-mongodb-memory-server') {
     jest.mock('automata-db', () => {
       const { MongoMemoryServer } = jest.requireActual('mongodb-memory-server');
-      const mongo = jest.requireActual('automata-db');
+      const db = jest.requireActual('automata-db');
       let mongod;
 
       const initDB = async () => {
         mongod = await MongoMemoryServer.create();
-        return mongo.initDB(mongod.getUri());
+        return db.initDB(mongod.getUri());
       };
 
       const closeDB = async () => {
-        await mongo.closeDB();
+        await db.closeDB();
         await mongod.stop();
       };
 
       return {
-        ...mongo,
+        ...db,
         closeDB,
         initDB,
       };

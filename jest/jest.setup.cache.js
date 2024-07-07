@@ -1,4 +1,4 @@
-const { initCache, connectCache, closeCache } = require('.');
+const { initCache, connectCache, closeCache } = require('automata-cache');
 
 beforeAll(async () => {
   await initCache();

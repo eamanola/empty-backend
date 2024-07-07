@@ -1,7 +1,7 @@
 const supertest = require('supertest');
 const express = require('express');
+const { getItem, removeItem, setItem } = require('automata-cache');
 
-const { getItem, removeItem, setItem } = require('../cache');
 const restCache = require('./cache');
 const { cacheKey } = require('./cache');
 
