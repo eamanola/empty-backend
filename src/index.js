@@ -1,15 +1,16 @@
 const { app, cache, db } = require('./lib');
-const { PORT, REDIS_URL, MONGO_URL } = require('./config');
+const { PORT, REDIS_URL, DB_URL } = require('./config');
+
 const logger = require('./lib/utils/logger');
 
 const REDIS_ENABLED = !!REDIS_URL;
-const MONGO_ENABLED = !!MONGO_URL;
+const DB_ENABLED = !!DB_URL;
 
 const { initCache, connectCache, closeCache } = cache;
 const { initDB, connectDB, closeDB } = db;
 
 const shutdown = (server) => async () => {
-  if (MONGO_ENABLED) await closeDB();
+  if (DB_ENABLED) await closeDB();
   logger.info('db connection closed');
 
   if (REDIS_ENABLED) await closeCache();
@@ -22,8 +23,8 @@ const shutdown = (server) => async () => {
 };
 
 const start = async () => {
-  if (MONGO_ENABLED) {
-    initDB();
+  if (DB_ENABLED) {
+    initDB(DB_URL);
     await connectDB();
     logger.info('DB Connected');
   }
