@@ -1,5 +1,7 @@
+const cache = require('automata-cache');
+const db = require('automata-db');
 const { utils } = require('automata-utils');
-const { app, cache, db } = require('./lib');
+const { app } = require('./lib');
 const { PORT, REDIS_URL, DB_URL } = require('./config');
 
 const REDIS_ENABLED = !!REDIS_URL;

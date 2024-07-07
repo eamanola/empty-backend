@@ -1,6 +1,6 @@
 {
   "name": "empty-backend",
-  "version": "0.1.55",
+  "version": "0.1.56",
   "description": "repo for backend development",
   "main": "dist/index.bundle.js",
   "scripts": {
