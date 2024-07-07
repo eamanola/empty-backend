@@ -1,3 +1,4 @@
+const express = require('express');
 const supertest = require('supertest');
 
 const {
@@ -10,11 +11,13 @@ const {
 const { request } = require('../../controllers');
 
 const sendEmailVerificationMail = require('../../utils/send-email-verification-mail');
-
-const { app } = require('../../..');
+const router = require('../../router');
 
 jest.mock('../../utils/send-email-verification-mail');
 
+const app = express();
+app.use(express.json());
+app.use('/email-verification', router);
 const api = supertest(app);
 
 describe('by-link', () => {

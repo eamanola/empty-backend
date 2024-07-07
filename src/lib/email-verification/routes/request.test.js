@@ -1,14 +1,18 @@
+const express = require('express');
 const supertest = require('supertest');
 
 const { createUser, deleteAll } = require('../jest/test-helpers');
 
 const sendEmailVerificationMail = require('../utils/send-email-verification-mail');
 
-const { app } = require('../..');
 const { findOne } = require('../model');
+const router = require('../router');
 
 jest.mock('../utils/send-email-verification-mail');
 
+const app = express();
+app.use(express.json());
+app.use('/email-verification', router);
 const api = supertest(app);
 
 describe('request verification', () => {
