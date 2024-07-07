@@ -1,6 +1,9 @@
 # base
 # use non alpine for mongodb-memory-server
 FROM node:22 AS base
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt update
+RUN apt install git
 WORKDIR /app
 COPY package.json package-lock.json .
 RUN HUSKY=0 npm install
@@ -24,6 +27,7 @@ RUN npm run lint
 
 # test
 FROM lint AS test
+COPY jest jest
 COPY jest.config.cjs .
 RUN npm test
 

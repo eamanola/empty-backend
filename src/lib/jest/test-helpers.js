@@ -1,4 +1,4 @@
-const { deleteAll, count } = require('../db');
+const { deleteAll, count } = require('automata-db');
 const userModel = require('../users/model');
 const userControllers = require('../users/controllers');
 const emailVerification = require('../email-verification/controllers');

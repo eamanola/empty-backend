@@ -1,7 +1,5 @@
 const { randomUUID } = require('node:crypto');
 
-const { NODE_ENV } = require('../../../config');
-
 const {
   createTable: dbCreateTable,
   deleteOne: dbDeleteOne,
@@ -11,7 +9,9 @@ const {
   insertOne: dbInsertOne,
   replaceOne: dbReplaceOne,
   toDB,
-} = require('../../db');
+} = require('automata-db');
+
+const { NODE_ENV } = require('../../../config');
 
 const restTable = require('./rest-table');
 const getValidator = require('./get-validator');

@@ -1,6 +1,6 @@
+const db = require('automata-db');
 const app = require('./app');
 const cache = require('./cache');
-const db = require('./db');
 const errorHandler = require('./middlewares/error-handler');
 const errors = require('./errors');
 const rest = require('./rest');

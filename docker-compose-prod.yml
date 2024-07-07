@@ -4,6 +4,9 @@ services:
       context: .
       target: prod
 
+    environment:
+      AUTOMATA_DB_ENGINE: ${AUTOMATA_DB_ENGINE:-sqlite}
+
     ports:
       - "${PORT:-3000}:3000"
 

@@ -1,4 +1,4 @@
-const yupFromTable = require('../../db/utils/yup-from-table');
+const { yupFromTable } = require('automata-db');
 
 const { resourceSchema, userResourceSchema } = require('./validators');
 

@@ -1,6 +1,6 @@
-const { createUser, deleteUsers } = require('../jest/test-helpers');
+const { count, deleteAll, dropTable } = require('automata-db');
 
-const { count, deleteAll, dropTable } = require('../db');
+const { createUser, deleteUsers } = require('../jest/test-helpers');
 
 const restController = require('./controller');
 const restModel = require('./model');

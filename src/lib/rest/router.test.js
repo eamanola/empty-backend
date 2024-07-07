@@ -1,8 +1,8 @@
 const supertest = require('supertest');
 
-const { getToken, deleteUsers } = require('../jest/test-helpers');
+const { deleteAll, dropTable } = require('automata-db');
 
-const { deleteAll, dropTable } = require('../db');
+const { getToken, deleteUsers } = require('../jest/test-helpers');
 
 const errors = require('../errors');
 

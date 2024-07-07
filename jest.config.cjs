@@ -1,8 +1,8 @@
 module.exports = {
   setupFilesAfterEnv: [
-    './src/lib/jest/jest.setup.config.js',
-    './src/lib/db/mongo/jest.setup.mongodb-memory-server.js',
-    './src/lib/db/jest.setup.db.js',
+    './jest/jest.setup.config.js',
+    './jest/jest.setup.mongodb-memory-server.js',
+    './jest/jest.setup.db.js',
     './src/lib/cache/jest.setup.redis.js',
     './src/lib/cache/jest.setup.cache.js',
   ],

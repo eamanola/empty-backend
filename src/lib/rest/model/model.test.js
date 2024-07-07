@@ -1,6 +1,6 @@
 const { string, object } = require('yup');
 
-const { count, deleteAll, dropTable } = require('../../db');
+const { count, deleteAll, dropTable } = require('automata-db');
 
 const restModel = require('.');
 
