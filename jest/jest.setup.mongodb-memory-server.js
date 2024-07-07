@@ -1,7 +1,7 @@
-const { MONGO_URL, DB_ENGINE } = require('../src/config');
+const { DB_ENGINE, DB_URL } = require('../src/config');
 
 if (DB_ENGINE === 'mongo') {
-  if (MONGO_URL === 'use-mongodb-memory-server') {
+  if (DB_URL === 'use-mongodb-memory-server') {
     jest.mock('automata-db', () => {
       const { MongoMemoryServer } = jest.requireActual('mongodb-memory-server');
       const db = jest.requireActual('automata-db');
