@@ -1,6 +1,6 @@
 {
   "name": "empty-backend",
-  "version": "0.1.59",
+  "version": "0.1.60",
   "description": "repo for backend development",
   "main": "dist/index.bundle.js",
   "scripts": {
@@ -17,6 +17,7 @@
   "dependencies": {
     "automata-cache": "github:eamanola/automata-cache",
     "automata-db": "github:eamanola/automata-db",
+    "automata-email-verification": "github:eamanola/automata-email-verification",
     "automata-utils": "github:eamanola/automata-utils",
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",

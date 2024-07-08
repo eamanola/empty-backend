@@ -2,9 +2,9 @@ const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
 const { middlewares, errors } = require('automata-utils');
+const { router: emailVerification } = require('automata-email-verification');
 
 const usersRouter = require('./users/router');
-const emailVerificationRouter = require('./email-verification/router');
 
 const { NODE_ENV } = require('../config');
 
@@ -22,8 +22,9 @@ if (NODE_ENV !== 'test') { app.use(morgan('tiny')); }
 
 app.get('/health', (req, res) => { res.status(200).send('OK'); });
 
+app.use('/email-verification', emailVerification);
+
 app.use(usersRouter);
-app.use('/email-verification', emailVerificationRouter);
 
 app.use(errorHandler(errors, { defaultTo500: true }));
 

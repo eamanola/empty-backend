@@ -1,11 +1,11 @@
 const bcrypt = require('bcrypt');
+const { isVerified } = require('automata-email-verification');
 const { utils, errors } = require('automata-utils');
 
 const { userNotFoundError, invalidPasswordError, emailNotVerifiedError } = require('../errors');
 const { SECRET } = require('../../../config');
 const { findOne } = require('../model');
 const { getSession } = require('./session');
-const { isVerified } = require('../../email-verification/controllers/set-status');
 const loginSchema = require('../validators/login');
 
 const { logger, token: loginToken } = utils;
