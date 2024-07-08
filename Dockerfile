@@ -6,7 +6,8 @@ RUN apt update
 RUN apt install git
 WORKDIR /app
 COPY package.json package-lock.json .
-RUN HUSKY=0 npm install
+RUN mkdir -p -m 0700 ~/.ssh && ssh-keyscan github.com >> ~/.ssh/known_hosts
+RUN --mount=type=ssh HUSKY=0 npm install
 
 # test specific
 # cache memory-server-binaries before src/
