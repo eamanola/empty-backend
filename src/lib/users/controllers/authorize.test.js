@@ -1,10 +1,7 @@
 const { errors } = require('automata-utils');
 
 const {
-  deleteUsers,
-  findUser,
-  updateUser,
-  getToken,
+  deleteUsers, findUser, updateUser, getToken,
 } = require('../../jest/test-helpers');
 const userErrors = require('../errors');
 

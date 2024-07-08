@@ -1,3 +1,4 @@
+const express = require('express');
 const supertest = require('supertest');
 const { errors } = require('automata-utils');
 
@@ -5,8 +6,11 @@ const { countUsers, deleteUsers, findUser } = require('../../jest/test-helpers')
 
 const userErrors = require('../errors');
 
-const { app } = require('../..');
+const router = require('../router');
 
+const app = express();
+app.use(express.json());
+app.use(router);
 const api = supertest(app);
 
 describe('/signup', () => {

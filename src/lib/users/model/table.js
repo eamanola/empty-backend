@@ -1,15 +1,9 @@
 const columns = [
   {
-    name: 'email',
-    required: true,
-    type: 'string',
-    unique: true,
+    name: 'email', required: true, type: 'string', unique: true,
   },
   {
-    name: 'id',
-    required: true,
-    type: 'string',
-    unique: true,
+    name: 'id', required: true, type: 'string', unique: true,
   },
   { name: 'passwordHash', required: true, type: 'string' },
 ];
@@ -21,8 +15,4 @@ const indexes = [
 
 const name = 'Users';
 
-module.exports = {
-  columns,
-  indexes,
-  name,
-};
+module.exports = { columns, indexes, name };
