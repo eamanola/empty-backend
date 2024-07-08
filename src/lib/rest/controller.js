@@ -8,21 +8,22 @@ const restModel = require('./model');
 
 const restController = (
   model,
-  {
-    table,
-    userRequired = true,
-    validator,
-  } = {},
+  { table, userRequired = true, validator } = {},
 ) => {
   const {
-    insertOne,
-    findOne,
-    find,
-    replaceOne,
-    deleteOne,
+    deleteOne, findOne, find, insertOne, replaceOne,
   } = model || restModel(table, { userRequired, validator });
 
-  const addOwner = (user, obj) => (userRequired ? { ...obj, owner: user.id } : { ...obj });
+  const addOwner = (userId, obj) => {
+    if (userRequired) {
+      if (!userId) { throw Error('Owner is required'); }
+
+      return { ...obj, owner: userId };
+    }
+
+    return { ...obj };
+  };
+
   const removeOwner = (obj) => {
     if (!obj) return obj;
 
@@ -30,11 +31,11 @@ const restController = (
     return rest;
   };
 
-  const byId = async (user, { id }) => removeOwner(await findOne(addOwner(user, { id })));
+  const byId = async (userId, { id }) => removeOwner(await findOne(addOwner(userId, { id })));
 
-  const create = async (user, newResource) => {
+  const create = async (userId, newResource) => {
     try {
-      const row = await insertOne(addOwner(user, newResource));
+      const row = await insertOne(addOwner(userId, newResource));
 
       return removeOwner(row);
     } catch (err) {
@@ -47,14 +48,11 @@ const restController = (
     }
   };
 
-  const byOwner = async (user) => (await find({ owner: user.id }) || []).map(removeOwner);
+  const byOwner = async (userId) => (await find(addOwner(userId, {})) || []).map(removeOwner);
 
-  const update = async (user, resource) => {
+  const update = async (userId, resource) => {
     try {
-      await replaceOne(
-        addOwner(user, { id: resource.id }),
-        addOwner(user, resource),
-      );
+      await replaceOne(addOwner(userId, { id: resource.id }), addOwner(userId, resource));
     } catch (err) {
       if (err.name === 'ValidationError') {
         logger.info(err.message);
@@ -65,14 +63,10 @@ const restController = (
     }
   };
 
-  const remove = async (user, { id }) => deleteOne(addOwner(user, { id }));
+  const remove = async (userId, { id }) => deleteOne(addOwner(userId, { id }));
 
   return {
-    byId,
-    byOwner,
-    create,
-    remove,
-    update,
+    byId, byOwner, create, remove, update,
   };
 };
 

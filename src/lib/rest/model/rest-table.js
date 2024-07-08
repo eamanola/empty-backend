@@ -1,7 +1,9 @@
 const getColumns = ({ columns: baseColumns }, userRequired) => {
   const columns = [
     ...baseColumns,
-    { name: 'id', required: true, type: 'string' },
+    {
+      name: 'id', required: true, type: 'string', unique: true,
+    },
     { name: 'modified', required: true, type: 'date' },
   ];
   if (userRequired) columns.push({ name: 'owner', required: true, type: 'string' });

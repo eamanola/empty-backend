@@ -5,8 +5,6 @@ const { getItem, removeItem, setItem } = require('automata-cache');
 const restCache = require('./cache');
 const { cacheKey } = require('./cache');
 
-const { app } = require('..');
-
 const SUCCESS = { message: 'ok' };
 
 const router = express.Router();
@@ -22,8 +20,8 @@ router.post('/', (req, res) => { res.status(201).json(SUCCESS); });
 router.put('/:id', (req, res) => { res.status(200).json(SUCCESS); });
 router.delete('/:id', (req, res) => { res.status(200).json(SUCCESS); });
 
+const app = express();
 app.use('/test', router);
-
 const api = supertest(app);
 
 describe('cache middleware', () => {

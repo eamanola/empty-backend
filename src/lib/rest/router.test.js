@@ -3,8 +3,10 @@ const { deleteAll, dropTable } = require('automata-db');
 const { errors } = require('automata-utils');
 
 const { getToken, deleteUsers } = require('../jest/test-helpers');
-const restRouter = require('./router');
+
 const { app } = require('..');
+
+const restRouter = require('./router');
 
 const columns = [{ name: 'foo', required: true, type: 'string' }];
 

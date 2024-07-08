@@ -2,7 +2,6 @@ const express = require('express');
 const { middlewares } = require('automata-utils');
 
 const restCache = require('./cache');
-
 const restController = require('./controller');
 
 const { requireUser } = middlewares;
@@ -17,11 +16,7 @@ const restRouter = (controller, {
   validator,
 } = {}) => {
   const {
-    create,
-    byId,
-    byOwner,
-    update,
-    remove,
+    create, byId, byOwner, update, remove,
   } = controller || restController(null, { table, userRequired, validator });
 
   const post = async (req, res, next) => {
@@ -29,7 +24,7 @@ const restRouter = (controller, {
 
     try {
       const { body, user } = req;
-      const created = await create(user, body);
+      const created = await create(user.id, body);
 
       res.status(201).json({ message: 'CREATED', [resultKey]: created });
     } catch (err) {
@@ -44,7 +39,7 @@ const restRouter = (controller, {
 
     try {
       const { params, user } = req;
-      const result = await byId(user, { id: params.id });
+      const result = await byId(user.id, { id: params.id });
 
       res.status(200).json({ message: 'OK', [resultKey]: result });
     } catch (err) {
@@ -59,7 +54,7 @@ const restRouter = (controller, {
 
     try {
       const { user } = req;
-      const results = await byOwner(user);
+      const results = await byOwner(user.id);
 
       res.status(200).json({ message: 'OK', [resultsKey]: results });
     } catch (err) {
@@ -74,10 +69,10 @@ const restRouter = (controller, {
 
     try {
       const { user, body, params } = req;
-      await update(user, body);
+      await update(user.id, body);
 
       const { id } = params;
-      const updated = await byId(user, { id });
+      const updated = await byId(user.id, { id });
 
       res.status(200).json({ message: 'OK', [resultKey]: updated });
     } catch (err) {
@@ -93,7 +88,7 @@ const restRouter = (controller, {
     try {
       const { user, params } = req;
       const { id } = params;
-      await remove(user, { id });
+      await remove(user.id, { id });
 
       res.status(200).json({ message: 'OK' });
     } catch (err) {
