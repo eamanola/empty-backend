@@ -1,10 +1,10 @@
+const express = require('express');
 const supertest = require('supertest');
 const { deleteAll, dropTable } = require('automata-db');
+const { router: users } = require('automata-user-management');
 const { errors } = require('automata-utils');
 
 const { getToken, deleteUsers } = require('../jest/test-helpers');
-
-const { app } = require('..');
 
 const restRouter = require('./router');
 
@@ -16,6 +16,9 @@ const router = restRouter(null, { table });
 
 const baseUrl = '/test';
 
+const app = express();
+app.use(express.json());
+app.use(users);
 app.use(baseUrl, router);
 
 const api = supertest(app);
