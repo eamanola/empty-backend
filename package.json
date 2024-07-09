@@ -1,6 +1,6 @@
 {
   "name": "empty-backend",
-  "version": "0.1.67",
+  "version": "0.1.68",
   "description": "repo for backend development",
   "main": "dist/index.bundle.js",
   "scripts": {
@@ -18,13 +18,13 @@
     "automata-cache": "github:eamanola/automata-cache",
     "automata-db": "github:eamanola/automata-db",
     "automata-email-verification": "github:eamanola/automata-email-verification",
+    "automata-rest": "github:eamanola/automata-rest",
     "automata-user-management": "github:eamanola/automata-user-management",
     "automata-utils": "github:eamanola/automata-utils",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
-    "morgan": "^1.10.0",
-    "yup": "^1.4.0"
+    "morgan": "^1.10.0"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.24.7",
