@@ -2,7 +2,7 @@ const TerserPlugin = require('terser-webpack-plugin');
 const nodeExternals = require('webpack-node-externals');
 
 const entry = {
-  index: ['./src/lib/index.js'],
+  index: ['./src/index.js'],
 };
 
 const output = {

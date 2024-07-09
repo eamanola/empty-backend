@@ -7,7 +7,7 @@ const {
   createNote, getNote, getToken, validNote,
 } = require('./note-helpers');
 const { tableName, router } = require('./notes');
-const app = require('../../app');
+const app = require('../../../dist/index.bundle');
 
 const BASE_URL = '/notes';
 app.use(BASE_URL, router);

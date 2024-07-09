@@ -5,7 +5,7 @@ const { middlewares, errors } = require('automata-utils');
 const { router: emailVerification } = require('automata-email-verification');
 const { router: users } = require('automata-user-management');
 
-const { NODE_ENV } = require('./config');
+const { NODE_ENV } = require('../config');
 
 const { errorHandler } = middlewares;
 

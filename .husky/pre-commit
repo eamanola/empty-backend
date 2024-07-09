@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
 npm run lint
 npm test
-npm run bump-patch
+npx bump-pkg-json PATCH && npm install --package-lock-only --ignore-scripts
 git add package.json package-lock.json
