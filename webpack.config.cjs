@@ -7,7 +7,6 @@ const entry = {
 
 const output = {
   filename: 'index.bundle.js',
-  library: { type: 'commonjs2' },
   path: `${__dirname}/dist`,
 };
 

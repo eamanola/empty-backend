@@ -1,28 +1,23 @@
 {
   "name": "empty-backend",
-  "version": "0.1.71",
+  "version": "0.1.75",
   "description": "repo for backend development",
   "main": "dist/index.bundle.js",
   "scripts": {
-    "test": "npm run build && SECRET=shhhh jest",
+    "test": "jest",
     "lint": "eslint .",
     "build": "webpack",
-    "dev": "nodemon src/index.dev.js",
-    "prepare": "npm run build"
+    "dev": "nodemon src/index.js",
+    "start": "node dist/index.bundle.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "automata-app": "github:eamanola/automata-app",
     "automata-cache": "github:eamanola/automata-cache",
     "automata-db": "github:eamanola/automata-db",
-    "automata-email-verification": "github:eamanola/automata-email-verification",
-    "automata-rest": "github:eamanola/automata-rest",
-    "automata-user-management": "github:eamanola/automata-user-management",
     "automata-utils": "github:eamanola/automata-utils",
-    "cors": "^2.8.5",
-    "dotenv": "^16.4.5",
-    "express": "^4.19.2",
-    "morgan": "^1.10.0"
+    "dotenv": "^16.4.5"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.24.7",
