@@ -1,6 +1,8 @@
 const { REDIS_URL } = require('../src/config');
 
-if (REDIS_URL === 'use-mock') {
+const useMock = REDIS_URL === 'use-mock';
+
+if (useMock) {
   jest.mock('automata-cache', () => {
     const cache = {};
 
