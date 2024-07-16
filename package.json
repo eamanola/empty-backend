@@ -1,19 +1,19 @@
 {
   "name": "empty-backend",
-  "version": "0.1.77",
+  "version": "0.1.78",
   "description": "repo for backend development",
   "main": "dist/index.bundle.js",
   "scripts": {
     "test": "SECRET=123 jest",
     "lint": "eslint .",
     "build": "webpack",
-    "dev": "nodemon src/index.js",
+    "dev": "nodemon  --env-file=.env.development.local src/index.js",
     "start": "node dist/index.bundle.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "automata-app": "^0.0.15",
+    "automata-app": "^0.0.17",
     "automata-cache": "^0.0.2",
     "automata-db": "^0.0.10",
     "automata-utils": "^0.0.6",
