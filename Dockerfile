@@ -13,7 +13,8 @@ RUN --mount=type=ssh HUSKY=0 npm install
 # cache memory-server-binaries before src/
 FROM base AS prod-base
 COPY ./bin/download-memory-server-binaries.js .
-ENV MONGOMS_VERSION=7.0.11
+# 7.0.11 is not default https://github.com/typegoose/mongodb-memory-server/releases/tag/v10.0.0
+# ENV MONGOMS_VERSION=7.0.11
 ENV RUNTIME_DOWNLOAD=true
 RUN node ./download-memory-server-binaries.js
 # dev uses src as volumes

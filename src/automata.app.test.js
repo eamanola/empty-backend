@@ -13,7 +13,7 @@ describe('automata-app', () => {
   it('should create and authenticate users', async () => {
     const api = supertest(app);
 
-    const credendials = { email: 'foo@example.com', password: 'bar' };
+    const credendials = { email: `foo${Math.random()}@example.com`, password: 'bar' };
     const { status: signupStatus } = await api.post('/signup').send(credendials);
     expect(signupStatus).toBe(201);
 
