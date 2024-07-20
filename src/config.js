@@ -2,11 +2,11 @@ require('dotenv').config();
 
 const {
   AUTOMATA_DB_ENGINE = 'sqlite',
-  MONGO_TEST_URL = 'use-mongodb-memory-server',
+  MONGO_TEST_URL = ':memory:',
   MONGO_URL,
   NODE_ENV,
   PORT = 3000,
-  REDIS_TEST_URL = 'use-mock',
+  REDIS_TEST_URL = ':memory:',
   REDIS_URL,
   SECRET,
   // TODO:
